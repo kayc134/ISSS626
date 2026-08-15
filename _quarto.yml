@@ -5,6 +5,15 @@ website:
   title: "ISSS626_kayc"
   navbar:
     left:
+      - text: "Hands-On Exercise"
+        menu:
+        - text: "Hands-On Exercise 01"
+        - href: "Hands-On_Ex/Hands-On_Ex01.html"
+      - text: In-Class Exercise
+        menu:
+        - text: "In-Class Exercise 01"
+      - text: Take-Home Exercise
+    right:
       - href: index.qmd
         text: Home
       - about.qmd
@@ -12,7 +21,7 @@ website:
 format:
   html:
     theme:
-      - cosmo
+      - flatly
       - brand
     css: styles.css
     toc: true

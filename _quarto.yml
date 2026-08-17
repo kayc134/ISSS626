@@ -3,7 +3,7 @@ project:
 
 website:
   title: "Kay's GeoHub"
-  favicon: "C:\Users\kayin\Documents\MITB\Term 1 (Aug to Nov 2026)\ISSS626 - Geospatial Analytics and Applications\Website\Images\Logo (square).png"
+  favicon: "images/Logo%20(square).png"
   navbar:
     left:
       - text: "Hands-On Exercise"

@@ -2,17 +2,40 @@ project:
   type: website
 
 website:
-  title: "ISSS626_kayc"
+  title: "Kay's GeoHub"
+  favicon: "C:\Users\kayin\Documents\MITB\Term 1 (Aug to Nov 2026)\ISSS626 - Geospatial Analytics and Applications\Website\Images\Logo (square).png"
   navbar:
     left:
       - text: "Hands-On Exercise"
         menu:
         - text: "Hands-On Exercise 01"
         - href: "Hands-On_Ex/Hands-On_Ex01.html"
-      - text: In-Class Exercise
+        - text: "Hands-On Exercise 02"
+        - text: "Hands-On Exercise 03"
+        - text: "Hands-On Exercise 04"
+        - text: "Hands-On Exercise 05"
+        - text: "Hands-On Exercise 06"
+        - text: "Hands-On Exercise 07"
+        - text: "Hands-On Exercise 08"
+        - text: "Hands-On Exercise 09"
+        - text: "Hands-On Exercise 10"
+      - text: "In-Class Exercise"
         menu:
         - text: "In-Class Exercise 01"
-      - text: Take-Home Exercise
+        - text: "In-Class Exercise 02"
+        - text: "In-Class Exercise 03"
+        - text: "In-Class Exercise 04"
+        - text: "In-Class Exercise 05"
+        - text: "In-Class Exercise 06"
+        - text: "In-Class Exercise 07"
+        - text: "In-Class Exercise 08"
+        - text: "In-Class Exercise 09"
+        - text: "In-Class Exercise 10"
+      - text: "Take-Home Exercise"
+        menu:
+        - text: "Take-Home Exercise 01"
+        - text: "Take-Home Exercise 02"
+        - text: "Take-Home Exercise 03"
     right:
       - href: index.qmd
         text: Home
@@ -21,8 +44,7 @@ website:
 format:
   html:
     theme:
-      - flatly
-      - brand
+      - sandstone
     css: styles.css
     toc: true
 

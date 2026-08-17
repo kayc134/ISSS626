@@ -14,4 +14,4 @@ We will load both sf and tidyverse R packages onto RStudio environment.
 pacman::p_load(sf, tidyverse)
 ```
 
-## Importing Data
+<!-- ## Importing Data -->

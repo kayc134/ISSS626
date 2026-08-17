@@ -16,15 +16,22 @@
   {
     "objectID": "Hands-On_Ex01.html",
     "href": "Hands-On_Ex01.html",
-    "title": "Hands-On_Ex",
+    "title": "Hands-On_Ex01",
     "section": "",
-    "text": "This is my first hands-on exercise.\n\n\nWe will load both sf and tidyverse R packages onto RStudio environment."
+    "text": "This is my first hands-on exercise.\n\n\nWe will load both sf and tidyverse R packages onto RStudio environment.\n\npacman::p_load(sf, tidyverse)"
   },
   {
     "objectID": "Hands-On_Ex01.html#getting-started",
     "href": "Hands-On_Ex01.html#getting-started",
-    "title": "Hands-On_Ex",
+    "title": "Hands-On_Ex01",
     "section": "",
-    "text": "This is my first hands-on exercise.\n\n\nWe will load both sf and tidyverse R packages onto RStudio environment."
+    "text": "This is my first hands-on exercise.\n\n\nWe will load both sf and tidyverse R packages onto RStudio environment.\n\npacman::p_load(sf, tidyverse)"
+  },
+  {
+    "objectID": "Hands-On_Ex01.html#importing-data",
+    "href": "Hands-On_Ex01.html#importing-data",
+    "title": "Hands-On_Ex01",
+    "section": "Importing Data",
+    "text": "Importing Data"
   }
 ]

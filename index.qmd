@@ -1,11 +1,5 @@
----
-title: "ISSS626_kayc"
----
+![](images/logo.png){width="366"}
 
-This is a Quarto website.
+Geospatial analytics supports decision making and policy planning by providing insights derived from geographically referenced data. This includes the use of data wrangling, spatial statistics and spatial data visualisation technique.
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
-
-```{r}
-1 + 1
-```
+This website serves as an archive for course assignments for the course ISSS626 Geospatial Analytics and Application, taken in August 2026.

@@ -3,13 +3,13 @@ project:
 
 website:
   title: "Kay's GeoHub"
-  favicon: "images/Logo%20(square).png"
+  favicon: "images/favicon.png"
   navbar:
     left:
       - text: "Hands-On Exercise"
         menu:
         - text: "Hands-On Exercise 01"
-        - href: "Hands-On_Ex/Hands-On_Ex01.html"
+        - href: "Hands-On_Ex01.html"
         - text: "Hands-On Exercise 02"
         - text: "Hands-On Exercise 03"
         - text: "Hands-On Exercise 04"

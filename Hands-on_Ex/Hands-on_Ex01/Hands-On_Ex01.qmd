@@ -24,9 +24,10 @@ Using the st_read() of sf package, I will be loading the following three geospat
 
 ### 2.1 **Importing polygon feature data and coverting to shapefile format**
 
-Using the st_read() function of sf package, I will be importing the polygon feature layer in GeoJSON format file `MP14_SUBZONE_WEB_PL` into R. I will also be converting it from a GeoJSON format to an ESRI shapefile format using the st_write() function. To ensure that any existing file is not overwritten, I have included a delete_dsn = FALSE argument.
+Using the st_read() function of sf package, I will be importing the polygon feature layer in GeoJSON format file `MP14_SUBZONE_WEB_PL` into R. I will also be converting it from a GeoJSON format to an ESRI shapefile format using the st_write() function. To ensure that any existing file is not overwritten, I have included a delete_dsn = FALSE argument and #\| eval: false chunk option to display the code in the final rendered code but prevents RStudio from executing it during the rendering process to prevent an error.
 
 ```{r}
+#| eval: false
 mpsz <- st_read("data/geospatial/MP14_SUBZONE_NO_SEA_PL.geojson")
 
 st_write(mpsz, "MP14_SUBZONE_NO_SEA_PL.shp", driver = "ESRI Shapefile", delete_dsn = FALSE)

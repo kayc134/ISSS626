@@ -1,5 +1,5 @@
 ---
-title: "Hands-On_Ex01"
+title: "Hands-On Exercise 01"
 ---
 
 ## 1. Getting Started: Loading R Packages
@@ -11,6 +11,10 @@ pacman::p_load(sf, tidyverse)
 ```
 
 <!-- ## Importing Data -->
+
+```         
+<!-- ## Importing Data -->
+```
 
 ## 2. Importing Geospatial Data
 
@@ -33,7 +37,18 @@ mpsz <- st_read("data/geospatial/MP14_SUBZONE_NO_SEA_PL.geojson")
 dir.create("data/geospatial/mpsz", recursive = TRUE, showWarnings = FALSE) #create a folder
 
 st_write(mpsz, "data/geospatial/mpsz/MP14_SUBZONE_NO_SEA_PL.shp", 
-         driver = "ESRI Shapefile", delete_dsn = TRUE)
+         driver = "ESRI Shapefile", delete_dsn = FALSE)
+```
+
+```         
+Reading layer `MP14_SUBZONE_NO_SEA_PL' from data source 
+  `C:\kayc134\ISSS626_kayc\Hands-on_Ex\Hands-on_Ex01\data\geospatial\MP14_SUBZONE_NO_SEA_PL.geojson' 
+  using driver `GeoJSON'
+Simple feature collection with 323 features and 13 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 103.6057 ymin: 1.158699 xmax: 104.0885 ymax: 1.470775
+Geodetic CRS:  WGS 84
 ```
 
 The message above reveals that the geospatial objects are multipolygon features. There are a total of 323 multipolygon features and 13 fields in `mpsz` simple feature data frame. `mpsz` is in **WGS 84**, which is a geodetic system and thusgeographic (3D/spherical) rather than projected (2D/flat). The bounding box provides the x extend and y extend of the data.

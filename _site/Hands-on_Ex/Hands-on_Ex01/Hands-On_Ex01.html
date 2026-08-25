@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Hands-On_Ex01 – Kay’s GeoHub</title>
+<title>Hands-On Exercise 01 – Kay’s GeoHub</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -137,7 +137,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-hands-on-exercise">    
         <li>
-    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex01/Hands-On_Ex01">
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex01/Hands-On_Ex01.html">
  <span class="dropdown-text">Hands-On Exercise 01</span></a>
   </li>  
         <li class="dropdown-header">Hands-On Exercise 02</li>
@@ -218,7 +218,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Hands-On_Ex01</h1>
+<h1 class="title">Hands-On Exercise 01</h1>
 </div>
 
 
@@ -242,6 +242,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, tidyverse)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <!-- ## Importing Data -->
+<pre><code>&lt;!-- ## Importing Data --&gt;</code></pre>
 </section>
 <section id="importing-geospatial-data" class="level2">
 <h2 class="anchored" data-anchor-id="importing-geospatial-data">2. Importing Geospatial Data</h2>
@@ -255,13 +256,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="importing-polygon-feature-data-and-coverting-to-shapefile-format">2.1 <strong>Importing polygon feature data and coverting to shapefile format</strong></h3>
 <p>Using the st_read() function of sf package, I will be importing the polygon feature layer in GeoJSON format file <code>MP14_SUBZONE_WEB_PL</code> into R. I will also be converting it from a GeoJSON format to an ESRI shapefile format using the st_write() function. To ensure that any existing file is not overwritten, I have included a delete_dsn = FALSE argument and #| eval: false chunk option to display the code in the final rendered code but prevents RStudio from executing it during the rendering process to prevent an error.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>mpsz <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"data/geospatial/MP14_SUBZONE_NO_SEA_PL.geojson"</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(<span class="st">"data/geospatial/mpsz"</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>) <span class="co">#create a folder</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">st_write</span>(mpsz, <span class="st">"data/geospatial/mpsz/MP14_SUBZONE_NO_SEA_PL.shp"</span>, </span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">driver =</span> <span class="st">"ESRI Shapefile"</span>, <span class="at">delete_dsn =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>mpsz <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"data/geospatial/MP14_SUBZONE_NO_SEA_PL.geojson"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(<span class="st">"data/geospatial/mpsz"</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>) <span class="co">#create a folder</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">st_write</span>(mpsz, <span class="st">"data/geospatial/mpsz/MP14_SUBZONE_NO_SEA_PL.shp"</span>, </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">driver =</span> <span class="st">"ESRI Shapefile"</span>, <span class="at">delete_dsn =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
+<pre><code>Reading layer `MP14_SUBZONE_NO_SEA_PL' from data source 
+  `C:\kayc134\ISSS626_kayc\Hands-on_Ex\Hands-on_Ex01\data\geospatial\MP14_SUBZONE_NO_SEA_PL.geojson' 
+  using driver `GeoJSON'
+Simple feature collection with 323 features and 13 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 103.6057 ymin: 1.158699 xmax: 104.0885 ymax: 1.470775
+Geodetic CRS:  WGS 84</code></pre>
 <p>The message above reveals that the geospatial objects are multipolygon features. There are a total of 323 multipolygon features and 13 fields in <code>mpsz</code> simple feature data frame. <code>mpsz</code> is in <strong>WGS 84</strong>, which is a geodetic system and thusgeographic (3D/spherical) rather than projected (2D/flat). The bounding box provides the x extend and y extend of the data.</p>
 </section>
 <section id="importing-point-feature-layer-and-coverting-to-kml-format" class="level3">

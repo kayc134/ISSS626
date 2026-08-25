@@ -1,0 +1,37 @@
+---
+title: "Hands-On_Ex01"
+---
+
+## 1. Getting Started: Loading R Packages
+
+Using the p_load function of pacman package, I will load sf and tidyverse R packages into the RStudio environment.
+
+```{r}
+pacman::p_load(sf, tidyverse)
+```
+
+<!-- ## Importing Data -->
+
+## 2. Importing Geospatial Data
+
+Using the st_read() of sf package, I will be loading the following three geospatial data and converting them to the desired formats:
+
+- `MP14_SUBZONE_WEB_PL`, a polygon feature layer in GeoJSON format, which will be converted to an ESRI shapefile format;
+
+- `PreSchool`, point feature layer in GeoJSON format, which will be converted to a KML file format; and
+
+- `CyclingPath`, a line feature layer in ESRI shapefile format.
+
+### 2.1 **Importing polygon feature data and coverting to shapefile format**
+
+Using the st_read() function of sf package, I will be importing the polygon feature layer in GeoJSON format file `MP14_SUBZONE_WEB_PL` into R. I will also be converting it from a GeoJSON format to an ESRI shapefile format using the st_write() function. To ensure that any existing file is not overwritten, I have included a delete_dsn = FALSE argument.
+
+```{r}
+mpsz <- st_read("data/geospatial/MP14_SUBZONE_NO_SEA_PL.geojson")
+
+st_write(mpsz, "MP14_SUBZONE_NO_SEA_PL.shp", driver = "ESRI Shapefile", delete_dsn = FALSE)
+```
+
+The message above reveals that the geospatial objects are multipolygon features. There are a total of 323 multipolygon features and 13 fields in `mpsz` simple feature data frame. `mpsz` is in **WGS 84**, which is a geodetic system and thusgeographic (3D/spherical) rather than projected (2D/flat). The bounding box provides the x extend and y extend of the data.
+
+### 2.2 **Importing** point feature layer **and coverting to KML format**

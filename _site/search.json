@@ -60,6 +60,13 @@
     "href": "Hands-on_Ex/Hands-on_Ex01/Hands-On_Ex01.html#plotting-the-geospatial-data",
     "title": "Hands-On Exercise 01",
     "section": "4. Plotting the Geospatial Data",
-    "text": "4. Plotting the Geospatial Data"
+    "text": "4. Plotting the Geospatial Data\nIn geospatial data science, it is not enough to just look at the feature information. Instead, we should visualise the geospatial features using plot() of R Graphic.\n\nplot(mpsz)\n\nWarning: plotting the first 9 out of 13 attributes; use max.plot = 13 to plot\nall\n\n\n\n\n\n\n\n\n\nThe default plot of an sf object is a multi-plot of all attributes, up to a reasonable maximum as shown above. Instead, we can choose to plot only the geometry by using the code chunk below.\n\nplot(st_geometry(mpsz))\n\n\n\n\n\n\n\n\nWe can also choose to plot the sf object by using a specific attribute.\n\nplot(mpsz[\"PLN_AREA_N\"])\n\n\n\n\n\n\n\n\nI will now plot the preschool layer ontop of the mpsz layer.\n\nplot(st_geometry(mpsz))\nplot(st_geometry(preschool), \n     add = TRUE)\n\n\n\n\n\n\n\n\nAs both preschool and mpsz are in WGS84, the preschool points appear on the subzone map. However, the points are too dense and it is difficult to have a detailed interpretation of the exact locations within each subzone. Regardless, it provides a good overview of where preschools are generally not located, namely the industrial, protected nature areas and offshore islands."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex01/Hands-On_Ex01.html#working-with-projection",
+    "href": "Hands-on_Ex/Hands-on_Ex01/Hands-On_Ex01.html#working-with-projection",
+    "title": "Hands-On Exercise 01",
+    "section": "5. Working with Projection",
+    "text": "5. Working with Projection"
   }
 ]

@@ -218,6 +218,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#working-with-head" id="toc-working-with-head" class="nav-link" data-scroll-target="#working-with-head">3.3 Working with head()</a></li>
   </ul></li>
   <li><a href="#plotting-the-geospatial-data" id="toc-plotting-the-geospatial-data" class="nav-link" data-scroll-target="#plotting-the-geospatial-data">4. Plotting the Geospatial Data</a></li>
+  <li><a href="#working-with-projection" id="toc-working-with-projection" class="nav-link" data-scroll-target="#working-with-projection">5. Working with Projection</a></li>
   </ul>
 </nav>
     </div>
@@ -447,6 +448,60 @@ Geodetic CRS:  WGS 84
 </section>
 <section id="plotting-the-geospatial-data" class="level2">
 <h2 class="anchored" data-anchor-id="plotting-the-geospatial-data">4. Plotting the Geospatial Data</h2>
+<p>In geospatial data science, it is not enough to just look at the feature information. Instead, we should visualise the geospatial features using <em>plot()</em> of R Graphic.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mpsz)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: plotting the first 9 out of 13 attributes; use max.plot = 13 to plot
+all</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Hands-On_Ex01_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The default plot of an sf object is a multi-plot of all attributes, up to a reasonable maximum as shown above. Instead, we can choose to plot only the geometry by using the code chunk below.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(mpsz))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Hands-On_Ex01_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We can also choose to plot the sf object by using a specific attribute.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mpsz[<span class="st">"PLN_AREA_N"</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Hands-On_Ex01_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>I will now plot the <code>preschool</code> layer ontop of the <code>mpsz</code> layer.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(mpsz))</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(preschool), </span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">add =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Hands-On_Ex01_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>As both <code>preschool</code> and <code>mpsz</code> are in <strong>WGS84</strong>, the preschool points appear on the subzone map. However, the points are too dense and it is difficult to have a detailed interpretation of the exact locations within each subzone. Regardless, it provides a good overview of where preschools are generally not located, namely the industrial, protected nature areas and offshore islands.</p>
+</section>
+<section id="working-with-projection" class="level2">
+<h2 class="anchored" data-anchor-id="working-with-projection">5. Working with Projection</h2>
 
 
 </section>

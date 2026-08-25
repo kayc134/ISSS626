@@ -111,3 +111,33 @@ head(mpsz, n=5)
 ```
 
 ## 4. Plotting the Geospatial Data
+
+In geospatial data science, it is not enough to just look at the feature information. Instead, we should visualise the geospatial features using *plot()* of R Graphic.
+
+```{r}
+plot(mpsz)
+```
+
+The default plot of an sf object is a multi-plot of all attributes, up to a reasonable maximum as shown above. Instead, we can choose to plot only the geometry by using the code chunk below.
+
+```{r}
+plot(st_geometry(mpsz))
+```
+
+We can also choose to plot the sf object by using a specific attribute.
+
+```{r}
+plot(mpsz["PLN_AREA_N"])
+```
+
+I will now plot the `preschool` layer ontop of the `mpsz` layer.
+
+```{r}
+plot(st_geometry(mpsz))
+plot(st_geometry(preschool), 
+     add = TRUE)
+```
+
+As both `preschool` and `mpsz` are in **WGS84**, the preschool points appear on the subzone map. However, the points are too dense and it is difficult to have a detailed interpretation of the exact locations within each subzone. Regardless, it provides a good overview of where preschools are generally not located, namely the industrial, protected nature areas and offshore islands.
+
+## 5. Working with Projection 

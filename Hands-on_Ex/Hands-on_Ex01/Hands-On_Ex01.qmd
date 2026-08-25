@@ -30,7 +30,9 @@ Using the st_read() function of sf package, I will be importing the polygon feat
 #| eval: false
 mpsz <- st_read("data/geospatial/MP14_SUBZONE_NO_SEA_PL.geojson")
 
-st_write(mpsz, "MP14_SUBZONE_NO_SEA_PL.shp", driver = "ESRI Shapefile", delete_dsn = FALSE)
+dir.create("data/geospatial/mpsz", recursive = TRUE, showWarnings = FALSE) #create a folder
+
+st_write(mpsz, "MP14_SUBZONE_NO_SEA_PL.shp", driver = "ESRI Shapefile", delete_dsn = TRUE)
 ```
 
 The message above reveals that the geospatial objects are multipolygon features. There are a total of 323 multipolygon features and 13 fields in `mpsz` simple feature data frame. `mpsz` is in **WGS 84**, which is a geodetic system and thusgeographic (3D/spherical) rather than projected (2D/flat). The bounding box provides the x extend and y extend of the data.

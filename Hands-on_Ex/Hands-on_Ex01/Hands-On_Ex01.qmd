@@ -4,7 +4,7 @@ title: "Hands-On Exercise 01"
 
 ## 1. Getting Started: Loading R Packages
 
-Using the p_load function of pacman package, I will load sf and tidyverse R packages into the RStudio environment.
+Using the *p_load* function of pacman package, I will load sf and tidyverse R packages into the R environment.
 
 ```{r}
 pacman::p_load(sf, tidyverse)
@@ -18,26 +18,29 @@ pacman::p_load(sf, tidyverse)
 
 ## 2. Importing Geospatial Data
 
-Using the st_read() of sf package, I will be loading the following three geospatial data and converting them to the desired formats:
+Using the *st_read()* of sf package, I will be loading the following three geospatial data and converting them to the desired formats:
 
-- `MP14_SUBZONE_WEB_PL`, a polygon feature layer in GeoJSON format, which will be converted to an ESRI shapefile format;
+- `MP14_SUBZONE_NO_SEA_PL`, a polygon feature layer in GeoJSON format, which will be converted to an ESRI shapefile format;
 
-- `PreSchool`, point feature layer in GeoJSON format, which will be converted to a KML file format; and
+- `PreSchoolsLocation`, point feature layer in GeoJSON format, which will be converted to a KML file format; and
 
 - `CyclingPath`, a line feature layer in ESRI shapefile format.
 
-### 2.1 **Importing polygon feature data and coverting to shapefile format**
+### 2.1 Importing polygon feature data and coverting to shapefile format (MP14_SUBZONE_NO_SEA_PL)
 
-Using the st_read() function of sf package, I will be importing the polygon feature layer in GeoJSON format file `MP14_SUBZONE_WEB_PL` into R. I will also be converting it from a GeoJSON format to an ESRI shapefile format using the st_write() function. To ensure that any existing file is not overwritten, I have included a delete_dsn = FALSE argument and #\| eval: false chunk option to display the code in the final rendered code but prevents RStudio from executing it during the rendering process to prevent an error.
+Using the *st_read()* function of sf package, I will be importing the polygon feature layer in **GeoJSON** format file `MP14_SUBZONE_WEB_PL` into R. I will also be converting it from a **GeoJSON** format to an **ESRI shapefile** format using the *st_write()* function. To ensure that any existing file is not overwritten, I have included a *delete_dsn = FALSE* argument and *#\| eval: false* chunk option to display the code in the final rendered code but prevents RStudio from executing it during the rendering process to prevent an error.
 
 ```{r}
-#| eval: false
 mpsz <- st_read("data/geospatial/MP14_SUBZONE_NO_SEA_PL.geojson")
+```
 
-dir.create("data/geospatial/mpsz", recursive = TRUE, showWarnings = FALSE) #create a folder
+```{r}
+#| eval: false #prevent error when rendering
+
+dir.create("data/geospatial/mpsz", recursive = TRUE, showWarnings = FALSE) #create folder
 
 st_write(mpsz, "data/geospatial/mpsz/MP14_SUBZONE_NO_SEA_PL.shp", 
-         driver = "ESRI Shapefile", delete_dsn = FALSE)
+         driver = "ESRI Shapefile", delete_dsn = FALSE) #write files in ESRI format and prevent overwrite
 ```
 
 ```         
@@ -53,4 +56,186 @@ Geodetic CRS:  WGS 84
 
 The message above reveals that the geospatial objects are multipolygon features. There are a total of 323 multipolygon features and 13 fields in `mpsz` simple feature data frame. `mpsz` is in **WGS 84**, which is a geodetic system and thusgeographic (3D/spherical) rather than projected (2D/flat). The bounding box provides the x extend and y extend of the data.
 
-### 2.2 **Importing** point feature layer **and coverting to KML format**
+### 2.2 Importing point feature layer and coverting to KML format (PreSchoolsLocation)
+
+Similary, using the *st_read()* function of sf package, I will be importing the point feature layer in **GeoJSON** format file `PreSchoolsLocation` into R. I will also be converting it from a **GeoJSON** format to **KML** format using the *st_write()* function. To ensure that any existing file is not overwritten, I have included a *delete_dsn = FALSE* argument and *#\| eval: false* chunk option to display the code in the final rendered code but prevents RStudio from executing it during the rendering process to prevent an error.
+
+```{r}
+preschool <- st_read("data/geospatial/PreSchoolsLocation.geojson")
+```
+
+```{r}
+#| eval: false #prevent error when rendering
+
+dir.create("data/geospatial/preschool", recursive = TRUE, showWarnings = FALSE) #create folder
+
+st_write(preschool, "data/geospatial/preschool/preschool.kml", 
+         driver = "KML", delete_dsn = FALSE) #write files and prevent overwrite
+```
+
+```         
+Reading layer `PreSchoolsLocation' from data source 
+  `C:\kayc134\ISSS626_kayc\Hands-on_Ex\Hands-on_Ex01\data\geospatial\PreSchoolsLocation.geojson' 
+  using driver `GeoJSON'
+Simple feature collection with 2290 features and 2 fields
+Geometry type: POINT
+Dimension:     XYZ
+Bounding box:  xmin: 103.6878 ymin: 1.247759 xmax: 103.9897 ymax: 1.462134
+z_range:       zmin: 0 zmax: 0
+Geodetic CRS:  WGS 84
+Writing layer `preschool' to data source 
+  `data/geospatial/preschool/preschool.kml' using driver `KML'
+Writing 323 features with 13 fields and geometry type Multi Polygon.
+```
+
+The message above reveals that `preschool` is a point feature data frame. There are a total of 2290 features and 2 fields. `preschool` is in **WGS 84**, which is the same as `mpsz`.
+
+### 2.3 Importing polyline feature data in shapefile format (CyclingPath)
+
+The code chunk below uses *st_read()* function of sf package to import CyclingPath shapefile into R as a line feature data frame.
+
+```{r}
+cyclingpath = st_read(dsn = "data/geospatial/CyclingPath", 
+                         layer = "CyclingPath")
+```
+
+```         
+eading layer `CyclingPath' from data source 
+  `C:\kayc134\ISSS626_kayc\Hands-on_Ex\Hands-on_Ex01\data\geospatial\CyclingPath' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 4830 features and 7 fields
+Geometry type: MULTILINESTRING
+Dimension:     XY
+Bounding box:  xmin: 11721.1 ymin: 27550.13 xmax: 42809.37 ymax: 49702.59
+Projected CRS: SVY21
+```
+
+There are a total of 4830 features and 7 fields in cyclingpath sf data frame. The geospatial entities are capture in multilinestring object. Unlike the earlier two data sets, this data set is in **SVY21** projected coordinates system.
+
+## 3. Checking the Content of a Simple Feature Data Frame
+
+Before performing data wrangling, I will be learning more about the `mpsz` data set using *st_geometry(),* *glimpse()* and *head().*
+
+### 3.1 Working with st_geometry
+
+To retrieve the geometry list-column, I will be using the below code chunk, which is the more general way, rather than *mpsz\$geom* or *mpsz\[\[1\]\]*.
+
+```{r}
+st_geometry(mpsz)
+```
+
+```         
+Geometry set for 323 features 
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 103.6057 ymin: 1.158699 xmax: 104.0885 ymax: 1.470775
+Geodetic CRS:  WGS 84
+First 5 geometries:
+MULTIPOLYGON (((103.8432 1.284328, 103.8428 1.2...
+MULTIPOLYGON (((103.8221 1.280494, 103.8221 1.2...
+MULTIPOLYGON (((103.8438 1.285079, 103.8436 1.2...
+MULTIPOLYGON (((103.8496 1.284119, 103.8496 1.2...
+MULTIPOLYGON (((103.8525 1.286166, 103.8524 1.2...
+```
+
+### 3.2 Working with glimpse() and Date Conversion
+
+Beside the basic geospatial feature information, I would also like to learn more about the associated attribute information in the data frame.
+
+```{r}
+glimpse(mpsz)
+```
+
+```         
+Rows: 323
+Columns: 14
+$ OBJECTID_1   <int> 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 3…
+$ SUBZONE_NO   <int> 2, 2, 3, 4, 5, 4, 10, 12, 4, 6, 1, 1, 3, …
+$ SUBZONE_N    <chr> "PEOPLE'S PARK", "BUKIT MERAH", "CHINATOW…
+$ SUBZONE_C    <chr> "OTSZ02", "BMSZ02", "OTSZ03", "DTSZ04", "…
+$ CA_IND       <chr> "Y", "N", "Y", "Y", "Y", "Y", "N", "Y", "…
+$ PLN_AREA_N   <chr> "OUTRAM", "BUKIT MERAH", "OUTRAM", "DOWNT…
+$ PLN_AREA_C   <chr> "OT", "BM", "OT", "DT", "DT", "OT", "BM",…
+$ REGION_N     <chr> "CENTRAL REGION", "CENTRAL REGION", "CENT…
+$ REGION_C     <chr> "CR", "CR", "CR", "CR", "CR", "CR", "CR",…
+$ INC_CRC      <chr> "B4120D23006C932A", "1C51019439A68700", "…
+$ FMEL_UPD_D   <chr> "20160511160621", "20160511160621", "2016…
+$ SHAPE_1.AREA <dbl> 93140.44, 411722.82, 587222.68, 39437.94,…
+$ SHAPE_1.LEN  <dbl> 1822.1927, 3074.9632, 4297.5999, 871.5549…
+$ geometry     <MULTIPOLYGON [°]> MULTIPOLYGON (((103.8432 1..…
+```
+
+The *glimpse()* report reveals the data type of each fields. For example, `SUBZONE_NO` is in integer data type, `SUBZONE_N`, `CA_IND`, `PLN_AREA_N` and `REGION_N` fields are in character data type, and `SHAPE_1.AREA` and `SHAPE_1.LEN` fields are in double-precision values.
+
+It should be noted that `FMEL_UPD_D` is showing as a 14-digit character rather than a date type. The 14 digits should be referring to the year, month, date, hour, minute and second in a "YYYYMMDDHHMMSS" format and will need to be converted using *ymd_hms()* within a *mutate()* function, which is part of the tidyverse package. I also dropped the time using *as_date()*.
+
+```{r}
+mpsz <- mpsz %>%
+  mutate(FMEL_UPD_D = as_date(ymd_hms (FMEL_UPD_D))) #convert to date and drops the time
+
+glimpse(mpsz) #verify that it has been converted to date
+```
+
+```         
+Rows: 323
+Columns: 14
+$ OBJECTID_1   <int> 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 3…
+$ SUBZONE_NO   <int> 2, 2, 3, 4, 5, 4, 10, 12, 4, 6, 1, 1, 3, …
+$ SUBZONE_N    <chr> "PEOPLE'S PARK", "BUKIT MERAH", "CHINATOW…
+$ SUBZONE_C    <chr> "OTSZ02", "BMSZ02", "OTSZ03", "DTSZ04", "…
+$ CA_IND       <chr> "Y", "N", "Y", "Y", "Y", "Y", "N", "Y", "…
+$ PLN_AREA_N   <chr> "OUTRAM", "BUKIT MERAH", "OUTRAM", "DOWNT…
+$ PLN_AREA_C   <chr> "OT", "BM", "OT", "DT", "DT", "OT", "BM",…
+$ REGION_N     <chr> "CENTRAL REGION", "CENTRAL REGION", "CENT…
+$ REGION_C     <chr> "CR", "CR", "CR", "CR", "CR", "CR", "CR",…
+$ INC_CRC      <chr> "B4120D23006C932A", "1C51019439A68700", "…
+$ FMEL_UPD_D   <date> 2016-05-11, 2016-05-11, 2016-05-11, 2016…
+$ SHAPE_1.AREA <dbl> 93140.44, 411722.82, 587222.68, 39437.94,…
+$ SHAPE_1.LEN  <dbl> 1822.1927, 3074.9632, 4297.5999, 871.5549…
+$ geometry     <MULTIPOLYGON [°]> MULTIPOLYGON (((103.8432 1..…
+```
+
+By executing the *glimpse()* function again, I was able to check that `FMEL_UPD_D` has indeed been converted to a date type.
+
+### 3.3 Working with head()
+
+To reveal complete information of a feature object, I will be using *head()*. I have indicated *n=5* to display only the first five rows.
+
+```{r}
+head(mpsz, n=5)
+```
+
+```
+Simple feature collection with 5 features and 13 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 103.8131 ymin: 1.274155 xmax: 103.8532 ymax: 1.286506
+Geodetic CRS:  WGS 84
+  OBJECTID_1 SUBZONE_NO     SUBZONE_N SUBZONE_C CA_IND
+1         21          2 PEOPLE'S PARK    OTSZ02      Y
+2         22          2   BUKIT MERAH    BMSZ02      N
+3         23          3     CHINATOWN    OTSZ03      Y
+4         24          4       PHILLIP    DTSZ04      Y
+5         25          5 RAFFLES PLACE    DTSZ05      Y
+     PLN_AREA_N PLN_AREA_C       REGION_N REGION_C
+1        OUTRAM         OT CENTRAL REGION       CR
+2   BUKIT MERAH         BM CENTRAL REGION       CR
+3        OUTRAM         OT CENTRAL REGION       CR
+4 DOWNTOWN CORE         DT CENTRAL REGION       CR
+5 DOWNTOWN CORE         DT CENTRAL REGION       CR
+           INC_CRC FMEL_UPD_D SHAPE_1.AREA SHAPE_1.LEN
+1 B4120D23006C932A 2016-05-11     93140.44   1822.1927
+2 1C51019439A68700 2016-05-11    411722.82   3074.9632
+3 0FF1661344C84AED 2016-05-11    587222.68   4297.5999
+4 615D4EDDEF809F8E 2016-05-11     39437.94    871.5549
+5 72107B11807074F4 2016-05-11    188767.49   1872.7522
+                        geometry
+1 MULTIPOLYGON (((103.8432 1....
+2 MULTIPOLYGON (((103.8221 1....
+3 MULTIPOLYGON (((103.8438 1....
+4 MULTIPOLYGON (((103.8496 1....
+5 MULTIPOLYGON (((103.8525 1....
+```
+
+## 4. Plotting the Geospatial Data
+

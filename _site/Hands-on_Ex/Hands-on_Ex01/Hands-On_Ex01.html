@@ -207,9 +207,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#getting-started-loading-r-packages" id="toc-getting-started-loading-r-packages" class="nav-link active" data-scroll-target="#getting-started-loading-r-packages">1. Getting Started: Loading R Packages</a></li>
   <li><a href="#importing-geospatial-data" id="toc-importing-geospatial-data" class="nav-link" data-scroll-target="#importing-geospatial-data">2. Importing Geospatial Data</a>
   <ul class="collapse">
-  <li><a href="#importing-polygon-feature-data-and-coverting-to-shapefile-format" id="toc-importing-polygon-feature-data-and-coverting-to-shapefile-format" class="nav-link" data-scroll-target="#importing-polygon-feature-data-and-coverting-to-shapefile-format">2.1 <strong>Importing polygon feature data and coverting to shapefile format</strong></a></li>
-  <li><a href="#importing-point-feature-layer-and-coverting-to-kml-format" id="toc-importing-point-feature-layer-and-coverting-to-kml-format" class="nav-link" data-scroll-target="#importing-point-feature-layer-and-coverting-to-kml-format">2.2 <strong>Importing</strong> point feature layer <strong>and coverting to KML format</strong></a></li>
+  <li><a href="#importing-polygon-feature-data-and-coverting-to-shapefile-format-mp14_subzone_no_sea_pl" id="toc-importing-polygon-feature-data-and-coverting-to-shapefile-format-mp14_subzone_no_sea_pl" class="nav-link" data-scroll-target="#importing-polygon-feature-data-and-coverting-to-shapefile-format-mp14_subzone_no_sea_pl">2.1 Importing polygon feature data and coverting to shapefile format (MP14_SUBZONE_NO_SEA_PL)</a></li>
+  <li><a href="#importing-point-feature-layer-and-coverting-to-kml-format-preschoolslocation" id="toc-importing-point-feature-layer-and-coverting-to-kml-format-preschoolslocation" class="nav-link" data-scroll-target="#importing-point-feature-layer-and-coverting-to-kml-format-preschoolslocation">2.2 Importing point feature layer and coverting to KML format (PreSchoolsLocation)</a></li>
+  <li><a href="#importing-polyline-feature-data-in-shapefile-format-cyclingpath" id="toc-importing-polyline-feature-data-in-shapefile-format-cyclingpath" class="nav-link" data-scroll-target="#importing-polyline-feature-data-in-shapefile-format-cyclingpath">2.3 Importing polyline feature data in shapefile format (CyclingPath)</a></li>
   </ul></li>
+  <li><a href="#checking-the-content-of-a-simple-feature-data-frame" id="toc-checking-the-content-of-a-simple-feature-data-frame" class="nav-link" data-scroll-target="#checking-the-content-of-a-simple-feature-data-frame">3. Checking the Content of a Simple Feature Data Frame</a>
+  <ul class="collapse">
+  <li><a href="#working-with-st_geometry" id="toc-working-with-st_geometry" class="nav-link" data-scroll-target="#working-with-st_geometry">3.1 Working with st_geometry</a></li>
+  <li><a href="#working-with-glimpse-and-date-conversion" id="toc-working-with-glimpse-and-date-conversion" class="nav-link" data-scroll-target="#working-with-glimpse-and-date-conversion">3.2 Working with glimpse() and Date Conversion</a></li>
+  <li><a href="#working-with-head" id="toc-working-with-head" class="nav-link" data-scroll-target="#working-with-head">3.3 Working with head()</a></li>
+  </ul></li>
+  <li><a href="#plotting-the-geospatial-data" id="toc-plotting-the-geospatial-data" class="nav-link" data-scroll-target="#plotting-the-geospatial-data">4. Plotting the Geospatial Data</a></li>
   </ul>
 </nav>
     </div>
@@ -237,7 +245,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="getting-started-loading-r-packages" class="level2">
 <h2 class="anchored" data-anchor-id="getting-started-loading-r-packages">1. Getting Started: Loading R Packages</h2>
-<p>Using the p_load function of pacman package, I will load sf and tidyverse R packages into the RStudio environment.</p>
+<p>Using the <em>p_load</em> function of pacman package, I will load sf and tidyverse R packages into the R environment.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, tidyverse)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -246,22 +254,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="importing-geospatial-data" class="level2">
 <h2 class="anchored" data-anchor-id="importing-geospatial-data">2. Importing Geospatial Data</h2>
-<p>Using the st_read() of sf package, I will be loading the following three geospatial data and converting them to the desired formats:</p>
+<p>Using the <em>st_read()</em> of sf package, I will be loading the following three geospatial data and converting them to the desired formats:</p>
 <ul>
-<li><p><code>MP14_SUBZONE_WEB_PL</code>, a polygon feature layer in GeoJSON format, which will be converted to an ESRI shapefile format;</p></li>
-<li><p><code>PreSchool</code>, point feature layer in GeoJSON format, which will be converted to a KML file format; and</p></li>
+<li><p><code>MP14_SUBZONE_NO_SEA_PL</code>, a polygon feature layer in GeoJSON format, which will be converted to an ESRI shapefile format;</p></li>
+<li><p><code>PreSchoolsLocation</code>, point feature layer in GeoJSON format, which will be converted to a KML file format; and</p></li>
 <li><p><code>CyclingPath</code>, a line feature layer in ESRI shapefile format.</p></li>
 </ul>
-<section id="importing-polygon-feature-data-and-coverting-to-shapefile-format" class="level3">
-<h3 class="anchored" data-anchor-id="importing-polygon-feature-data-and-coverting-to-shapefile-format">2.1 <strong>Importing polygon feature data and coverting to shapefile format</strong></h3>
-<p>Using the st_read() function of sf package, I will be importing the polygon feature layer in GeoJSON format file <code>MP14_SUBZONE_WEB_PL</code> into R. I will also be converting it from a GeoJSON format to an ESRI shapefile format using the st_write() function. To ensure that any existing file is not overwritten, I have included a delete_dsn = FALSE argument and #| eval: false chunk option to display the code in the final rendered code but prevents RStudio from executing it during the rendering process to prevent an error.</p>
+<section id="importing-polygon-feature-data-and-coverting-to-shapefile-format-mp14_subzone_no_sea_pl" class="level3">
+<h3 class="anchored" data-anchor-id="importing-polygon-feature-data-and-coverting-to-shapefile-format-mp14_subzone_no_sea_pl">2.1 Importing polygon feature data and coverting to shapefile format (MP14_SUBZONE_NO_SEA_PL)</h3>
+<p>Using the <em>st_read()</em> function of sf package, I will be importing the polygon feature layer in <strong>GeoJSON</strong> format file <code>MP14_SUBZONE_WEB_PL</code> into R. I will also be converting it from a <strong>GeoJSON</strong> format to an <strong>ESRI shapefile</strong> format using the <em>st_write()</em> function. To ensure that any existing file is not overwritten, I have included a <em>delete_dsn = FALSE</em> argument and <em>#| eval: false</em> chunk option to display the code in the final rendered code but prevents RStudio from executing it during the rendering process to prevent an error.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>mpsz <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"data/geospatial/MP14_SUBZONE_NO_SEA_PL.geojson"</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(<span class="st">"data/geospatial/mpsz"</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>) <span class="co">#create a folder</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">st_write</span>(mpsz, <span class="st">"data/geospatial/mpsz/MP14_SUBZONE_NO_SEA_PL.shp"</span>, </span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">driver =</span> <span class="st">"ESRI Shapefile"</span>, <span class="at">delete_dsn =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>mpsz <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"data/geospatial/MP14_SUBZONE_NO_SEA_PL.geojson"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading layer `MP14_SUBZONE_NO_SEA_PL' from data source 
+  `C:\kayc134\ISSS626_kayc\Hands-on_Ex\Hands-on_Ex01\data\geospatial\MP14_SUBZONE_NO_SEA_PL.geojson' 
+  using driver `GeoJSON'
+Simple feature collection with 323 features and 13 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 103.6057 ymin: 1.158699 xmax: 104.0885 ymax: 1.470775
+Geodetic CRS:  WGS 84</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(<span class="st">"data/geospatial/mpsz"</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>) <span class="co">#create folder</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">st_write</span>(mpsz, <span class="st">"data/geospatial/mpsz/MP14_SUBZONE_NO_SEA_PL.shp"</span>, </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">driver =</span> <span class="st">"ESRI Shapefile"</span>, <span class="at">delete_dsn =</span> <span class="cn">FALSE</span>) <span class="co">#write files in ESRI format and prevent overwrite</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <pre><code>Reading layer `MP14_SUBZONE_NO_SEA_PL' from data source 
   `C:\kayc134\ISSS626_kayc\Hands-on_Ex\Hands-on_Ex01\data\geospatial\MP14_SUBZONE_NO_SEA_PL.geojson' 
@@ -273,11 +292,265 @@ Bounding box:  xmin: 103.6057 ymin: 1.158699 xmax: 104.0885 ymax: 1.470775
 Geodetic CRS:  WGS 84</code></pre>
 <p>The message above reveals that the geospatial objects are multipolygon features. There are a total of 323 multipolygon features and 13 fields in <code>mpsz</code> simple feature data frame. <code>mpsz</code> is in <strong>WGS 84</strong>, which is a geodetic system and thusgeographic (3D/spherical) rather than projected (2D/flat). The bounding box provides the x extend and y extend of the data.</p>
 </section>
-<section id="importing-point-feature-layer-and-coverting-to-kml-format" class="level3">
-<h3 class="anchored" data-anchor-id="importing-point-feature-layer-and-coverting-to-kml-format">2.2 <strong>Importing</strong> point feature layer <strong>and coverting to KML format</strong></h3>
-
-
+<section id="importing-point-feature-layer-and-coverting-to-kml-format-preschoolslocation" class="level3">
+<h3 class="anchored" data-anchor-id="importing-point-feature-layer-and-coverting-to-kml-format-preschoolslocation">2.2 Importing point feature layer and coverting to KML format (PreSchoolsLocation)</h3>
+<p>Similary, using the <em>st_read()</em> function of sf package, I will be importing the point feature layer in <strong>GeoJSON</strong> format file <code>PreSchoolsLocation</code> into R. I will also be converting it from a <strong>GeoJSON</strong> format to <strong>KML</strong> format using the <em>st_write()</em> function. To ensure that any existing file is not overwritten, I have included a <em>delete_dsn = FALSE</em> argument and <em>#| eval: false</em> chunk option to display the code in the final rendered code but prevents RStudio from executing it during the rendering process to prevent an error.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>preschool <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"data/geospatial/PreSchoolsLocation.geojson"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading layer `PreSchoolsLocation' from data source 
+  `C:\kayc134\ISSS626_kayc\Hands-on_Ex\Hands-on_Ex01\data\geospatial\PreSchoolsLocation.geojson' 
+  using driver `GeoJSON'
+Simple feature collection with 2290 features and 2 fields
+Geometry type: POINT
+Dimension:     XYZ
+Bounding box:  xmin: 103.6878 ymin: 1.247759 xmax: 103.9897 ymax: 1.462134
+z_range:       zmin: 0 zmax: 0
+Geodetic CRS:  WGS 84</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(<span class="st">"data/geospatial/preschool"</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>) <span class="co">#create folder</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">st_write</span>(preschool, <span class="st">"data/geospatial/preschool/preschool.kml"</span>, </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">driver =</span> <span class="st">"KML"</span>, <span class="at">delete_dsn =</span> <span class="cn">FALSE</span>) <span class="co">#write files and prevent overwrite</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<pre><code>Reading layer `PreSchoolsLocation' from data source 
+  `C:\kayc134\ISSS626_kayc\Hands-on_Ex\Hands-on_Ex01\data\geospatial\PreSchoolsLocation.geojson' 
+  using driver `GeoJSON'
+Simple feature collection with 2290 features and 2 fields
+Geometry type: POINT
+Dimension:     XYZ
+Bounding box:  xmin: 103.6878 ymin: 1.247759 xmax: 103.9897 ymax: 1.462134
+z_range:       zmin: 0 zmax: 0
+Geodetic CRS:  WGS 84
+Writing layer `preschool' to data source 
+  `data/geospatial/preschool/preschool.kml' using driver `KML'
+Writing 323 features with 13 fields and geometry type Multi Polygon.</code></pre>
+<p>The message above reveals that <code>preschool</code> is a point feature data frame. There are a total of 2290 features and 2 fields. <code>preschool</code> is in <strong>WGS 84</strong>, which is the same as <code>mpsz</code>.</p>
 </section>
+<section id="importing-polyline-feature-data-in-shapefile-format-cyclingpath" class="level3">
+<h3 class="anchored" data-anchor-id="importing-polyline-feature-data-in-shapefile-format-cyclingpath">2.3 Importing polyline feature data in shapefile format (CyclingPath)</h3>
+<p>The code chunk below uses <em>st_read()</em> function of sf package to import CyclingPath shapefile into R as a line feature data frame.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>cyclingpath <span class="ot">=</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/geospatial/CyclingPath"</span>, </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>                         <span class="at">layer =</span> <span class="st">"CyclingPath"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading layer `CyclingPath' from data source 
+  `C:\kayc134\ISSS626_kayc\Hands-on_Ex\Hands-on_Ex01\data\geospatial\CyclingPath' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 4830 features and 7 fields
+Geometry type: MULTILINESTRING
+Dimension:     XY
+Bounding box:  xmin: 11721.1 ymin: 27550.13 xmax: 42809.37 ymax: 49702.59
+Projected CRS: SVY21</code></pre>
+</div>
+</div>
+<pre><code>eading layer `CyclingPath' from data source 
+  `C:\kayc134\ISSS626_kayc\Hands-on_Ex\Hands-on_Ex01\data\geospatial\CyclingPath' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 4830 features and 7 fields
+Geometry type: MULTILINESTRING
+Dimension:     XY
+Bounding box:  xmin: 11721.1 ymin: 27550.13 xmax: 42809.37 ymax: 49702.59
+Projected CRS: SVY21</code></pre>
+<p>There are a total of 4830 features and 7 fields in cyclingpath sf data frame. The geospatial entities are capture in multilinestring object. Unlike the earlier two data sets, this data set is in <strong>SVY21</strong> projected coordinates system.</p>
+</section>
+</section>
+<section id="checking-the-content-of-a-simple-feature-data-frame" class="level2">
+<h2 class="anchored" data-anchor-id="checking-the-content-of-a-simple-feature-data-frame">3. Checking the Content of a Simple Feature Data Frame</h2>
+<p>Before performing data wrangling, I will be learning more about the <code>mpsz</code> data set using <em>st_geometry(),</em> <em>glimpse()</em> and <em>head().</em></p>
+<section id="working-with-st_geometry" class="level3">
+<h3 class="anchored" data-anchor-id="working-with-st_geometry">3.1 Working with st_geometry</h3>
+<p>To retrieve the geometry list-column, I will be using the below code chunk, which is the more general way, rather than <em>mpsz$geom</em> or <em>mpsz[[1]]</em>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">st_geometry</span>(mpsz)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Geometry set for 323 features 
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 103.6057 ymin: 1.158699 xmax: 104.0885 ymax: 1.470775
+Geodetic CRS:  WGS 84
+First 5 geometries:</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>MULTIPOLYGON (((103.8432 1.284328, 103.8428 1.2...</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>MULTIPOLYGON (((103.8221 1.280494, 103.8221 1.2...</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>MULTIPOLYGON (((103.8438 1.285079, 103.8436 1.2...</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>MULTIPOLYGON (((103.8496 1.284119, 103.8496 1.2...</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>MULTIPOLYGON (((103.8525 1.286166, 103.8524 1.2...</code></pre>
+</div>
+</div>
+<pre><code>Geometry set for 323 features 
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 103.6057 ymin: 1.158699 xmax: 104.0885 ymax: 1.470775
+Geodetic CRS:  WGS 84
+First 5 geometries:
+MULTIPOLYGON (((103.8432 1.284328, 103.8428 1.2...
+MULTIPOLYGON (((103.8221 1.280494, 103.8221 1.2...
+MULTIPOLYGON (((103.8438 1.285079, 103.8436 1.2...
+MULTIPOLYGON (((103.8496 1.284119, 103.8496 1.2...
+MULTIPOLYGON (((103.8525 1.286166, 103.8524 1.2...</code></pre>
+</section>
+<section id="working-with-glimpse-and-date-conversion" class="level3">
+<h3 class="anchored" data-anchor-id="working-with-glimpse-and-date-conversion">3.2 Working with glimpse() and Date Conversion</h3>
+<p>Beside the basic geospatial feature information, I would also like to learn more about the associated attribute information in the data frame.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(mpsz)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 323
+Columns: 14
+$ OBJECTID_1   &lt;int&gt; 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 3…
+$ SUBZONE_NO   &lt;int&gt; 2, 2, 3, 4, 5, 4, 10, 12, 4, 6, 1, 1, 3, 8, 3, 7, 9, 2, 1…
+$ SUBZONE_N    &lt;chr&gt; "PEOPLE'S PARK", "BUKIT MERAH", "CHINATOWN", "PHILLIP", "…
+$ SUBZONE_C    &lt;chr&gt; "OTSZ02", "BMSZ02", "OTSZ03", "DTSZ04", "DTSZ05", "OTSZ04…
+$ CA_IND       &lt;chr&gt; "Y", "N", "Y", "Y", "Y", "Y", "N", "Y", "N", "Y", "Y", "Y…
+$ PLN_AREA_N   &lt;chr&gt; "OUTRAM", "BUKIT MERAH", "OUTRAM", "DOWNTOWN CORE", "DOWN…
+$ PLN_AREA_C   &lt;chr&gt; "OT", "BM", "OT", "DT", "DT", "OT", "BM", "DT", "BM", "DT…
+$ REGION_N     &lt;chr&gt; "CENTRAL REGION", "CENTRAL REGION", "CENTRAL REGION", "CE…
+$ REGION_C     &lt;chr&gt; "CR", "CR", "CR", "CR", "CR", "CR", "CR", "CR", "CR", "CR…
+$ INC_CRC      &lt;chr&gt; "B4120D23006C932A", "1C51019439A68700", "0FF1661344C84AED…
+$ FMEL_UPD_D   &lt;chr&gt; "20160511160621", "20160511160621", "20160511160621", "20…
+$ SHAPE_1.AREA &lt;dbl&gt; 93140.44, 411722.82, 587222.68, 39437.94, 188767.49, 1330…
+$ SHAPE_1.LEN  &lt;dbl&gt; 1822.1927, 3074.9632, 4297.5999, 871.5549, 1872.7522, 160…
+$ geometry     &lt;MULTIPOLYGON [°]&gt; MULTIPOLYGON (((103.8432 1...., MULTIPOLYGON…</code></pre>
+</div>
+</div>
+<pre><code>Rows: 323
+Columns: 14
+$ OBJECTID_1   &lt;int&gt; 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 3…
+$ SUBZONE_NO   &lt;int&gt; 2, 2, 3, 4, 5, 4, 10, 12, 4, 6, 1, 1, 3, …
+$ SUBZONE_N    &lt;chr&gt; "PEOPLE'S PARK", "BUKIT MERAH", "CHINATOW…
+$ SUBZONE_C    &lt;chr&gt; "OTSZ02", "BMSZ02", "OTSZ03", "DTSZ04", "…
+$ CA_IND       &lt;chr&gt; "Y", "N", "Y", "Y", "Y", "Y", "N", "Y", "…
+$ PLN_AREA_N   &lt;chr&gt; "OUTRAM", "BUKIT MERAH", "OUTRAM", "DOWNT…
+$ PLN_AREA_C   &lt;chr&gt; "OT", "BM", "OT", "DT", "DT", "OT", "BM",…
+$ REGION_N     &lt;chr&gt; "CENTRAL REGION", "CENTRAL REGION", "CENT…
+$ REGION_C     &lt;chr&gt; "CR", "CR", "CR", "CR", "CR", "CR", "CR",…
+$ INC_CRC      &lt;chr&gt; "B4120D23006C932A", "1C51019439A68700", "…
+$ FMEL_UPD_D   &lt;chr&gt; "20160511160621", "20160511160621", "2016…
+$ SHAPE_1.AREA &lt;dbl&gt; 93140.44, 411722.82, 587222.68, 39437.94,…
+$ SHAPE_1.LEN  &lt;dbl&gt; 1822.1927, 3074.9632, 4297.5999, 871.5549…
+$ geometry     &lt;MULTIPOLYGON [°]&gt; MULTIPOLYGON (((103.8432 1..…</code></pre>
+<p>The <em>glimpse()</em> report reveals the data type of each fields. For example, <code>SUBZONE_NO</code> is in integer data type, <code>SUBZONE_N</code>, <code>CA_IND</code>, <code>PLN_AREA_N</code> and <code>REGION_N</code> fields are in character data type, and <code>SHAPE_1.AREA</code> and <code>SHAPE_1.LEN</code> fields are in double-precision values.</p>
+<p>It should be noted that <code>FMEL_UPD_D</code> is showing as a 14-digit character rather than a date type. The 14 digits should be referring to the year, month, date, hour, minute and second in a “YYYYMMDDHHMMSS” format and will need to be converted using <em>ymd_hms()</em> within a <em>mutate()</em> function, which is part of the tidyverse package. I also dropped the time using <em>as_date()</em>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>mpsz <span class="ot">&lt;-</span> mpsz <span class="sc">%&gt;%</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">FMEL_UPD_D =</span> <span class="fu">as_date</span>(<span class="fu">ymd_hms</span> (FMEL_UPD_D))) <span class="co">#convert to date and drops the time</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(mpsz) <span class="co">#verify that it has been converted to date</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 323
+Columns: 14
+$ OBJECTID_1   &lt;int&gt; 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 3…
+$ SUBZONE_NO   &lt;int&gt; 2, 2, 3, 4, 5, 4, 10, 12, 4, 6, 1, 1, 3, 8, 3, 7, 9, 2, 1…
+$ SUBZONE_N    &lt;chr&gt; "PEOPLE'S PARK", "BUKIT MERAH", "CHINATOWN", "PHILLIP", "…
+$ SUBZONE_C    &lt;chr&gt; "OTSZ02", "BMSZ02", "OTSZ03", "DTSZ04", "DTSZ05", "OTSZ04…
+$ CA_IND       &lt;chr&gt; "Y", "N", "Y", "Y", "Y", "Y", "N", "Y", "N", "Y", "Y", "Y…
+$ PLN_AREA_N   &lt;chr&gt; "OUTRAM", "BUKIT MERAH", "OUTRAM", "DOWNTOWN CORE", "DOWN…
+$ PLN_AREA_C   &lt;chr&gt; "OT", "BM", "OT", "DT", "DT", "OT", "BM", "DT", "BM", "DT…
+$ REGION_N     &lt;chr&gt; "CENTRAL REGION", "CENTRAL REGION", "CENTRAL REGION", "CE…
+$ REGION_C     &lt;chr&gt; "CR", "CR", "CR", "CR", "CR", "CR", "CR", "CR", "CR", "CR…
+$ INC_CRC      &lt;chr&gt; "B4120D23006C932A", "1C51019439A68700", "0FF1661344C84AED…
+$ FMEL_UPD_D   &lt;date&gt; 2016-05-11, 2016-05-11, 2016-05-11, 2016-05-11, 2016-05-…
+$ SHAPE_1.AREA &lt;dbl&gt; 93140.44, 411722.82, 587222.68, 39437.94, 188767.49, 1330…
+$ SHAPE_1.LEN  &lt;dbl&gt; 1822.1927, 3074.9632, 4297.5999, 871.5549, 1872.7522, 160…
+$ geometry     &lt;MULTIPOLYGON [°]&gt; MULTIPOLYGON (((103.8432 1...., MULTIPOLYGON…</code></pre>
+</div>
+</div>
+<pre><code>Rows: 323
+Columns: 14
+$ OBJECTID_1   &lt;int&gt; 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 3…
+$ SUBZONE_NO   &lt;int&gt; 2, 2, 3, 4, 5, 4, 10, 12, 4, 6, 1, 1, 3, …
+$ SUBZONE_N    &lt;chr&gt; "PEOPLE'S PARK", "BUKIT MERAH", "CHINATOW…
+$ SUBZONE_C    &lt;chr&gt; "OTSZ02", "BMSZ02", "OTSZ03", "DTSZ04", "…
+$ CA_IND       &lt;chr&gt; "Y", "N", "Y", "Y", "Y", "Y", "N", "Y", "…
+$ PLN_AREA_N   &lt;chr&gt; "OUTRAM", "BUKIT MERAH", "OUTRAM", "DOWNT…
+$ PLN_AREA_C   &lt;chr&gt; "OT", "BM", "OT", "DT", "DT", "OT", "BM",…
+$ REGION_N     &lt;chr&gt; "CENTRAL REGION", "CENTRAL REGION", "CENT…
+$ REGION_C     &lt;chr&gt; "CR", "CR", "CR", "CR", "CR", "CR", "CR",…
+$ INC_CRC      &lt;chr&gt; "B4120D23006C932A", "1C51019439A68700", "…
+$ FMEL_UPD_D   &lt;date&gt; 2016-05-11, 2016-05-11, 2016-05-11, 2016…
+$ SHAPE_1.AREA &lt;dbl&gt; 93140.44, 411722.82, 587222.68, 39437.94,…
+$ SHAPE_1.LEN  &lt;dbl&gt; 1822.1927, 3074.9632, 4297.5999, 871.5549…
+$ geometry     &lt;MULTIPOLYGON [°]&gt; MULTIPOLYGON (((103.8432 1..…</code></pre>
+<p>By executing the <em>glimpse()</em> function again, I was able to check that <code>FMEL_UPD_D</code> has indeed been converted to a date type.</p>
+</section>
+<section id="working-with-head" class="level3">
+<h3 class="anchored" data-anchor-id="working-with-head">3.3 Working with head()</h3>
+<p>To reveal complete information of a feature object, I will be using <em>head()</em>. I have indicated <em>n=5</em> to display only the first five rows.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(mpsz, <span class="at">n=</span><span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 5 features and 13 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 103.8131 ymin: 1.274155 xmax: 103.8532 ymax: 1.286506
+Geodetic CRS:  WGS 84
+  OBJECTID_1 SUBZONE_NO     SUBZONE_N SUBZONE_C CA_IND    PLN_AREA_N PLN_AREA_C
+1         21          2 PEOPLE'S PARK    OTSZ02      Y        OUTRAM         OT
+2         22          2   BUKIT MERAH    BMSZ02      N   BUKIT MERAH         BM
+3         23          3     CHINATOWN    OTSZ03      Y        OUTRAM         OT
+4         24          4       PHILLIP    DTSZ04      Y DOWNTOWN CORE         DT
+5         25          5 RAFFLES PLACE    DTSZ05      Y DOWNTOWN CORE         DT
+        REGION_N REGION_C          INC_CRC FMEL_UPD_D SHAPE_1.AREA SHAPE_1.LEN
+1 CENTRAL REGION       CR B4120D23006C932A 2016-05-11     93140.44   1822.1927
+2 CENTRAL REGION       CR 1C51019439A68700 2016-05-11    411722.82   3074.9632
+3 CENTRAL REGION       CR 0FF1661344C84AED 2016-05-11    587222.68   4297.5999
+4 CENTRAL REGION       CR 615D4EDDEF809F8E 2016-05-11     39437.94    871.5549
+5 CENTRAL REGION       CR 72107B11807074F4 2016-05-11    188767.49   1872.7522
+                        geometry
+1 MULTIPOLYGON (((103.8432 1....
+2 MULTIPOLYGON (((103.8221 1....
+3 MULTIPOLYGON (((103.8438 1....
+4 MULTIPOLYGON (((103.8496 1....
+5 MULTIPOLYGON (((103.8525 1....</code></pre>
+</div>
+</div>
+<pre><code>Simple feature collection with 5 features and 13 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 103.8131 ymin: 1.274155 xmax: 103.8532 ymax: 1.286506
+Geodetic CRS:  WGS 84
+  OBJECTID_1 SUBZONE_NO     SUBZONE_N SUBZONE_C CA_IND
+1         21          2 PEOPLE'S PARK    OTSZ02      Y
+2         22          2   BUKIT MERAH    BMSZ02      N
+3         23          3     CHINATOWN    OTSZ03      Y
+4         24          4       PHILLIP    DTSZ04      Y
+5         25          5 RAFFLES PLACE    DTSZ05      Y
+     PLN_AREA_N PLN_AREA_C       REGION_N REGION_C
+1        OUTRAM         OT CENTRAL REGION       CR
+2   BUKIT MERAH         BM CENTRAL REGION       CR
+3        OUTRAM         OT CENTRAL REGION       CR
+4 DOWNTOWN CORE         DT CENTRAL REGION       CR
+5 DOWNTOWN CORE         DT CENTRAL REGION       CR
+           INC_CRC FMEL_UPD_D SHAPE_1.AREA SHAPE_1.LEN
+1 B4120D23006C932A 2016-05-11     93140.44   1822.1927
+2 1C51019439A68700 2016-05-11    411722.82   3074.9632
+3 0FF1661344C84AED 2016-05-11    587222.68   4297.5999
+4 615D4EDDEF809F8E 2016-05-11     39437.94    871.5549
+5 72107B11807074F4 2016-05-11    188767.49   1872.7522
+                        geometry
+1 MULTIPOLYGON (((103.8432 1....
+2 MULTIPOLYGON (((103.8221 1....
+3 MULTIPOLYGON (((103.8438 1....
+4 MULTIPOLYGON (((103.8496 1....
+5 MULTIPOLYGON (((103.8525 1....</code></pre>
+</section>
+</section>
+<section id="plotting-the-geospatial-data" class="level2">
+<h2 class="anchored" data-anchor-id="plotting-the-geospatial-data">4. Plotting the Geospatial Data</h2>
+
+
 </section>
 
 </main> <!-- /main -->

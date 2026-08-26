@@ -1,5 +1,5 @@
 ---
-title: "Hands-On Exercise 01"
+title: "Hands-On Exercise 01a"
 ---
 
 ## 1. Getting Started: Loading R Packages
@@ -238,15 +238,13 @@ plot(st_geometry(airbnblistings_sf), add = TRUE)
 
 ## 7. Geoprocessing with sf package
 
-Besides functions to handle geospatial data, such as importing, assigning projections and transformations which were shown earlier, sf package offers a wide range of geoprocessing functions. This is also known as Geographic Information System (GIS) analysis. 
+Besides functions to handle geospatial data, such as importing, assigning projections and transformations which were shown earlier, sf package offers a wide range of geoprocessing functions. This is also known as Geographic Information System (GIS) analysis.
 
 ### 7.1 Use Case 1: land acquisition analysis
 
-**Scenario**
-The authority is planning to upgrade the exiting cycling path. To do so, they need to acquire 5 meters of reserved land on  both sides of the existing cycling path. You are tasked to determine the extend of the land that needs to be acquired and the total area.
+**Scenario** The authority is planning to upgrade the exiting cycling path. To do so, they need to acquire 5 meters of reserved land on both sides of the existing cycling path. You are tasked to determine the extend of the land that needs to be acquired and the total area.
 
-**Solution**
-First, I will use *st_buffer* to compute the 5-meter buffer around the cycling paths. The function is used to expand or shrink vector geometries outward by a specified distance, where the width is defined by the *dist=* referencing the metrics of SVY21. *nQuadSegs* controls the smoothness of and must be an integer more than or equals to 1. Although there is no upper limit, high values may produce negligible visual improvement.
+**Solution** First, I will use *st_buffer* to compute the 5-meter buffer around the cycling paths. The function is used to expand or shrink vector geometries outward by a specified distance, where the width is defined by the *dist=* referencing the metrics of SVY21. *nQuadSegs* controls the smoothness of and must be an integer more than or equals to 1. Although there is no upper limit, high values may produce negligible visual improvement.
 
 ```{r}
 buffer_cycling <- st_buffer(
@@ -260,11 +258,12 @@ buffer_cycling <- buffer_cycling %>%
   mutate(AREA = st_area(geometry))
 ```
 
-Lastly, I will use *sum()* to derive the total land needed 
+Lastly, I will use *sum()* to derive the total land needed
 
 ```{r}
 sum(buffer_cycling$AREA)
 ```
+
 The buffer can also be plotted based on a selected planning subzone for the purpose of land acqusition planning, such as Tampines West .
 
 First, I will use *filter()* to extract the polygon feature of Tampines West.
@@ -274,7 +273,7 @@ mpsz_selected <- mpsz %>%
   filter(SUBZONE_N == "TAMPINES WEST")
 ```
 
-Next, I will use *st_intersection()* to clip the cycling buffers within Tampines West planning subzone. 
+Next, I will use *st_intersection()* to clip the cycling buffers within Tampines West planning subzone.
 
 ```{r}
 buffer_cycling_selected <- st_intersection(
@@ -289,7 +288,77 @@ plot(st_geometry(buffer_cycling_selected))
 
 ### 7.2 Use case 2: To determine the number of pre-schools by planning subzone
 
-**Scenario**
-The authority requires a count of pre-schools for each planning subzone to support forward planning. Using R and the sf package, perform the necessary geoprocessing to compute these counts and present the results clearly.
+**Scenario** The authority requires a count of pre-schools for each planning subzone to support forward planning. Using R and the sf package, perform the necessary geoprocessing to compute these counts and present the results clearly.
 
-**Solution**
+**Solution** First, to identify pre-schools located inside each Planning Subzone by using *st_intersects()*. Next, *length()* is used to calculate numbers of pre-schools that fall inside each planning subzone.
+
+```{r}
+mpsz$`PreSch Count`<- lengths(st_intersects(mpsz, preschool))
+```
+
+I will now check the summary statistics of the newly derived `PreSch Count` field by using *summary()*.
+
+```{r}
+summary(mpsz$`PreSch Count`)
+```
+
+To list the planning subzone with the most number of pre-school, the *top_n()* of dplyr package is used.
+
+```{r}
+top_n(mpsz, 1, `PreSch Count`)
+```
+
+Another geoprocessing function of sf package called *st_area()* is used to derive the area of each planning subzone.
+
+```{r}
+mpsz$Area <- mpsz %>%
+  st_area()
+```
+
+Next, I will use *mutate()* to compute the density.
+
+```{r}
+mpsz <- mpsz %>%
+  mutate(`PreSch Density` = `PreSch Count`/Area * 1000000)
+```
+
+I will now visualise the derived variables by using exploratory data analysis methods from ggplot2.
+
+First, I will plot a histogram to reveal the distribution of `PreSch Density` using *hist()* of R Graphics.
+
+```{r}
+hist(mpsz$`PreSch Density`)
+```
+
+Although the code chunk is easy to use, the resulting visualisation is not of publication quality. Improvements could be made by including a title and subtitle, having proper x and y labels, defining the bins for better division of data and including colour.
+
+```{r}
+ggplot(data=mpsz, 
+       aes(x= as.numeric(`PreSch Density`)))+
+  geom_histogram(bins=20, 
+                 color="black", 
+                 fill="yellow") +
+  labs(title = "Are pre-school evenly distributed in Singapore?",
+       subtitle= "There are many planning subzones with a single pre-school. On the other hand, \nthere are seven planning subzones with at least 30 or more pre-schools.",
+      x = "Pre-school density (per km sq)",
+      y = "Frequency")
+```
+
+I will now use ggplot2 functions to plot a scatterplot showing the relationship between `Pre-school Density` and `Pre-school Count`.
+
+```{r}
+ggplot(data=mpsz, 
+       aes(y = `PreSch Count`, 
+           x= as.numeric(`PreSch Density`)))+
+  geom_point(color="black", 
+             fill="black") +
+  xlim(0, 40) +
+  ylim(0, 40) +
+  labs(title = "",
+      x = "Pre-school density (per km sq)",
+      y = "Pre-school count")
+```
+
+## 8. Reference
+
+Kam, T. S. Geospatial Data Science with R. R for Geospatial Data Science and Analytics. https://r4gdsa.netlify.app/chap01.html#importing-the-aspatial-data

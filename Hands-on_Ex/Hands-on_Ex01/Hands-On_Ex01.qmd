@@ -112,25 +112,27 @@ head(mpsz, n=5)
 
 ## 4. Plotting the Geospatial Data
 
-In geospatial data science, it is not enough to just look at the feature information. Instead, we should visualise the geospatial features using *plot()* of R Graphic.
+Using *plot()*, you can visualise a data frame by generating coloured maps based on different attributes
 
 ```{r}
 plot(mpsz)
 ```
 
-The default plot of an sf object is a multi-plot of all attributes, up to a reasonable maximum as shown above. Instead, we can choose to plot only the geometry by using the code chunk below.
+The default plot of an sf object is a multi-plot of all attributes, up to a reasonable maximum as shown above. This includes visualisation of non-informative features, such as `OBJECTID_1`.
+
+Instead, you can plot only the geometry by using *st_geometry()* where only the shape and not the attributes are mapped out.
 
 ```{r}
 plot(st_geometry(mpsz))
 ```
 
-We can also choose to plot the sf object by using a specific attribute.
+We can also plot using a specific attribute, such as `PLN_AREA_N`.
 
 ```{r}
 plot(mpsz["PLN_AREA_N"])
 ```
 
-I will now plot the `preschool` layer ontop of the `mpsz` layer.
+When you have more than one layer, you can plot them ontop of each other to visualise more information. I will now plot `preschool` layer ontop of the `mpsz` layer.
 
 ```{r}
 plot(st_geometry(mpsz))
@@ -138,6 +140,156 @@ plot(st_geometry(preschool),
      add = TRUE)
 ```
 
-As both `preschool` and `mpsz` are in **WGS84**, the preschool points appear on the subzone map. However, the points are too dense and it is difficult to have a detailed interpretation of the exact locations within each subzone. Regardless, it provides a good overview of where preschools are generally not located, namely the industrial, protected nature areas and offshore islands.
+As both `preschool` and `mpsz` are in **WGS84**, the preschool points appear on the subzone map. However, the points are too dense and it is difficult to have a detailed interpretation of the exact locations within each subzone. Regardless, it provides a good overview of where preschools are generally not located, namely the industrial areas, nature reserves and offshore islands.
 
-## 5. Working with Projection 
+Let's now try plotting the `cyclingpath` layer ontop of the `mpsz` layer, where the former is in **SVY21** while the latter is in **WGS84**.
+
+```{r}
+plot(st_geometry(mpsz))
+plot(st_geometry(cyclingpath),
+     add = TRUE, col = "Blue")
+```
+
+Cycling path lines do not appear on the subzone layer due to the different coordinate system used. Hence, projection transformation will need to be performed in order to geoprocess these two sets of data.
+
+## 5. Working with Projection
+
+### 5.1 Transforming projection of mpsz and preschool from WGS84 to SVY21
+
+When analysis of geospatial data involves the use of distance and/or area measurement, we will need to transform data from geographic coordinate system to projected coordinate system. The transformation uses the *st_transform()* package, where the reprojection to another coordinate system is done mathematically.
+
+SVY21 is Singapore's official national horizontal geodetic datum and plane coordinate system, and is based on the WGS84 (World Geodetic System 1984) to flatten the curved surface of Earth into metric measurements. We will be referencing an EPSG code to identify specific coordinate reference system (CRS), which in the case of SVY21 is 3414.
+
+```{r}
+mpsz <- st_transform(mpsz, 
+                              crs = 3414)
+
+st_geometry(mpsz)
+```
+
+```{r}
+preschool <- st_transform(preschool, 
+                              crs = 3414)
+
+st_geometry(preschool)
+```
+
+I will also transform `cyclingpath` to the same EPSG: 3414.
+
+```{r}
+cyclingpath <- st_transform(cyclingpath, crs = 3414)
+```
+
+Projection transformation to SVY21 have been completed for `mpsz` and `preschool`, and they are now ready to be geoprocessed with `cyclingpath` and included for analysis involving distance and area measurements.
+
+```{r}
+plot(st_geometry(mpsz))
+plot(st_geometry(cyclingpath),
+     add = TRUE, col = "Blue")
+```
+
+`cyclingpath` has now successfully been layered ontop of `mpsz`, where cycling paths are shown in blue on the subzone map.
+
+## 6. Working with Aspatial Data
+
+### 6.1 Importing aspatial data
+
+When working with geospatial analysis, we may also process them with aspatial data, where it is not a geospatial data but contains x- and y- coordinates in its data field. I will be using `listings` obtained from Inside Airbnb, which contains listings of Airbnb in Singapore.
+
+Since `listings` is in a csv file format, I will use *read_csv()* from the readr package to import the data set as a tibble data frame called `airbnblistings`. I will also use Base R *list()* to preview the first 10 rows, which is similar to the use of *glimpse()*.
+
+```{r}
+airbnblistings <- read_csv("data/aspatial/listings.csv")
+
+list(airbnblistings)
+```
+
+From the output, `airbnblistings`contains 3247 rows and 19 columns. We will be focusing on the fields `latitude` and `longtitude`, which are in decimal degree format. Based on a quick Google search of the numbers, they fall within the range of WGS 84 coordinate system for Singapore, which uses a latitude range from -90° to +90° and a longitude range from -180° to +180°.
+
+### 6.2 Creating a simple data frame from an aspatial data frame
+
+I will now convert `airbnblistings` into a simple data frame using *st_as_sf()* of sf package. The argument is detailed as follows:
+
+- coords argument requires the column name of the x-coordinates (longitude) first, followed by the y-coordinates (latitude).
+- crs argument requires the coordinates system in EPSG format. EPSG: 4326 is WGS84 Geographic Coordinate System and EPSG: 3414 is Singapore's SVY21 Projected Coordinate System. Other countries' EPSG code by found on epsg.io.
+- %\>% is used to nest *st_transform()* to transform the newly created simple feature data frame into the SVY21 Projected Coordinate System.
+
+```{r}
+airbnblistings_sf <- st_as_sf(airbnblistings, 
+                       coords = c("longitude", "latitude"),
+                       crs=4326) %>%
+  st_transform(crs = 3414)
+```
+
+I will now examine the content of the newly created simple feature data frame `airbnblistings_sf` using *glimpse()*.
+
+```{r}
+glimpse(airbnblistings_sf)
+```
+
+With the transformation, notice that a new column `geometry` using projected coordinate reference system is created. You will also notice that the fields `latitude` and `longtitude` have been dropped.
+
+I will now plot `airbnblistings_sf` ontop of `mpsz` to visualise Airbnb listings in Singapore subzones.
+
+```{r}
+plot(st_geometry(mpsz))
+plot(st_geometry(airbnblistings_sf), add = TRUE)
+```
+
+## 7. Geoprocessing with sf package
+
+Besides functions to handle geospatial data, such as importing, assigning projections and transformations which were shown earlier, sf package offers a wide range of geoprocessing functions. This is also known as Geographic Information System (GIS) analysis. 
+
+### 7.1 Use Case 1: land acquisition analysis
+
+**Scenario**
+The authority is planning to upgrade the exiting cycling path. To do so, they need to acquire 5 meters of reserved land on  both sides of the existing cycling path. You are tasked to determine the extend of the land that needs to be acquired and the total area.
+
+**Solution**
+First, I will use *st_buffer* to compute the 5-meter buffer around the cycling paths. The function is used to expand or shrink vector geometries outward by a specified distance, where the width is defined by the *dist=* referencing the metrics of SVY21. *nQuadSegs* controls the smoothness of and must be an integer more than or equals to 1. Although there is no upper limit, high values may produce negligible visual improvement.
+
+```{r}
+buffer_cycling <- st_buffer(
+  cyclingpath, dist=5, nQuadSegs = 30)
+```
+
+I will now calculate the area of the buffer using tidyverse.
+
+```{r}
+buffer_cycling <- buffer_cycling %>%
+  mutate(AREA = st_area(geometry))
+```
+
+Lastly, I will use *sum()* to derive the total land needed 
+
+```{r}
+sum(buffer_cycling$AREA)
+```
+The buffer can also be plotted based on a selected planning subzone for the purpose of land acqusition planning, such as Tampines West .
+
+First, I will use *filter()* to extract the polygon feature of Tampines West.
+
+```{r}
+mpsz_selected <- mpsz %>%
+  filter(SUBZONE_N == "TAMPINES WEST")
+```
+
+Next, I will use *st_intersection()* to clip the cycling buffers within Tampines West planning subzone. 
+
+```{r}
+buffer_cycling_selected <- st_intersection(
+  buffer_cycling, mpsz_selected)
+```
+
+Lastly, I will use *plot()* to create the plot as shown below.
+
+```{r}
+plot(st_geometry(buffer_cycling_selected))
+```
+
+### 7.2 Use case 2: To determine the number of pre-schools by planning subzone
+
+**Scenario**
+The authority requires a count of pre-schools for each planning subzone to support forward planning. Using R and the sf package, perform the necessary geoprocessing to compute these counts and present the results clearly.
+
+**Solution**

@@ -2,8 +2,20 @@
 title: "About"
 ---
 
-About this site
+Welcome to Kay's Geohub. My name is Ka Ying and this is an archive of my assignments for the course ISSS626 Geospatial Analytics and Application, taken in August 2026.
+
+This course is with the Singapore Management University, under the Master of IT in Business (Data Science and Analytics).
 
 ```{r}
-1 + 1
+#| echo: false
+pacman::p_load(htmltools)
+
+tagList(
+  tags$a(href = "https://github.com/kayc134", target = "_blank",
+         class = "btn btn-outline-secondary", role = "button",
+         tags$i(class = "bi bi-github"), " GitHub"),
+  tags$a(href = "https://www.linkedin.com/in/kayingchia1345/", target = "_blank",
+         class = "btn btn-outline-secondary", role = "button",
+         tags$i(class = "bi bi-linkedin"), " LinkedIn")
+)
 ```

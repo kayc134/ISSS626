@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Hands-On Exercise 01a – Kay’s GeoHub</title>
+<title>01a: Geospatial Data Science with R – Kay’s GeoHub</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -138,11 +138,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <ul class="dropdown-menu" aria-labelledby="nav-menu-hands-on-exercise">    
         <li>
     <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex01/Hands-On_Ex01a.html">
- <span class="dropdown-text">Hands-On Exercise 01a</span></a>
+ <span class="dropdown-text">01a: Geospatial Data Science with R</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex01/Hands-On_Ex01b.html">
- <span class="dropdown-text">Hands-On Exercise 01b</span></a>
+ <span class="dropdown-text">01b: Thematic Mapping and GeoVisualisation with R</span></a>
   </li>  
         <li class="dropdown-header">Hands-On Exercise 02</li>
         <li class="dropdown-header">Hands-On Exercise 03</li>
@@ -245,7 +245,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Hands-On Exercise 01a</h1>
+<h1 class="title">01a: Geospatial Data Science with R</h1>
 </div>
 
 
@@ -262,6 +262,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
+<p>Geospatial data science is a process of importing, wrangling, integrating, and processing geographically referenced data sets. In this hands-on exercise, I will perform geospatial data science tasks in R by using sf package.</p>
 <section id="getting-started-loading-r-packages" class="level2">
 <h2 class="anchored" data-anchor-id="getting-started-loading-r-packages">1. Getting Started: Loading R Packages</h2>
 <p>Using the <em>p_load</em> function of pacman package, I will load sf and tidyverse R packages into the R environment.</p>
@@ -322,7 +323,7 @@ Geodetic CRS:  WGS 84</code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(<span class="st">"data/geospatial/preschool"</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>) <span class="co">#create folder</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">st_write</span>(preschool, <span class="st">"data/geospatial/preschool/preschool.kml"</span>, </span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">driver =</span> <span class="st">"KML"</span>, <span class="at">delete_dsn =</span> <span class="cn">FALSE</span>) <span class="co">#write files and prevent overwrite</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">driver =</span> <span class="st">"KML"</span>, <span class="at">delete_dsn =</span> <span class="cn">FALSE</span>) <span class="co">#write files in KML format and prevent overwrite</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>The message above reveals that <code>preschool</code> is a point feature data frame. There are a total of 2290 features and 2 fields. <code>preschool</code> is in <strong>WGS 84</strong>, which is the same as <code>mpsz</code>.</p>
 </section>

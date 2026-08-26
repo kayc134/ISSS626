@@ -1,6 +1,8 @@
 ---
-title: "Hands-On Exercise 01a"
+title: "01a: Geospatial Data Science with R"
 ---
+
+Geospatial data science is a process of importing, wrangling, integrating, and processing geographically referenced data sets. In this hands-on exercise, I will perform geospatial data science tasks in R by using sf package.
 
 ## 1. Getting Started: Loading R Packages
 
@@ -53,7 +55,7 @@ preschool <- st_read("data/geospatial/PreSchoolsLocation.geojson")
 dir.create("data/geospatial/preschool", recursive = TRUE, showWarnings = FALSE) #create folder
 
 st_write(preschool, "data/geospatial/preschool/preschool.kml", 
-         driver = "KML", delete_dsn = FALSE) #write files and prevent overwrite
+         driver = "KML", delete_dsn = FALSE) #write files in KML format and prevent overwrite
 ```
 
 The message above reveals that `preschool` is a point feature data frame. There are a total of 2290 features and 2 fields. `preschool` is in **WGS 84**, which is the same as `mpsz`.

@@ -42,13 +42,15 @@ dir.create("data/geospatial/mpsz", recursive = TRUE, showWarnings = FALSE) #crea
 st_write(mpsz, "data/geospatial/mpsz/MP14_SUBZONE_NO_SEA_PL.kml", 
          driver = "KML", delete_dsn = FALSE) #write files in KML format and prevent overwrite
 ```
+
 Tidying is required for KML files because their attribute data is embedded as an HTML table within a single description field, rather than being split into individual columns. The extraction step is needed to parse out values like REGION_N and SUBZONE_N into proper, usable columns. In my case, however, `mpsz` was imported from in GEOJSON format, which already provides `REGION_N`, `PLN_AREA_N`, `SUBZONE_N`, and `SUBZONE_C` as standalone columns, so this tidying step is unnecessary and can be skipped.
 
-Instead, I will examine the content of mpsz. By default, it will display only the first 10 rows. To see more or less rows, you can use the `n=` argument. 
+Instead, I will examine the content of mpsz. By default, it will display only the first 10 rows. To see more or less rows, you can use the `n=` argument.
 
 ```{r}
 mpsz
 ```
+
 ### 1.4 Importing attribute data into R
 
 I will now import the `respopagesextod2024.csv` file into RStudio and save the file into a tibble dataframe called `popdata`.
@@ -93,6 +95,7 @@ mutate(`DEPENDENCY` = (`YOUNG` + `AGED`)
        `ECONOMY ACTIVE`, `AGED`, 
        `TOTAL`, `DEPENDENCY`)
 ```
+
 Before joining the datasets, I will convert the `PA` and `SZ` fields to uppercase. Their values currently mix upper- and lowercase, whereas `SUBZONE_N` and `PLN_AREA_N` use uppercase letters.
 
 ```{r}
@@ -117,9 +120,9 @@ I will now save the R object `mpsz_pop2024` as a .rds file, so that I can reload
 write_rds(mpsz_pop2024, "data/geospatial/mpsz_pop2024.rds")
 ```
 
-## 2. Choropleth Mapping Geospatial Data Using tmap 
+## 2. Choropleth Mapping Geospatial Data Using tmap
 
-Choropleth mapping uses area patterns or graduated colors to visualise data across geographic units like countries, states or subzones. 
+Choropleth mapping uses area patterns or graduated colors to visualise data across geographic units like countries, states or subzones.
 
 In tmap, I can create thematic maps using two approaches:
 
@@ -209,7 +212,7 @@ tm_shape(mpsz_pop2024)+
 
 Choropleth maps group large datasets into distinct classes or ranges using data classification techniques.
 
-The tmap package offers ten classification methods: fixed, sd, equal, pretty (the default), quantile, kmeans, hclust, bclust, fisher and jenks. 
+The tmap package offers ten classification methods: fixed, sd, equal, pretty (the default), quantile, kmeans, hclust, bclust, fisher and jenks.
 
 The style arguments *tm_fill()* or *tm_polygons()* can be used to define a data classification method.
 
@@ -319,12 +322,12 @@ tmap_arrange(map_c2, map_c6, map_c10, map_c20, ncol = 2)
 The following were observed from the four maps:
 
 - 2 Classes: Splits everything into just "high" or "low," which is easy to read at a glance but loses the details.
-- 6 Classes: Seems to strike a balance between visual clarity and details. 
-- 10–20 Classes: The shades are become too subtle in differences, making it difficult to visually differentiate. 
+- 6 Classes: Seems to strike a balance between visual clarity and details.
+- 10–20 Classes: The shades are become too subtle in differences, making it difficult to visually differentiate.
 
 #### 2.6.4 Plotting choropleth map with custome break
 
-By default, tmap calculates category breaks automatically. To set custom intervals instead, we will need to indicate values to the breaks argument in *tm_scale_intervals()*. Before choosing custom breakpoints, it is best practice to inspect the data’s summary statistics. 
+By default, tmap calculates category breaks automatically. To set custom intervals instead, we will need to indicate values to the breaks argument in *tm_scale_intervals()*. Before choosing custom breakpoints, it is best practice to inspect the data’s summary statistics.
 
 ```{r}
 summary(mpsz_pop2024$DEPENDENCY)
@@ -584,6 +587,7 @@ tm_shape(region_selected,
   tm_shape(outlier_sf) +
   tm_borders(col = "red", lwd = 2)
 ```
+
 Without limiting the *set_zoom_limits* argument, users might have difficulty navigating the map.
 
 ```{r}

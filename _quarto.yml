@@ -9,9 +9,9 @@ website:
       - text: "Hands-On Exercise"
         menu:
         - text: "01a: Geospatial Data Science with R"
-          href: "Hands-on_Ex/Hands-on_Ex01/Hands-On_Ex01a.html"
+          href: "Hands-on_Ex/Hands-on_Ex01/Hands-On_Ex01a.qmd"
         - text: "01b: Thematic Mapping and GeoVisualisation with R"
-          href: "Hands-on_Ex/Hands-on_Ex01/Hands-On_Ex01b.html"
+          href: "Hands-on_Ex/Hands-on_Ex01/Hands-On_Ex01b.qmd"
         - text: "Hands-On Exercise 02"
         - text: "Hands-On Exercise 03"
         - text: "Hands-On Exercise 04"

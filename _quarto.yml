@@ -12,7 +12,10 @@ website:
           href: "Hands-on_Ex/Hands-on_Ex01/Hands-On_Ex01a.html"
         - text: "01b: Thematic Mapping and GeoVisualisation with R"
           href: "Hands-on_Ex/Hands-on_Ex01/Hands-On_Ex01b.html"
-        - text: "Hands-On Exercise 02"
+        - text: "02a: First Order Spatial Points Analysis Methods"
+          href: "Hands-on_Ex/Hands-on_Ex02/Hands-On_Ex02a.html"
+        - text: "02b: Second Order Spatial Points Analysis Methods"
+          href: "Hands-on_Ex/Hands-on_Ex02/Hands-On_Ex02b.html"
         - text: "Hands-On Exercise 03"
         - text: "Hands-On Exercise 04"
         - text: "Hands-On Exercise 05"
@@ -49,6 +52,12 @@ format:
       - sandstone
     css: styles.css
     toc: true
+
+execute: 
+  echo: true
+  warning: false
+  messge: false
+  freeze: auto
 
 editor: visual
 

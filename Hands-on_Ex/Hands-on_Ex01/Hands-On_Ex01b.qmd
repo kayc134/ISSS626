@@ -325,7 +325,7 @@ The following were observed from the four maps:
 - 6 Classes: Seems to strike a balance between visual clarity and details.
 - 10–20 Classes: The shades are become too subtle in differences, making it difficult to visually differentiate.
 
-#### 2.6.4 Plotting choropleth map with custome break
+#### 2.6.4 Plotting choropleth map with custom break
 
 By default, tmap calculates category breaks automatically. To set custom intervals instead, we will need to indicate values to the breaks argument in *tm_scale_intervals()*. Before choosing custom breakpoints, it is best practice to inspect the data’s summary statistics.
 

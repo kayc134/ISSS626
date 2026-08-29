@@ -1,0 +1,15 @@
+{
+  "hash": "07466ed7439962740f16997e9abf47ab",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"About\"\n---\n\nWelcome to Kay's Geohub. My name is Ka Ying and this is an archive of my assignments for the course ISSS626 Geospatial Analytics and Application, taken in August 2026.\n\nThis course is with the Singapore Management University, under the Master of IT in Business (Data Science and Analytics).\n\n\n::: {.cell}\n::: {.cell-output-display}\n\n```{=html}\n<a href=\"https://github.com/kayc134\" target=\"_blank\" class=\"btn btn-outline-secondary\" role=\"button\">\n<i class=\"bi bi-github\"></i>\n GitHub\n</a>\n<a href=\"https://www.linkedin.com/in/kayingchia1345/\" target=\"_blank\" class=\"btn btn-outline-secondary\" role=\"button\">\n<i class=\"bi bi-linkedin\"></i>\n LinkedIn\n</a>\n```\n\n:::\n:::\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

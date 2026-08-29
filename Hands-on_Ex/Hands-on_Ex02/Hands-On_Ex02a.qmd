@@ -1,0 +1,10 @@
+---
+title: "02a: First Order Spatial Points Analysis Methods"
+---
+
+::: {.callout-note} 
+## Note
+
+Testing out the callout note function.
+
+:::

@@ -366,4 +366,4 @@ ggplot(data=mpsz,
 
 ## 8. Reference
 
-Kam, T. S. Geospatial Data Science with R. R for Geospatial Data Science and Analytics. https://r4gdsa.netlify.app/chap01.html#importing-the-aspatial-data
+Kam, T. S. Geospatial Data Science with R. R for Geospatial Data Science and Analytics. https://r4gdsa.netlify.app/chap01.html

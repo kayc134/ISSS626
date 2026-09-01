@@ -619,4 +619,4 @@ tm_shape(region_selected,
 
 ## 7. Reference
 
-Kam, T. S. Thematic Mapping and GeoVisualisation with R. R for Geospatial Data Science and Analytics. https://r4gdsa.netlify.app/chap02#creating-a-choropleth-map-by-using-tmaps-elements
+Kam, T. S. Thematic Mapping and GeoVisualisation with R. R for Geospatial Data Science and Analytics. https://r4gdsa.netlify.app/chap02

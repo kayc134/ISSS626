@@ -1,10 +1,228 @@
 ---
 title: "02a: First Order Spatial Points Analysis Methods"
+author: "Chia Ka Ying"
+date: "2026-08-29"
+date-modified: "2026-09-01"
 ---
 
-::: {.callout-note} 
+Spatial Point Pattern Analysis (SPPA) is a framework for examining how locations and events are distributed across a geographic area. In practice, these points represent real-world occurrences—such as traffic accidents, crime incidents or disease outbreaks, as well as essential community infrastructure like healthcare facilities, childcare centers and local businesses.
+
+First-Order Spatial Point Pattern Analysis (1st-SPPA) focuses on point intensity and overall density across space. Rather than looking at how individual points interact with one another, first-order analysis examines how point concentration varies across different parts of a region to identifying trends or patterns in point density.
+
+1st-SPPA helps address three core questions:
+
+- Concentration: Where are events or services most heavily concentrated?
+- Variation: Is the distribution even across the area, or does it vary significantly by location?
+- Dispersion: How spread out is the overall pattern across the study region?
+
+By mapping these spatial patterns, 1st-SPPA provides an intuitive starting point for understanding community needs, evaluating accessibility and guiding resource allocation.
+
+In this assignment, I will be using 1st-SPAA to answer two questions:
+
+- Are the childcare centres in Singapore randomly distributed throughout the country?
+- If the answer is no, then where are the locations with higher concentration of childcare centres?
+
+I will be using the following two data sets for the analysis:
+
+- Child Care Services data from data.gov.sg, a point feature data providing both location and attribute information of childcare centres.
+- Master Plan 2019 Subzone Boundary (No Sea), a polygon feature data providing information of URA's 2019 Master Plan's planning subzone boundary data.
+
+::: callout-note
 ## Note
 
-Testing out the callout note function.
+As both data sets are available only in GEOJSON format on data.gov.sg, I will be using this format instead of KML.
+:::
 
+##1. Importing and Wrangling Geospatial Data Sets
+
+I will first install the relevant R packages.
+
+```{r}
+pacman::p_load(sf, terra, spatstat, 
+               tmap, rvest, tidyverse)
+```
+
+I will next import the `MasterPlan2019SubzoneBoundaryNoSea` GEOJSON file as `mpsz_sf`and transform the EPSG to 3414.
+
+::: callout-note
+## Note
+
+I did not build a function called *extract_kml_field* for extracting *REGION_N*, *PLN_AREA_N*, *SUBZONE_N* and *SUBZONE_C* as guided in the hands-on exercise, as this workflow is relevant only if the attribute fields are embedded in a single *Description* column.
+
+Instead, upon inspecting the GeoJSON file, the four fields already exist as individual columns. I instead read the file directly using *st_read()* and kept the filtering to create `mpsz_cl`.
+:::
+
+```{r}
+mpsz_sf <- st_read("data/MasterPlan2019SubzoneBoundaryNoSea.geojson") %>%
+  st_zm(drop = TRUE, what = "ZM") %>%
+  st_transform(crs = 3414) %>%
+  select(REGION_N, PLN_AREA_N, SUBZONE_N, SUBZONE_C)
+```
+
+```{r}
+mpsz_cl <- mpsz_sf %>%
+  filter(SUBZONE_N != "SOUTHERN GROUP",
+         PLN_AREA_N != "WESTERN ISLANDS",
+         PLN_AREA_N != "NORTH-EASTERN ISLANDS") %>%
+  filter(!st_is_empty(.)) %>%
+  st_make_valid()
+
+write_rds(mpsz_cl, "data/mpsz_cl.rds")
+```
+
+I will now import the Childcare Service GeoJSON file as an sf data frame called childcare_sf and transform the EPSG to 3414.
+
+```{r}
+childcare_sf <- st_read("data/ChildCareServices.geojson")%>%
+  st_transform(crs = 3414)
+```
+
+##2. Mapping the Geospatial Data Sets
+
+After checking the reference system of the two geospatial data sets, I will plot them to observe their spatial patterns and ensure that the CRS matches, considering that the EPSG were both transformed earlier.
+
+```{r}
+tm_shape(mpsz_cl) +
+  tm_polygons() +
+tm_shape(childcare_sf) +
+  tm_dots()
+```
+
+The map can also be made interactive to allow users to zoom in and out to better observe the where the Childcare Centres are plotted.
+
+```{r}
+tmap_mode('view')
+tm_shape(childcare_sf)+
+  tm_dots()
+```
+
+::: callout-note
+## Note
+
+As each interactive mode consumes a connection, I will switch back to plot mode to avoid displaying an excessive number of interactive maps.
+:::
+
+```{r}
+tmap_mode('plot')
+```
+
+##3. Geospatial Data Wrangling
+
+This section demonstrates how to transform sf point and polygon data frames using *as.ppp()* and *as.owin()*, preparing them for 1st- and 2nd-order spatial point pattern methods such as Kernel Density Estimation and nearest neighbor tests.
+
+::: callout-note
+## Note
+
+Before performing spatial point pattern analysis in R, standard simple feature (sf) objects must be converted into data structures recognised by the spatstat package. Specifically, spatstat requires point events to be formatted as ppp (Planar Point Pattern) objects and the surrounding study region to be formatted as an owin (Observation Window) object.
+:::
+
+###3.1 Converting sf data frames to ppp class
+
+spatstat requires the point event data in ppp object form. I will now be converting `childcare_sf` to a ppp format `childcare_ppp`.
+
+```{r}
+childcare_ppp <- as.ppp(childcare_sf)
+```
+
+I will next use *class()* of Base R to verify the object class of `childcare_ppp`.
+
+```{r}
+class(childcare_ppp)
+```
+
+The output shows that it is in ppp class. We will now review the summary statistics of the newly converted ppp object.
+
+```{r}
+summary(childcare_ppp)
+```
+
+###3.2 Creating owin object
+
+It is a good practice to confine the analysis within a geographical area when analysing spatial point patterns, e.g., within Singapore's boundary. In spatstat, an object called owin is specially designed to represent this polygonal region.
+
+I will be using *as.own()* to convert `mpsz_sf` into an owin object of spatstat, and checking the class.
+
+```{r}
+sg_owin <- as.owin(mpsz_cl)
+```
+
+```{r}
+class(sg_owin)
+```
+
+The output shows that the class is indeed owin. I will now display the `sg_owin` object using the *plot()* function.
+
+```{r}
+plot(sg_owin)
+```
+
+### 3.3 Combining point events object and owin object
+
+For the last step of geospatial data wrangling, I will extract childcare events located in Singapore. I will also check the output of the point and polygon feature combined in one ppp object class.
+
+```{r}
+childcareSG_ppp = childcare_ppp[sg_owin]
+```
+
+```{r}
+childcareSG_ppp
+```
+
+::: callout-note
+## Note
+
+The "Mark variables" is different from the hands-on exercise guide, which uses a KML that exposes only the generic *Name* and *Description* fields. This does not affect subsequent analysis, as functions like kernel density estimation and CSR tests use only point coordinates and the observation window, not the marks. The "window" and "enclosing rectangle" values confirm that the underlying spatial data is identical.
+:::
+
+##4. Clark-Evan Test for Nearest Neighbour Analysis
+
+This section introduces the Clark-Evans test of aggregation to evaluate whether childcare services in Singapore follow a specific spatial pattern or are distributed purely by chance. As a key method in Nearest Neighbor Analysis (NNA), the Clark-Evans test measures the mean distance between each point feature and its nearest neighbour, summarising the pattern through the Clark-Evans aggregation index (R).
+
+To test for spatial randomness, we evaluate the following two hypotheses at a 95% confidence level:
+
+- Ho = The distribution of childcare services are randomly distributed.
+
+- H1 = The distribution of childcare services are not randomly distributed.
+
+By executing *clarkevans.test()* from the spatstat.explore package, we can formally quantify the spatial structure of these services to determine if they tend to group together in specific areas or spread out evenly across the country.
+
+###4.1 Perform the Clark-Evans test without CSR
+
+The *clarkevans.test()* of spatstat.explore package can be performed with or without CSR. I will now do so without CSR.
+
+```{r}
+clarkevans.test(childcareSG_ppp,
+                correction="none",
+                clipregion="sg_owin",
+                alternative=c("clustered"))
+```
+
+::: {.callout-tip style="color: green;"}
+## Statistical Conclusion
+
+At a 95% confidence level, the Clark-Evans test gives a result of Clark-Evans aggregation index of R = 0.53532 and a p-value \<2.2e-16. Because the p-value is well below the significance threshold of 0.05, we reject the null hypothesis.
+
+The value of R indicates the underlying spatial structure of the point data:
+
+- R = 1: The spatial distribution is completely random.
+- R \< 1: The spatial distribution exhibits clustering (points are closer to each other than expected by chance).
+- R = 0: Indicates complete clustering (all points at the exact same location).
+- R \> 1: The spatial distribution exhibits dispersion or regularity (points are spread out uniformly).
+
+Thus, with R \< 1, we can conclude that the spatial distribution of childcare services across Singapore exhibits statistically significant spatial clustering rather than a random distribution.
+:::
+
+::: {.callout-tip style="color: red"}
+## Business Communication
+
+At a 95% confidence level, the Clark-Evans test gives a result of Clark-Evans aggregation index of R = 0.53532 and a p-value \<2.2e-16. Because the p-value is well below the significance threshold of 0.05, we reject the null hypothesis.
+
+The value of R indicates the underlying spatial structure of the point data:
+
+- R = 1: The spatial distribution is completely random.
+- R \< 1: The spatial distribution exhibits clustering (points are closer to each other than expected by chance).
+- R = 0: Indicates complete clustering (all points at the exact same location).
+- R \> 1: The spatial distribution exhibits dispersion or regularity (points are spread out uniformly).
+
+Thus, with R \< 1, we can conclude that the spatial distribution of childcare services across Singapore exhibits statistically significant spatial clustering rather than a random distribution.
 :::

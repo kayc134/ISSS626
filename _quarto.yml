@@ -56,7 +56,7 @@ format:
 execute: 
   echo: true
   warning: false
-  messge: false
+  message: false
   freeze: auto
 
 editor: visual

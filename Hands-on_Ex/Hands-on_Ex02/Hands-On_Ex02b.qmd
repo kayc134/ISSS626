@@ -1,0 +1,118 @@
+---
+title: "02B: Second Order Spatial Points Analysis Methods"
+author: "Chia Ka Ying"
+date: "2026-09-01"
+date-modified: "2026-09-02"
+---
+
+Second-order spatial point pattern analysis offers a framework for investigating inter-point spatial dependencies, extending beyond first-order intensity metrics to identify processes of spatial clustering, dispersion or complete spatial randomness (CSR). Utilising the spatstat package in R, this exercise will analyse the spatial point processes of childcare center in Singapore.
+
+In this assignment, I will be using 2nd-SPAA to answer two questions:
+
+- Are the childcare centres in Singapore randomly distributed throughout the country?
+- If the answer is no, then where are the locations with higher concentration of childcare centres?
+
+Similar to exercise 02A, I will be using the following two data sets:
+
+- Child Care Services data from data.gov.sg, a point feature data providing both location and attribute information of childcare centres.
+- Master Plan 2019 Subzone Boundary (No Sea), a polygon feature data providing information of URA's 2019 Master Plan's planning subzone boundary data.
+
+## 1. Importing and Wrangling Geospatial Data Sets
+
+I will first install the relevant R packages.
+
+```{r}
+pacman::p_load(sf, spatstat, tmap, tidyverse)
+```
+
+I will next import the `MasterPlan2019SubzoneBoundaryNoSea` GEOJSON file as `mpsz_sf`and transform the EPSG to 3414.
+
+```{r}
+mpsz_sf <- st_read("data/MasterPlan2019SubzoneBoundaryNoSea.geojson") %>%
+  st_zm(drop = TRUE, what = "ZM") %>%
+  st_transform(crs = 3414) %>%
+  select(REGION_N, PLN_AREA_N, SUBZONE_N, SUBZONE_C)
+```
+
+```{r}
+mpsz_cl <- mpsz_sf %>%
+  filter(SUBZONE_N != "SOUTHERN GROUP",
+         PLN_AREA_N != "WESTERN ISLANDS",
+         PLN_AREA_N != "NORTH-EASTERN ISLANDS") %>%
+  filter(!st_is_empty(.)) %>%
+  st_make_valid()
+
+write_rds(mpsz_cl, "data/mpsz_cl.rds")
+```
+
+I will now import the Childcare Service GeoJSON file as an sf data frame called childcare_sf and transform the EPSG to 3414.
+
+```{r}
+childcare_sf <- st_read("data/ChildCareServices.geojson")%>%
+  st_transform(crs = 3414)
+```
+
+spatstat requires the point event data in ppp object form. I will now be converting `childcare_sf` to a ppp format `childcare_ppp`.
+
+```{r}
+childcare_ppp <- as.ppp(childcare_sf)
+```
+
+I will extract the target planning areas, i.e., Punggol, Tampines Chua Chu Kand and Jurong West.
+
+```{r}
+pg <- mpsz_cl %>%
+  filter(PLN_AREA_N == "PUNGGOL")
+tm <- mpsz_cl %>%
+  filter(PLN_AREA_N == "TAMPINES")
+ck <- mpsz_cl %>%
+  filter(PLN_AREA_N == "CHOA CHU KANG")
+jw <- mpsz_cl %>%
+  filter(PLN_AREA_N == "JURONG WEST")
+```
+
+Next, I will convert these sf objects into owin objects that is required by spatstat and combine the point events objects and owin objects.
+
+```{r}
+pg_owin = as.owin(pg)
+tm_owin = as.owin(tm)
+ck_owin = as.owin(ck)
+jw_owin = as.owin(jw)
+```
+
+```{r}
+childcare_pg_ppp = childcare_ppp[pg_owin]
+childcare_tm_ppp = childcare_ppp[tm_owin]
+childcare_ck_ppp = childcare_ppp[ck_owin]
+childcare_jw_ppp = childcare_ppp[jw_owin]
+```
+
+Next, *rescale.ppp()* function is used to transform the unit of measurement from meter to kilometer.
+
+```{r}
+childcare_pg_ppp.km = rescale.ppp(childcare_pg_ppp, 1000, "km")
+childcare_tm_ppp.km = rescale.ppp(childcare_tm_ppp, 1000, "km")
+childcare_ck_ppp.km = rescale.ppp(childcare_ck_ppp, 1000, "km")
+childcare_jw_ppp.km = rescale.ppp(childcare_jw_ppp, 1000, "km")
+```
+
+I will now plot these four areas and the locations of the childcare centres.
+
+```{r}
+par(mfrow=c(2,2))
+plot(unmark(childcare_pg_ppp.km), 
+  main="Punggol")
+plot(unmark(childcare_tm_ppp.km), 
+  main="Tampines")
+plot(unmark(childcare_ck_ppp.km), 
+  main="Choa Chu Kang")
+plot(unmark(childcare_jw_ppp.km), 
+  main="Jurong West")
+```
+
+## 2. Second-Order Spatial Point Patterns Analysis
+
+### 2.1 Analysing Spatial Point Process Using G-Function
+
+The G function measures the distribution of the distances from an arbitrary event to its nearest event. In this section, I will compute G-function estimation by using *Gest()* of spatstat package. I will also be performing the Monte Carlo simulation test using *envelope()* of spatstat package.
+

@@ -141,7 +141,6 @@ plot(G_CK, xlim=c(0,500))
 ## Note
 
 The black line rises rapidly at a short distance and is mostly above the red line (Poisson process), thus suggesting a clustered pattern.
-
 :::
 
 To confirm the observed spatial patterns above, I will conduct a hypothesis test using the Monte Carlo simulation. The hypothesis and test are as follows:
@@ -163,10 +162,9 @@ plot(G_CK.csr)
 ::: callout-note
 ## Note
 
-Although the black line rises rapidly and lies above the grey shaded envelope at a short distance of < 50 meters, it remains within the envelope at longer distances. 
+Although the black line rises rapidly and lies above the grey shaded envelope at a short distance of \< 50 meters, it remains within the envelope at longer distances.
 
 We fail to reject the null hypothesis as the distribution of nearest-neighbor distances does not show statistically significant deviation from CRS.
-
 :::
 
 #### 2.1.2 Tampines planning area
@@ -180,7 +178,6 @@ plot(G_tm)
 ## Note
 
 The black line rises rapidly at a short distance and is entirely above the red line (Poisson process), thus suggesting a clustered pattern.
-
 :::
 
 To confirm the observed spatial patterns above, I will conduct a hypothesis test using the Monte Carlo simulation. The hypothesis and test are as follows:
@@ -200,10 +197,9 @@ plot(G_tm.csr)
 ::: callout-note
 ## Note
 
-Although the black line rises rapidly and lies above the grey shaded envelope at a short distance of slight above 50 meters, it then threads in and out of the top of the envelope for the remaining distances. 
+Although the black line rises rapidly and lies above the grey shaded envelope at a short distance of slight above 50 meters, it then threads in and out of the top of the envelope for the remaining distances.
 
 We fail to reject the null hypothesis as the distribution of nearest-neighbor distances does not show statistically significant deviation from CSR
-
 :::
 
 ### 2.2 Analysing Spatial Point Process Using F Function
@@ -231,18 +227,15 @@ The exercise guide uses the *correction = "best"* argument for 2.2.2 but not 2.2
 
 **F_CK**
 
-Red line: Theoretical function (Poisson reference)
-Black line: Observed data
+Red line: Theoretical function (Poisson reference) Black line: Observed data
 
 The black line stays close to and below the blue line at distances above 50 meters, suggesting clustering.
 
 **F_CK_best**
 
-Blue line: Theoretical function (Poisson reference)
-Black line: Observed data
+Blue line: Theoretical function (Poisson reference) Black line: Observed data
 
 Similar to F_CK, the black line stays close to and below the red line at distances above 50 meters, suggesting clustering.
-
 :::
 
 To confirm the observed spatial patterns above, I will conduct a hypothesis test using the Monte Carlo simulation. The hypothesis and test are as follows:
@@ -262,10 +255,9 @@ plot(F_CK.csr)
 ::: callout-note
 ## Note
 
-The black line falls entirely within the simulated envelope, meaning there is no statistically significant departure from CSR. 
+The black line falls entirely within the simulated envelope, meaning there is no statistically significant departure from CSR.
 
 We fail to reject the null hypothesis at the alpha value of 0.001.
-
 :::
 
 #### 2.2.2 Tampines planning area
@@ -283,24 +275,21 @@ plot(F_tm_best)
 ::: callout-note
 ## Note
 
-The F function is plotted with and without the *correction = "best"* argument as F_tm and F_tm_best. 
+The F function is plotted with and without the *correction = "best"* argument as F_tm and F_tm_best.
 
 The exercise guide uses the *correction = "best"* argument for 2.2.2 but not 2.2.1. However, I will plot F(r) with and without the argument to analyse them.
 
 **F_tm**
 
-Red line: Theoretical function (Poisson reference)
-Black line: Observed data
+Red line: Theoretical function (Poisson reference) Black line: Observed data
 
 The black line stays well below the blue line, suggesting clustering.
 
 **F_tm_best**
 
-Blue line: Theoretical function (Poisson reference)
-Black line: Observed data
+Blue line: Theoretical function (Poisson reference) Black line: Observed data
 
 Similar to F_tm, the black line stays below the red line, especially just before 200 meters, suggesting clustering.
-
 :::
 
 To confirm the observed spatial patterns above, I will conduct a hypothesis test using the Monte Carlo simulation. The hypothesis and test are as follows:
@@ -320,15 +309,14 @@ plot(F_tm.csr)
 ::: callout-note
 ## Note
 
-The black line falls below the simulated envelope slightly after 200 meters, suggesting statistically significant departure from CSR and indicates clustering. 
+The black line falls below the simulated envelope slightly after 200 meters, suggesting statistically significant departure from CSR and indicates clustering.
 
 We will reject the null hypothesis at the alpha value of 0.001.
-
 :::
 
 ### 2.3 Analysing Spatial Point Process Using K Function
 
-K function measures the number of events found up to a given distance of any particular event. In this section, I will compute K-function estimates by using *Kest()* of spatstat package. 
+K function measures the number of events found up to a given distance of any particular event. In this section, I will compute K-function estimates by using *Kest()* of spatstat package.
 
 #### 2.3.1 Choa Chu Kang planning area
 
@@ -341,7 +329,6 @@ plot(K_ck, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
 ## Note
 
 The black line stays above the red line throughout, suggesting clustering.
-
 :::
 
 To confirm the observed spatial patterns above, I will conduct a hypothesis test using the Monte Carlo simulation. The hypothesis and test are as follows:
@@ -363,10 +350,9 @@ plot(K_ck.csr, . - r ~ r, xlab="d", ylab="K(d)-r")
 
 Unlike the earlier G and F function tests, the K function tests has a *glocal=TRUE* argument. This evaluates whether the observed spatial point pattern deviates from the simulation globally across all distance values (r) while tracking local significance.
 
-The black observed line borders at the top of the grey envelop while not fully lying outside, meaning there is no statistically significant departure from CSR. 
+The black observed line borders at the top of the grey envelop while not fully lying outside, meaning there is no statistically significant departure from CSR.
 
 We fail to reject the null hypothesis at the alpha value of 0.001.
-
 :::
 
 #### 2.3.2 Tampines planning area
@@ -382,7 +368,6 @@ plot(K_tm, . -r ~ r,
 ## Note
 
 The black line stays above the red line throughout, suggesting clustering.
-
 :::
 
 To confirm the observed spatial patterns above, I will conduct a hypothesis test using the Monte Carlo simulation. The hypothesis and test are as follows:
@@ -403,7 +388,7 @@ plot(K_tm.csr, . - r ~ r,
 ::: callout-note
 ## Note
 
-The black line lies above the simulated envelope throughout, suggesting statistically significant departure from CSR and indicates clustering. 
+The black line lies above the simulated envelope throughout, suggesting statistically significant departure from CSR and indicates clustering.
 
 We will reject the null hypothesis at the alpha value of 0.001.
 :::
@@ -426,7 +411,6 @@ plot(L_ck, . -r ~ r,
 By plotting L(r) - r against r, we will have the Poisson red line centred at zero and the data line is jagged. As the data line is above the red line, it suggests clustering.
 
 Similar to the K function tests, the *glocal=TRUE* argument is used for L function tests.
-
 :::
 
 To confirm the observed spatial patterns above, I will conduct a hypothesis test using the Monte Carlo simulation. The hypothesis and test are as follows:
@@ -446,7 +430,7 @@ plot(L_ck.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
 ::: callout-note
 ## Note
 
-The black line is above the grey envelop most of the time, suggesting statistically significant departure from CSR and indicates clustering. 
+The black line is above the grey envelop most of the time, suggesting statistically significant departure from CSR and indicates clustering.
 
 We will reject the null hypothesis at the alpha value of 0.001.
 :::
@@ -464,7 +448,6 @@ plot(L_tm, . -r ~ r,
 ## Note
 
 By plotting L(r) - r against r, we will have the Poisson red line centred at zero and the data line is jagged. As the data line is above the red line, it suggests clustering.
-
 :::
 
 To confirm the observed spatial patterns above, I will conduct a hypothesis test using the Monte Carlo simulation. The hypothesis and test are as follows:
@@ -485,7 +468,7 @@ plot(L_tm.csr, . - r ~ r,
 ::: callout-note
 ## Note
 
-The black line is entirely above the grey envelop, suggesting statistically significant departure from CSR and indicates clustering. 
+The black line is entirely above the grey envelop, suggesting statistically significant departure from CSR and indicates clustering.
 
 We will reject the null hypothesis at the alpha value of 0.001.
 :::
@@ -493,4 +476,5 @@ We will reject the null hypothesis at the alpha value of 0.001.
 ## 3. Reference
 
 Kam, T. S. 2nd Order Spatial Point Patterns Analysis Methods. R for Geospatial Data Science and Analytics. https://r4gdsa.netlify.app/chap05.html
-Oshan, T. M. (2025). Monte Carlo Simulation.  The Geographic Information Science & Technology Body of Knowledge (2025 Version), John P. Wilson (Ed.). DOI: 10.22224/gistbok/2025.1.26 
+
+Oshan, T. M. (2025). Monte Carlo Simulation. The Geographic Information Science & Technology Body of Knowledge (2025 Version), John P. Wilson (Ed.). DOI: 10.22224/gistbok/2025.1.26

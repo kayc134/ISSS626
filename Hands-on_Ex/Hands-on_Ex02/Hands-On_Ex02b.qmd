@@ -225,7 +225,7 @@ plot(F_CK_best)
 ::: callout-note
 ## Note
 
-The F function is plotted with and without the *correction = "best"* argument as F_CK and F_CK_best. This argument for edge correction is optional in estimating F(r) and includes "none", "rs", "km", "cs" and "best". Alternatively *correction ="all"* selects all options.
+The F function is plotted with and without the *correction = "best"* argument as F_CK and F_CK_best. This argument for edge correction is optional in estimating F(r) and includes "Ripley", "border" and "best". Alternatively, there is also *correction ="all"*, which selects all options.
 
 The exercise guide uses the *correction = "best"* argument for 2.2.2 but not 2.2.1. However, I will plot F(r) with and without the argument to analyse them.
 
@@ -492,4 +492,5 @@ We will reject the null hypothesis at the alpha value of 0.001.
 
 ## 3. Reference
 
-Kam, T. S. 2nd Order Spatial Point Patterns Analysis Methods. R for Geospatial Data Science and Analytics. https://r4gdsa.netlify.app/chap05.html 
+Kam, T. S. 2nd Order Spatial Point Patterns Analysis Methods. R for Geospatial Data Science and Analytics. https://r4gdsa.netlify.app/chap05.html
+Oshan, T. M. (2025). Monte Carlo Simulation.  The Geographic Information Science & Technology Body of Knowledge (2025 Version), John P. Wilson (Ed.). DOI: 10.22224/gistbok/2025.1.26 

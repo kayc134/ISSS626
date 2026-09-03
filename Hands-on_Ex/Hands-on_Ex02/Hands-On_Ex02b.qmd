@@ -58,7 +58,7 @@ spatstat requires the point event data in ppp object form. I will now be convert
 childcare_ppp <- as.ppp(childcare_sf)
 ```
 
-I will extract the target planning areas, i.e., Punggol, Tampines Chua Chu Kand and Jurong West.
+I will extract the target planning areas, i.e., Punggol, Tampines Chua Chu Kang and Jurong West.
 
 ```{r}
 pg <- mpsz_cl %>%
@@ -112,7 +112,384 @@ plot(unmark(childcare_jw_ppp.km),
 
 ## 2. Second-Order Spatial Point Patterns Analysis
 
-### 2.1 Analysing Spatial Point Process Using G-Function
+### 2.1 Analysing Spatial Point Process Using G Function
 
 The G function measures the distribution of the distances from an arbitrary event to its nearest event. In this section, I will compute G-function estimation by using *Gest()* of spatstat package. I will also be performing the Monte Carlo simulation test using *envelope()* of spatstat package.
 
+::: callout-note
+## Note
+
+The G function is cumulative and increases as the distance increases. We can obtain information on point pattern clusters based on the shape of the G function, i.e., G function increases rapidly at short distances for clustered points, and increases slowly up to the distance which most points are spaced before increasing rapidly if points are dispersed.
+
+Monte Carlo Simulation (MCS) is a computational technique that uses random sampling and probability distributions to model complex systems under uncertainty ([Oshan, 2025](https://gistbok-ltb.ucgis.org/page/current/concept/AM-09-105)).
+
+In urban planning, MCS serves as a critical tool for modeling spatial point patterns, land-use dynamics, and service demand under shifting socio-demographic conditions ([Oshan, 2025](https://gistbok-ltb.ucgis.org/page/current/concept/AM-09-105)). When applied to the distribution of childcare centres in Singapore, MCS allows planners to test for CSR and run simulation models in a location. Through this, we can determine whether clusters or gaps are significant events or random, leading to more robust facility planning.
+:::
+
+#### 2.1.1 Choa Chu Kang planning area
+
+```{r}
+set.seed(1234)
+```
+
+```{r}
+G_CK = Gest(childcare_ck_ppp, correction = "border")
+plot(G_CK, xlim=c(0,500))
+```
+
+::: callout-note
+## Note
+
+The black line rises rapidly at a short distance and is mostly above the red line (Poisson process), thus suggesting a clustered pattern.
+
+:::
+
+To confirm the observed spatial patterns above, I will conduct a hypothesis test using the Monte Carlo simulation. The hypothesis and test are as follows:
+
+Ho = The distribution of childcare services at Choa Chu Kang are randomly distributed.
+
+H1= The distribution of childcare services at Choa Chu Kang are not randomly distributed.
+
+The null hypothesis will be rejected if p-value is smaller than the alpha value of 0.001.
+
+```{r}
+G_CK.csr <- envelope(childcare_ck_ppp, Gest, nsim = 999)
+```
+
+```{r}
+plot(G_CK.csr)
+```
+
+::: callout-note
+## Note
+
+Although the black line rises rapidly and lies above the grey shaded envelope at a short distance of < 50 meters, it remains within the envelope at longer distances. 
+
+We fail to reject the null hypothesis as the distribution of nearest-neighbor distances does not show statistically significant deviation from CRS.
+
+:::
+
+#### 2.1.2 Tampines planning area
+
+```{r}
+G_tm = Gest(childcare_tm_ppp, correction = "best")
+plot(G_tm)
+```
+
+::: callout-note
+## Note
+
+The black line rises rapidly at a short distance and is entirely above the red line (Poisson process), thus suggesting a clustered pattern.
+
+:::
+
+To confirm the observed spatial patterns above, I will conduct a hypothesis test using the Monte Carlo simulation. The hypothesis and test are as follows:
+
+Ho = The distribution of childcare services at Tampines are randomly distributed.
+
+H1= The distribution of childcare services at Tampines are not randomly distributed.
+
+```{r}
+G_tm.csr <- envelope(childcare_tm_ppp, Gest, correction = "all", nsim = 999)
+```
+
+```{r}
+plot(G_tm.csr)
+```
+
+::: callout-note
+## Note
+
+Although the black line rises rapidly and lies above the grey shaded envelope at a short distance of slight above 50 meters, it then threads in and out of the top of the envelope for the remaining distances. 
+
+We fail to reject the null hypothesis as the distribution of nearest-neighbor distances does not show statistically significant deviation from CSR
+
+:::
+
+### 2.2 Analysing Spatial Point Process Using F Function
+
+The F function estimates the empty space function F(r) or its hazard rate h(r) from a point pattern in a window of arbitrary shape. In this section, I will compute the F function estimation by using *Fest()* of spatstat package. I will also be performing the Monte Carlo simulation test using *envelope()* of spatstat package.
+
+#### 2.2.1. Choa Chu Kang planning area
+
+```{r}
+F_CK = Fest(childcare_ck_ppp)
+plot(F_CK)
+```
+
+```{r}
+F_CK_best = Fest(childcare_ck_ppp, correction = "best")
+plot(F_CK_best)
+```
+
+::: callout-note
+## Note
+
+The F function is plotted with and without the *correction = "best"* argument as F_CK and F_CK_best. This argument for edge correction is optional in estimating F(r) and includes "none", "rs", "km", "cs" and "best". Alternatively *correction ="all"* selects all options.
+
+The exercise guide uses the *correction = "best"* argument for 2.2.2 but not 2.2.1. However, I will plot F(r) with and without the argument to analyse them.
+
+**F_CK**
+
+Red line: Theoretical function (Poisson reference)
+Black line: Observed data
+
+The black line stays close to and below the blue line at distances above 50 meters, suggesting clustering.
+
+**F_CK_best**
+
+Blue line: Theoretical function (Poisson reference)
+Black line: Observed data
+
+Similar to F_CK, the black line stays close to and below the red line at distances above 50 meters, suggesting clustering.
+
+:::
+
+To confirm the observed spatial patterns above, I will conduct a hypothesis test using the Monte Carlo simulation. The hypothesis and test are as follows:
+
+Ho = The distribution of childcare services at Choa Chu Kang are randomly distributed.
+
+H1= The distribution of childcare services at Choa Chu Kang are not randomly distributed.
+
+```{r}
+F_CK.csr <- envelope(childcare_ck_ppp, Fest, nsim = 999)
+```
+
+```{r}
+plot(F_CK.csr)
+```
+
+::: callout-note
+## Note
+
+The black line falls entirely within the simulated envelope, meaning there is no statistically significant departure from CSR. 
+
+We fail to reject the null hypothesis at the alpha value of 0.001.
+
+:::
+
+#### 2.2.2 Tampines planning area
+
+```{r}
+F_tm = Fest(childcare_tm_ppp)
+plot(F_tm)
+```
+
+```{r}
+F_tm_best = Fest(childcare_tm_ppp, correction = "best")
+plot(F_tm_best)
+```
+
+::: callout-note
+## Note
+
+The F function is plotted with and without the *correction = "best"* argument as F_tm and F_tm_best. 
+
+The exercise guide uses the *correction = "best"* argument for 2.2.2 but not 2.2.1. However, I will plot F(r) with and without the argument to analyse them.
+
+**F_tm**
+
+Red line: Theoretical function (Poisson reference)
+Black line: Observed data
+
+The black line stays well below the blue line, suggesting clustering.
+
+**F_tm_best**
+
+Blue line: Theoretical function (Poisson reference)
+Black line: Observed data
+
+Similar to F_tm, the black line stays below the red line, especially just before 200 meters, suggesting clustering.
+
+:::
+
+To confirm the observed spatial patterns above, I will conduct a hypothesis test using the Monte Carlo simulation. The hypothesis and test are as follows:
+
+Ho = The distribution of childcare services at Tampines are randomly distributed.
+
+H1= The distribution of childcare services at Tampines are not randomly distributed.
+
+```{r}
+F_tm.csr <- envelope(childcare_tm_ppp, Fest, correction = "all", nsim = 999)
+```
+
+```{r}
+plot(F_tm.csr)
+```
+
+::: callout-note
+## Note
+
+The black line falls below the simulated envelope slightly after 200 meters, suggesting statistically significant departure from CSR and indicates clustering. 
+
+We will reject the null hypothesis at the alpha value of 0.001.
+
+:::
+
+### 2.3 Analysing Spatial Point Process Using K Function
+
+K function measures the number of events found up to a given distance of any particular event. In this section, I will compute K-function estimates by using *Kest()* of spatstat package. 
+
+#### 2.3.1 Choa Chu Kang planning area
+
+```{r}
+K_ck = Kest(childcare_ck_ppp, correction = "Ripley")
+plot(K_ck, . -r ~ r, ylab= "K(d)-r", xlab = "d(m)")
+```
+
+::: callout-note
+## Note
+
+The black line stays above the red line throughout, suggesting clustering.
+
+:::
+
+To confirm the observed spatial patterns above, I will conduct a hypothesis test using the Monte Carlo simulation. The hypothesis and test are as follows:
+
+Ho = The distribution of childcare services at Choa Chu Kang are randomly distributed.
+
+H1= The distribution of childcare services at Choa Chu Kang are not randomly distributed.
+
+```{r}
+K_ck.csr <- envelope(childcare_ck_ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)
+```
+
+```{r}
+plot(K_ck.csr, . - r ~ r, xlab="d", ylab="K(d)-r")
+```
+
+::: callout-note
+## Note
+
+Unlike the earlier G and F function tests, the K function tests has a *glocal=TRUE* argument. This evaluates whether the observed spatial point pattern deviates from the simulation globally across all distance values (r) while tracking local significance.
+
+The black observed line borders at the top of the grey envelop while not fully lying outside, meaning there is no statistically significant departure from CSR. 
+
+We fail to reject the null hypothesis at the alpha value of 0.001.
+
+:::
+
+#### 2.3.2 Tampines planning area
+
+```{r}
+K_tm = Kest(childcare_tm_ppp, correction = "Ripley")
+plot(K_tm, . -r ~ r, 
+     ylab= "K(d)-r", xlab = "d(m)", 
+     xlim=c(0,1000))
+```
+
+::: callout-note
+## Note
+
+The black line stays above the red line throughout, suggesting clustering.
+
+:::
+
+To confirm the observed spatial patterns above, I will conduct a hypothesis test using the Monte Carlo simulation. The hypothesis and test are as follows:
+
+Ho = The distribution of childcare services at Tampines are randomly distributed.
+
+H1= The distribution of childcare services at Tampines are not randomly distributed.
+
+```{r}
+K_tm.csr <- envelope(childcare_tm_ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)
+```
+
+```{r}
+plot(K_tm.csr, . - r ~ r, 
+     xlab="d", ylab="K(d)-r", xlim=c(0,500))
+```
+
+::: callout-note
+## Note
+
+The black line lies above the simulated envelope throughout, suggesting statistically significant departure from CSR and indicates clustering. 
+
+We will reject the null hypothesis at the alpha value of 0.001.
+:::
+
+### 2.4 Analysing Spatial Point Process Using L Function
+
+L function normalises the K function through a square-root transformation, making it easier to interpret visually. I will be using *Lest()* of spatstat package.
+
+#### 2.4.1 Choa Chu Kang planning area
+
+```{r}
+L_ck = Lest(childcare_ck_ppp, correction = "Ripley")
+plot(L_ck, . -r ~ r, 
+     ylab= "L(d)-r", xlab = "d(m)")
+```
+
+::: callout-note
+## Note
+
+By plotting L(r) - r against r, we will have the Poisson red line centred at zero and the data line is jagged. As the data line is above the red line, it suggests clustering.
+
+Similar to the K function tests, the *glocal=TRUE* argument is used for L function tests.
+
+:::
+
+To confirm the observed spatial patterns above, I will conduct a hypothesis test using the Monte Carlo simulation. The hypothesis and test are as follows:
+
+Ho = The distribution of childcare services at Choa Chu Kang are randomly distributed.
+
+H1= The distribution of childcare services at Choa Chu Kang are not randomly distributed.
+
+```{r}
+L_ck.csr <- envelope(childcare_ck_ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)
+```
+
+```{r}
+plot(L_ck.csr, . - r ~ r, xlab="d", ylab="L(d)-r")
+```
+
+::: callout-note
+## Note
+
+The black line is above the grey envelop most of the time, suggesting statistically significant departure from CSR and indicates clustering. 
+
+We will reject the null hypothesis at the alpha value of 0.001.
+:::
+
+#### 2.4.2 Tampines planning area
+
+```{r}
+L_tm = Lest(childcare_tm_ppp, correction = "Ripley")
+plot(L_tm, . -r ~ r, 
+     ylab= "L(d)-r", xlab = "d(m)", 
+     xlim=c(0,1000))
+```
+
+::: callout-note
+## Note
+
+By plotting L(r) - r against r, we will have the Poisson red line centred at zero and the data line is jagged. As the data line is above the red line, it suggests clustering.
+
+:::
+
+To confirm the observed spatial patterns above, I will conduct a hypothesis test using the Monte Carlo simulation. The hypothesis and test are as follows:
+
+Ho = The distribution of childcare services at Tampines are randomly distributed.
+
+H1= The distribution of childcare services at Tampines are not randomly distributed.
+
+```{r}
+L_tm.csr <- envelope(childcare_tm_ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)
+```
+
+```{r}
+plot(L_tm.csr, . - r ~ r, 
+     xlab="d", ylab="L(d)-r", xlim=c(0,500))
+```
+
+::: callout-note
+## Note
+
+The black line is entirely above the grey envelop, suggesting statistically significant departure from CSR and indicates clustering. 
+
+We will reject the null hypothesis at the alpha value of 0.001.
+:::
+
+## 3. Reference
+
+Kam, T. S. 2nd Order Spatial Point Patterns Analysis Methods. R for Geospatial Data Science and Analytics. https://r4gdsa.netlify.app/chap05.html 

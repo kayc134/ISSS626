@@ -476,7 +476,7 @@ tm_shape(kde_childcareSG_bw_terra) +
 
 ## 8. First Order SPPA at the Planning Subzone Level
 
-I will conduct further analysis at the planning area level, focusing on Punggol, Tampines Chua Chu Kand and Jurong West planning areas.
+I will conduct further analysis at the planning area level, focusing on Punggol, Tampines Chua Chu Kang and Jurong West planning areas.
 
 ### 8.1 Geospatial data wrangling
 

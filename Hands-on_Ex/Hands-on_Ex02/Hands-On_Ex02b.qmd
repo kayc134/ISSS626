@@ -2,7 +2,7 @@
 title: "02B: Second Order Spatial Points Analysis Methods"
 author: "Chia Ka Ying"
 date: "2026-09-01"
-date-modified: "2026-09-02"
+date-modified: "2026-09-04"
 ---
 
 Second-order spatial point pattern analysis offers a framework for investigating inter-point spatial dependencies, extending beyond first-order intensity metrics to identify processes of spatial clustering, dispersion or complete spatial randomness (CSR). Utilising the spatstat package in R, this exercise will analyse the spatial point processes of childcare center in Singapore.

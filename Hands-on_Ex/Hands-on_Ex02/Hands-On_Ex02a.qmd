@@ -432,6 +432,7 @@ kde_childcareSG_bw_terra <- rast(kde_childcareSG_km)
 ```{r}
 class(kde_childcareSG_bw_terra)
 ```
+
 After confirmation, I will now look at the properties.
 
 ```{r}
@@ -449,6 +450,7 @@ crs(kde_childcareSG_bw_terra) <- "EPSG:3414"
 ```{r}
 kde_childcareSG_bw_terra
 ```
+
 The crs is now SVY21.
 
 ### 7.3 Plotting KDE map with tmap
@@ -476,7 +478,7 @@ tm_shape(kde_childcareSG_bw_terra) +
 
 ## 8. First Order SPPA at the Planning Subzone Level
 
-I will conduct further analysis at the planning area level, focusing on Punggol, Tampines Chua Chu Kang and Jurong West planning areas.
+I will conduct further analysis at the planning area level, focusing on Punggol, Tampines Chua Chu Kand and Jurong West planning areas.
 
 ### 8.1 Geospatial data wrangling
 
@@ -561,6 +563,7 @@ clarkevans.test(childcare_ck_ppp,
                 alternative=c("two.sided"),
                 nsim=999)
 ```
+
 #### 8.2.2 Tampines planning area
 
 I will perform a similar test for childcare centres in Tampines.

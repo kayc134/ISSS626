@@ -229,5 +229,19 @@
     "title": "02a: First Order Spatial Points Analysis Methods",
     "section": "9. Reference",
     "text": "9. Reference\nKam, T. S. First-order Spatial Point Patterns Analysis Methods. R for Geospatial Data Science and Analytics. https://r4gdsa.netlify.app/chap04.html"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex03/Hands-On_Ex03.html",
+    "href": "Hands-on_Ex/Hands-on_Ex03/Hands-On_Ex03.html",
+    "title": "03: Spatio-Temporal Point Patterns Analysis",
+    "section": "",
+    "text": "Spatio-temporal point patterns capture the interplay between location and timing in real-world occurrences, from environmental disasters to ecological changes. By examining events through both spatial and temporal lenses, we can better understand how localised disturbances form, spread and interact over time. Using various R packages, this assignment explores forest fire occurrences in Kepulauan Bangka Belitung, Indonesia from 1 January 2023 to 31 December 2023 to run a set of spatio-temporal point pattern analyses.\nThe research questions for this assignments are as follows:\nThe following data sets will be used: - forestfires, a csv file provides locations of forest fire detected from the Moderate Resolution Imaging Spectroradiometer (MODIS) sensor data. The data are downloaded from Fire Information for Resource Management System. For the purpose of this exercise, only forest fires within Kepulauan Bangka Belitung will be used. - Kepulauan_Bangka_Belitung, an ESRI shapefile showing the sub-district (i.e. kelurahan) boundary of Kepulauan Bangka Belitung. The data set was downloaded from Indonesia Geospatial portal. The original data covers the whole Indonesia. For the purpose of this exercise, only sub-districts within Kepulauan Bangka Belitung are extracted."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex03/Hands-On_Ex03.html#section",
+    "href": "Hands-on_Ex/Hands-on_Ex03/Hands-On_Ex03.html#section",
+    "title": "03: Spatio-Temporal Point Patterns Analysis",
+    "section": "1.",
+    "text": "1."
   }
 ]

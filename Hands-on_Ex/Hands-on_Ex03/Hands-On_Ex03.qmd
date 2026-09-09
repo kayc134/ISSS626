@@ -2,5 +2,26 @@
 title: "03: Spatio-Temporal Point Patterns Analysis"
 author: "Chia Ka Ying"
 date: "2026-09-05"
-date-modified: "2026-09-05"
+date-modified: "last-modified"
+format: html
+execute:
+  echo: true
+  eval: true
+  message: false
+  warning: false
+  freeze: true
+editor: visual
 ---
+
+Spatio-temporal point patterns capture the interplay between location and timing in real-world occurrences, from environmental disasters to ecological changes. By examining events through both spatial and temporal lenses, we can better understand how localised disturbances form, spread and interact over time. Using various R packages, this assignment explores forest fire occurrences in Kepulauan Bangka Belitung, Indonesia from 1 January 2023 to 31 December 2023 to run a set of spatio-temporal point pattern analyses.
+
+The research questions for this assignments are as follows:
+
+- Are the locations of forest fire in Kepulauan Bangka Belitung spatial and spatio-temporally independent?
+- If the answer is no, where and when the observed forest fire locations tend to cluster?
+
+The following data sets will be used:
+- `forestfires`, a csv file provides locations of forest fire detected from the Moderate Resolution Imaging Spectroradiometer (MODIS) sensor data. The data are downloaded from Fire Information for Resource Management System. For the purpose of this exercise, only forest fires within Kepulauan Bangka Belitung will be used.
+- `Kepulauan_Bangka_Belitung`, an ESRI shapefile showing the sub-district (i.e. kelurahan) boundary of Kepulauan Bangka Belitung. The data set was downloaded from Indonesia Geospatial portal. The original data covers the whole Indonesia. For the purpose of this exercise, only sub-districts within Kepulauan Bangka Belitung are extracted.
+
+## 1. 

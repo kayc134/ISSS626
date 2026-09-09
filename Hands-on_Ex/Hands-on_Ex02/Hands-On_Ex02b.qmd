@@ -3,6 +3,14 @@ title: "02B: Second Order Spatial Points Analysis Methods"
 author: "Chia Ka Ying"
 date: "2026-09-01"
 date-modified: "2026-09-04"
+format: html
+execute:
+  echo: true
+  eval: true
+  message: false
+  warning: false
+  freeze: true
+editor: visual
 ---
 
 Second-order spatial point pattern analysis offers a framework for investigating inter-point spatial dependencies, extending beyond first-order intensity metrics to identify processes of spatial clustering, dispersion or complete spatial randomness (CSR). Utilising the spatstat package in R, this exercise will analyse the spatial point processes of childcare center in Singapore.
@@ -338,7 +346,7 @@ Ho = The distribution of childcare services at Choa Chu Kang are randomly distri
 H1= The distribution of childcare services at Choa Chu Kang are not randomly distributed.
 
 ```{r}
-K_ck.csr <- envelope(childcare_ck_ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)
+K_ck.csr <- envelope(childcare_ck_ppp, Kest, nsim = 99, rank = 1, global=TRUE)
 ```
 
 ```{r}
@@ -348,7 +356,7 @@ plot(K_ck.csr, . - r ~ r, xlab="d", ylab="K(d)-r")
 ::: callout-note
 ## Note
 
-Unlike the earlier G and F function tests, the K function tests has a *glocal=TRUE* argument. This evaluates whether the observed spatial point pattern deviates from the simulation globally across all distance values (r) while tracking local significance.
+Unlike the earlier G and F function tests, the K function tests has a *global=TRUE* argument. This evaluates whether the observed spatial point pattern deviates from the simulation globally across all distance values (r) while tracking local significance.
 
 The black observed line borders at the top of the grey envelop while not fully lying outside, meaning there is no statistically significant departure from CSR.
 
@@ -377,7 +385,7 @@ Ho = The distribution of childcare services at Tampines are randomly distributed
 H1= The distribution of childcare services at Tampines are not randomly distributed.
 
 ```{r}
-K_tm.csr <- envelope(childcare_tm_ppp, Kest, nsim = 99, rank = 1, glocal=TRUE)
+K_tm.csr <- envelope(childcare_tm_ppp, Kest, nsim = 99, rank = 1, global=TRUE)
 ```
 
 ```{r}
@@ -410,7 +418,7 @@ plot(L_ck, . -r ~ r,
 
 By plotting L(r) - r against r, we will have the Poisson red line centred at zero and the data line is jagged. As the data line is above the red line, it suggests clustering.
 
-Similar to the K function tests, the *glocal=TRUE* argument is used for L function tests.
+Similar to the K function tests, the *global=TRUE* argument is used for L function tests.
 :::
 
 To confirm the observed spatial patterns above, I will conduct a hypothesis test using the Monte Carlo simulation. The hypothesis and test are as follows:
@@ -420,7 +428,7 @@ Ho = The distribution of childcare services at Choa Chu Kang are randomly distri
 H1= The distribution of childcare services at Choa Chu Kang are not randomly distributed.
 
 ```{r}
-L_ck.csr <- envelope(childcare_ck_ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)
+L_ck.csr <- envelope(childcare_ck_ppp, Lest, nsim = 99, rank = 1, global=TRUE)
 ```
 
 ```{r}
@@ -457,7 +465,7 @@ Ho = The distribution of childcare services at Tampines are randomly distributed
 H1= The distribution of childcare services at Tampines are not randomly distributed.
 
 ```{r}
-L_tm.csr <- envelope(childcare_tm_ppp, Lest, nsim = 99, rank = 1, glocal=TRUE)
+L_tm.csr <- envelope(childcare_tm_ppp, Lest, nsim = 99, rank = 1, global=TRUE)
 ```
 
 ```{r}

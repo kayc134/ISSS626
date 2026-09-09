@@ -796,7 +796,7 @@ Done.</code></pre>
 <p>Ho = The distribution of childcare services at Choa Chu Kang are randomly distributed.</p>
 <p>H1= The distribution of childcare services at Choa Chu Kang are not randomly distributed.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>K_ck.csr <span class="ot">&lt;-</span> <span class="fu">envelope</span>(childcare_ck_ppp, Kest, <span class="at">nsim =</span> <span class="dv">99</span>, <span class="at">rank =</span> <span class="dv">1</span>, <span class="at">glocal=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>K_ck.csr <span class="ot">&lt;-</span> <span class="fu">envelope</span>(childcare_ck_ppp, Kest, <span class="at">nsim =</span> <span class="dv">99</span>, <span class="at">rank =</span> <span class="dv">1</span>, <span class="at">global=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Generating 99 simulated realisations of CSR  ...
 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
@@ -829,7 +829,7 @@ Done.</code></pre>
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Unlike the earlier G and F function tests, the K function tests has a <em>glocal=TRUE</em> argument. This evaluates whether the observed spatial point pattern deviates from the simulation globally across all distance values (r) while tracking local significance.</p>
+<p>Unlike the earlier G and F function tests, the K function tests has a <em>global=TRUE</em> argument. This evaluates whether the observed spatial point pattern deviates from the simulation globally across all distance values (r) while tracking local significance.</p>
 <p>The black observed line borders at the top of the grey envelop while not fully lying outside, meaning there is no statistically significant departure from CSR.</p>
 <p>We fail to reject the null hypothesis at the alpha value of 0.001.</p>
 </div>
@@ -867,7 +867,7 @@ Done.</code></pre>
 <p>Ho = The distribution of childcare services at Tampines are randomly distributed.</p>
 <p>H1= The distribution of childcare services at Tampines are not randomly distributed.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>K_tm.csr <span class="ot">&lt;-</span> <span class="fu">envelope</span>(childcare_tm_ppp, Kest, <span class="at">nsim =</span> <span class="dv">99</span>, <span class="at">rank =</span> <span class="dv">1</span>, <span class="at">glocal=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>K_tm.csr <span class="ot">&lt;-</span> <span class="fu">envelope</span>(childcare_tm_ppp, Kest, <span class="at">nsim =</span> <span class="dv">99</span>, <span class="at">rank =</span> <span class="dv">1</span>, <span class="at">global=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Generating 99 simulated realisations of CSR  ...
 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
@@ -935,14 +935,14 @@ Done.</code></pre>
 </div>
 <div class="callout-body-container callout-body">
 <p>By plotting L(r) - r against r, we will have the Poisson red line centred at zero and the data line is jagged. As the data line is above the red line, it suggests clustering.</p>
-<p>Similar to the K function tests, the <em>glocal=TRUE</em> argument is used for L function tests.</p>
+<p>Similar to the K function tests, the <em>global=TRUE</em> argument is used for L function tests.</p>
 </div>
 </div>
 <p>To confirm the observed spatial patterns above, I will conduct a hypothesis test using the Monte Carlo simulation. The hypothesis and test are as follows:</p>
 <p>Ho = The distribution of childcare services at Choa Chu Kang are randomly distributed.</p>
 <p>H1= The distribution of childcare services at Choa Chu Kang are not randomly distributed.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>L_ck.csr <span class="ot">&lt;-</span> <span class="fu">envelope</span>(childcare_ck_ppp, Lest, <span class="at">nsim =</span> <span class="dv">99</span>, <span class="at">rank =</span> <span class="dv">1</span>, <span class="at">glocal=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>L_ck.csr <span class="ot">&lt;-</span> <span class="fu">envelope</span>(childcare_ck_ppp, Lest, <span class="at">nsim =</span> <span class="dv">99</span>, <span class="at">rank =</span> <span class="dv">1</span>, <span class="at">global=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Generating 99 simulated realisations of CSR  ...
 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
@@ -1012,7 +1012,7 @@ Done.</code></pre>
 <p>Ho = The distribution of childcare services at Tampines are randomly distributed.</p>
 <p>H1= The distribution of childcare services at Tampines are not randomly distributed.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>L_tm.csr <span class="ot">&lt;-</span> <span class="fu">envelope</span>(childcare_tm_ppp, Lest, <span class="at">nsim =</span> <span class="dv">99</span>, <span class="at">rank =</span> <span class="dv">1</span>, <span class="at">glocal=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>L_tm.csr <span class="ot">&lt;-</span> <span class="fu">envelope</span>(childcare_tm_ppp, Lest, <span class="at">nsim =</span> <span class="dv">99</span>, <span class="at">rank =</span> <span class="dv">1</span>, <span class="at">global=</span><span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Generating 99 simulated realisations of CSR  ...
 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,

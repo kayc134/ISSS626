@@ -45,7 +45,6 @@ Using the *st_read()* of sf package, I will be importing the polygon feature lay
 ## Note
 
 To ensure that any existing file is not overwritten, I have included a *delete_dsn = FALSE* argument and *#\| eval: false* chunk option to display the code in the final rendered code but prevents RStudio from executing it during the rendering process to prevent an error.
-
 :::
 
 ```{r}
@@ -61,7 +60,7 @@ st_write(mpsz, "data/geospatial/mpsz/MP14_SUBZONE_NO_SEA_PL.kml",
          driver = "KML", delete_dsn = FALSE) #write files in KML format and prevent overwrite
 ```
 
-Tidying is required for KML files because their attribute data is embedded as an HTML table within a single description field, rather than being split into individual columns. The extraction step is needed to parse out values like REGION_N and SUBZONE_N into proper, usable columns. 
+Tidying is required for KML files because their attribute data is embedded as an HTML table within a single description field, rather than being split into individual columns. The extraction step is needed to parse out values like REGION_N and SUBZONE_N into proper, usable columns.
 
 ::: callout-note
 ## Note
@@ -69,7 +68,6 @@ Tidying is required for KML files because their attribute data is embedded as an
 In my case, however, `mpsz` was imported from in GEOJSON format, which already provides `REGION_N`, `PLN_AREA_N`, `SUBZONE_N`, and `SUBZONE_C` as standalone columns, so this tidying step is unnecessary and can be skipped.
 
 Instead, I will examine the content of mpsz. By default, it will display only the first 10 rows. To see more or less rows, you can use the `n=` argument.
-
 :::
 
 ```{r}
@@ -273,7 +271,6 @@ For this instance, we will notice that the distribution using the quantile data 
 - Quantile Classification: Divides the total number of geographic features (polygons) into equal-sized groups. If you request 5 classes, it places roughly 20% of the subzones into each group. Because it assigns a fixed count of features to every class, the resulting colors are distributed evenly across the map regardless of skew in the underlying numbers.
 
 - Equal Interval Classification: Divides the range of data values (from minimum to maximum value) into equal-sized numerical intervals. It ignores how many polygons fall into each interval. If your data contains extreme outliers or is heavily skewed toward low values, most subzones end up clumped into just one or two color categories, leaving the remaining classes nearly empty.
-
 :::
 
 #### 2.6.2 DIY 1: Comparing Data Classification Methods
@@ -318,7 +315,6 @@ The following were observed from the four maps:
 - Equal Interval: Splits the value range into equal-sized chunks. Since a few subzones have unusually high dependency ratios, most other subzones get squeezed into the lowest bin. This results in the map ending up mostly with one color, with barely anything in the higher bins.
 - Jenks (Natural Breaks): Groups similar values together and keeps different groups apart, so it naturally finds where the real breaks in the data are. This makes it good at showing genuine clusters, especially when the data is not evenly spread out.
 - Standard Deviation: Shows which subzones sit unusually far above or below the average dependency ratio. This is useful for quickly spotting the outliers.
-
 :::
 
 #### 2.6.3 DIY 2: Comparing Different Number of Classes
@@ -362,7 +358,6 @@ The following were observed from the four maps:
 - 2 Classes: Splits everything into just "high" or "low," which is easy to read at a glance but loses the details.
 - 6 Classes: Seems to strike a balance between visual clarity and details.
 - 10–20 Classes: The shades are become too subtle in differences, making it difficult to visually differentiate.
-
 :::
 
 #### 2.6.4 Plotting choropleth map with custom break

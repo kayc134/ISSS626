@@ -41,9 +41,7 @@ Using the *st_read()* function of sf package, I will be importing the polygon fe
 ## Note
 
 To ensure that any existing file is not overwritten, I have included a *delete_dsn = FALSE* argument and *#\| eval: false* chunk option to display the code in the final rendered code but prevents RStudio from executing it during the rendering process to prevent an error.
-
 :::
-
 
 ```{r}
 mpsz <- st_read("data/geospatial/MP14_SUBZONE_NO_SEA_PL.geojson")
@@ -62,9 +60,7 @@ st_write(mpsz, "data/geospatial/mpsz/MP14_SUBZONE_NO_SEA_PL.shp",
 ## Note
 
 The message above reveals that the geospatial objects are multipolygon features. There are a total of 323 multipolygon features and 13 fields in `mpsz` simple feature data frame. `mpsz` is in **WGS 84**, which is a geodetic system and thus geographic (3D/spherical) rather than projected (2D/flat). The bounding box provides the x extend and y extend of the data.
-
 :::
-
 
 ### 2.2 Importing point feature layer and coverting to KML format (PreSchoolsLocation)
 
@@ -74,7 +70,6 @@ Similary, using the *st_read()* function of sf package, I will be importing the 
 ## Note
 
 To ensure that any existing file is not overwritten, I have included a *delete_dsn = FALSE* argument and *#\| eval: false* chunk option to display the code in the final rendered code but prevents RStudio from executing it during the rendering process to prevent an error.
-
 :::
 
 ```{r}
@@ -129,7 +124,6 @@ The *glimpse()* report reveals the data type of each fields. For example, `SUBZO
 ## Note
 
 It should be noted that `FMEL_UPD_D` is showing as a 14-digit character rather than a date type. The 14 digits should be referring to the year, month, date, hour, minute and second in a "YYYYMMDDHHMMSS" format and will need to be converted using *ymd_hms()* within a *mutate()* function, which is part of the tidyverse package. I also dropped the time using *as_date()*.
-
 :::
 
 ```{r}
@@ -183,7 +177,6 @@ plot(st_geometry(preschool),
 ## Note
 
 As both `preschool` and `mpsz` are in **WGS84**, the preschool points appear on the subzone map. However, the points are too dense and it is difficult to have a detailed interpretation of the exact locations within each subzone. Regardless, it provides a good overview of where preschools are generally not located, namely the industrial areas, nature reserves and offshore islands.
-
 :::
 
 Let's now try plotting the `cyclingpath` layer ontop of the `mpsz` layer, where the former is in **SVY21** while the latter is in **WGS84**.
@@ -206,7 +199,6 @@ When analysis of geospatial data involves the use of distance and/or area measur
 ## Note
 
 SVY21 is Singapore's official national horizontal geodetic datum and plane coordinate system, and is based on the WGS84 (World Geodetic System 1984) to flatten the curved surface of Earth into metric measurements. We will be referencing an EPSG code to identify specific coordinate reference system (CRS), which in the case of SVY21 is 3414.
-
 :::
 
 ```{r}
@@ -257,7 +249,6 @@ list(airbnblistings)
 ## Note
 
 From the output, `airbnblistings`contains 3247 rows and 19 columns. We will be focusing on the fields `latitude` and `longtitude`, which are in decimal degree format. Based on a quick Google search of the numbers, they fall within the range of WGS 84 coordinate system for Singapore, which uses a latitude range from -90° to +90° and a longitude range from -180° to +180°.
-
 :::
 
 ### 6.2 Creating a simple data frame from an aspatial data frame

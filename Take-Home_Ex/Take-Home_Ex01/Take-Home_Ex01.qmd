@@ -1,0 +1,26 @@
+---
+title: "Study on Road Accidents in Bangkok Greater Metropolitan Area"
+author: "Chia Ka Ying"
+date: "2026-09-12"
+date-modified: "last-modified"
+format: html
+execute:
+  echo: true
+  eval: true
+  message: false
+  warning: false
+  freeze: true
+editor: visual
+---
+
+Public safety relies on coordinated action to protect communities and infrastructure from threats, including road traffic accidents. In rapidly growing urban centers like the Bangkok Greater Metropolitan Area, high vehicle density and complex road networks lead to marked spatial variations in traffic incidents. Because accidents are restricted to transportation channels, applying network-constrained spatial point-pattern analysis alongside standard geospatial analytics allows for evidence-based decision support for transportation safety and emergency management.
+
+This is a study on road accidents in the Bangkok Greater Metropolitan Area, made up Bangkok, Nonthaburi, Nakhon Pathom, Pathum Thani, Samut Prakan and Samut Sakhon, for the purpose of applying geospatial analytics for public safety. The primary objectives are to:
+
+- Prepare, clean and integrate multi-source spatial, temporal and road network data within a defined study window.
+
+- Analyse first-order properties to model the spatial, temporal and network-constrained density distribution of traffic incidents.
+
+- Evaluate second-order network-constrained properties to distinguish significant accident blackspots on road segments from random occurrences.
+
+- Translate findings into actionable insights for public-safety planning and management.

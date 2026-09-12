@@ -1,0 +1,14 @@
+---
+title: "04: Spatial Weights and Applications"
+author: "Chia Ka Ying"
+date: "2026-09-12"
+date-modified: "last-modified"
+format: html
+execute:
+  echo: true
+  eval: true
+  message: false
+  warning: false
+  freeze: true
+editor: visual
+---

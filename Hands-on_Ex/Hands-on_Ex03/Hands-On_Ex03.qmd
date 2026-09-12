@@ -18,10 +18,15 @@ Spatio-temporal point patterns capture the interplay between location and timing
 The research questions for this assignments are as follows:
 
 - Are the locations of forest fire in Kepulauan Bangka Belitung spatial and spatio-temporally independent?
+
+<!-- -->
+
 - If the answer is no, where and when the observed forest fire locations tend to cluster?
 
 The following data sets will be used:
+
 - `modis_2023_Indonesia`, a csv file provides locations of forest fire detected from the Moderate Resolution Imaging Spectroradiometer (MODIS) sensor data. The data are downloaded from Fire Information for Resource Management System. The data has forest fires from the whole Indonesia in 2023. For the purpose of this exercise, only forest fires within Kepulauan Bangka Belitung will be used.
+
 - `Geology Bangka Belitung`, a geological shapefile showing the sub-district boundary of Kepulauan Bangka Belitung. The data set was downloaded from the Indonesia Geospatial portal. I could not locaet the ESRI shapefile mentioned in exercise guide for the sub-district (i.e. kelurahan) boundary of Kepulauan Bangka Belitung. The website has a shapefile for the whole Indonesia and a geological shapefile of the Bangka Belitung Islands Province. I downloaded the geological shapefile as it is the required location for the exercise.
 
 ## 1. Importing and Wrangling Geospatial Data Sets
@@ -40,6 +45,7 @@ kbb <- st_read(dsn = "data/Bangka_Belitung",
                layer = "Geology Bangka Belitung") %>%
   st_transform(crs = 32748)
 ```
+
 ::: callout-note
 ## Note
 
@@ -50,10 +56,9 @@ Looking at the details of the shapefile, there are a number of differences with 
 - Dimension is XY instead of XYZ
 - Bounding box is "xmin: 104.9592 ymin: -3.961192 xmax: 109.1553 ymax: -1.477503" instead of "xmin: 105.1085 ymin: -3.116593 xmax: 106.8488 ymax: -1.501603".
 
-As the exercise uses *st_union* to dissolve the features into a single polygon and drops attribute fields, and the subsequent `kbb_sf` and `kbb_owin` is used as a boundary to show the fire points, I might be able to continue using this geological shapefile. 
+As the exercise uses *st_union* to dissolve the features into a single polygon and drops attribute fields, and the subsequent `kbb_sf` and `kbb_owin` is used as a boundary to show the fire points, I might be able to continue using this geological shapefile.
 
 I will first check the attribute table to check the names of the 12 fields and plot it to see what it looks like with the areas labelled based on the field "NM_LEMBAR", which was identified through trial and error.
-
 :::
 
 ```{r}
@@ -69,17 +74,11 @@ tm_shape(kbb) + tm_polygons(col = "NM_LEMBAR")
 
 I managed to find out more about the locations based on a search:
 
-JAMBI:	Jambi province — southern Sumatra mainland
-LAHAT:	Lahat, South Sumatra — mainland
-TULUNG SELAPAN:	Ogan Komering Ilir, South Sumatra — mainland
-PANGKALPINANG:	Capital city, on Bangka Island
-SUNGAILIAT:	Regency seat of Bangka Regency, on Bangka Island
-TANJUNG PANDAN:	Regency seat of Belitung Regency, on Belitung Island
+JAMBI: Jambi province — southern Sumatra mainland LAHAT: Lahat, South Sumatra — mainland TULUNG SELAPAN: Ogan Komering Ilir, South Sumatra — mainland PANGKALPINANG: Capital city, on Bangka Island SUNGAILIAT: Regency seat of Bangka Regency, on Bangka Island TANJUNG PANDAN: Regency seat of Belitung Regency, on Belitung Island
 
 This means that I am likely to require only PANGKALPINANG and SUNGAILIAT based on the plotted map in the exercise guide, even though TANJUNG PANDAN is the location of Belitung Island. I also note that my plotted map has an additional island on the bottom right, Lepar Island, which is third-largest island in Indonesia's Bangka Belitung province. As it is not categorised separately in `NM_LEMBAR`, I am unable to remove it.
 
 I will plot the fire incidents to confirm the locations to drop.
-
 :::
 
 ```{r}
@@ -116,7 +115,6 @@ class(kbb_owin)
 ## Note
 
 As the forest fire data set contains fire incidents for the whole Indonesia in 2023, I will use the *st_filter* function to include only the fire incidents that spatially intersects with `kbb_sf`, which is our required location.
-
 :::
 
 ```{r}
@@ -199,7 +197,6 @@ summary(fire_month_ppp)
 ## Note
 
 The output shows a higher point count of 766, bigger window and window area as compared to the exercise guide. This is likely due to the additional points on Lepar Island.
-
 :::
 
 ```{r}
@@ -234,7 +231,6 @@ summary(st_kde)
 ## Note
 
 The output shows a higher point count of 766 instead of 741 and a larger window area compared to the exercise guide. This difference stems from the study area boundary including Lepar Island. Consequently, the expanded geographic boundary includes additional forest fire events.
-
 :::
 
 ### 4.5 Plotting the spatio-temporal KDE object
@@ -298,7 +294,7 @@ BOOT.spattemp(fire_yday_owin)
 
 ### 6.1 Computing spatio-temporal KDE
 
-I will derive the STKDE  using h and lambda values from previous steps.
+I will derive the STKDE using h and lambda values from previous steps.
 
 ```{r}
 kde_yday <- spattemp.density(fire_yday_owin,
@@ -372,7 +368,7 @@ If the contours show high values for small values of uu and vv, it suggests clus
 
 If the contours are flat or show low values, it indicates a more random distribution or a lack of significant clustering at those distances.
 
-The spatial and temporal extent of clustering can be understood by observing how rapidly the contours increase or decrease as we move along the axes. 
+The spatial and temporal extent of clustering can be understood by observing how rapidly the contours increase or decrease as we move along the axes.
 
 ::: callout-note
 ## Note
@@ -381,10 +377,9 @@ In interpreting the plot, I will first break down each part of the graph:
 
 - X-axis (u): Spatial distance (in spatial units, e.g., meters).
 - Y-axis (v): Temporal distance (in time units, e.g., days).
-- Contour Lines: The estimated value of the space-time K-function \hat{K}_{ST}(u, v). Higher values indicate a greater expected number of neighboring events occurring within spatial distance u and temporal distance v.
+- Contour Lines: The estimated value of the space-time K-function \hat{K}\_{ST}(u, v). Higher values indicate a greater expected number of neighboring events occurring within spatial distance u and temporal distance v.
 
-For small spatial and temporal intervals (u < 10,000 meters and v < 20 days), the contour values remain near zero, indicated by the absence of lines. The lack of high values at these small scales indicates an absence of strong localised space-time clustering at short distances and time frames. Instead, contour values increase progressively toward the upper-right quadrant, reaching values exceeding 3.5e12 at larger spatial distances (u > 30,000) and extended time  (v > 60). This steady gradient demonstrates that event interaction is driven by patterns, such as seasonal weather conditions, rather than localised outbreaks. This is aligned with personal experiences, where haze conditions in Singapore due to regional forest fires tend to happen at certain times of the year.
-
+For small spatial and temporal intervals (u \< 10,000 meters and v \< 20 days), the contour values remain near zero, indicated by the absence of lines. The lack of high values at these small scales indicates an absence of strong localised space-time clustering at short distances and time frames. Instead, contour values increase progressively toward the upper-right quadrant, reaching values exceeding 3.5e12 at larger spatial distances (u \> 30,000) and extended time (v \> 60). This steady gradient demonstrates that event interaction is driven by patterns, such as seasonal weather conditions, rather than localised outbreaks. This is aligned with personal experiences, where haze conditions in Singapore due to regional forest fires tend to happen at certain times of the year.
 :::
 
 ## 8. References

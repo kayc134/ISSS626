@@ -35,13 +35,12 @@ pacman::p_load(sf, spdep, tmap, tidyverse, knitr, purrr)
 hunan <- st_read(dsn = "data/geospatial", 
                  layer = "Hunan")
 ```
+
 Next, I will import `Hunan_2012.csv` into R by using read_csv() of readr package. The output is R dataframe class.
 
 ```{r}
 hunan2012 <- read_csv("data/aspatial/Hunan_2012.csv")
 ```
-
-
 
 The code chunk below will be used to update the attribute table of hunan’s SpatialPolygonsDataFrame with the attribute fields of hunan2012 dataframe. This is performed by using left_join() of dplyr package.
 
@@ -140,7 +139,7 @@ The summary report above shows that there are 88 area units in Hunan. The most c
 
 To construct a connectivity graph, each polygon must be represented by a single point, typically its centroid. Since *st_centroid()* cannot be applied directly across the simple feature geometry list within a standard data frame operation, we extract the coordinates using the *map_dbl()* function from the purrr package.
 
-By mapping *st_centroid()* over the geometry column of `hunan`, I will extract the longitude and latitude values into separate vectors using double bracket indexing ([[1]] for longitude and [[2]] for latitude), which are then combined using *cbind()*.
+By mapping *st_centroid()* over the geometry column of `hunan`, I will extract the longitude and latitude values into separate vectors using double bracket indexing (\[\[1\]\] for longitude and \[\[2\]\] for latitude), which are then combined using *cbind()*.
 
 ```{r}
 longitude <- map_dbl(hunan$geometry, ~st_centroid(.x)[[1]])
@@ -221,7 +220,7 @@ wm_d62
 The summary indicates that each point has on average approximately 3.68 neighbours within the indicated 62km distance. This is calculated by dividing the number of links by number of regions.
 :::
 
-We can use *str()* to display the content. 
+We can use *str()* to display the content.
 
 ```{r}
 str(wm_d62)
@@ -441,13 +440,13 @@ wm_qs <- include.self(wm_q)
 
 Notice that the number of nonzero links, percentage nonzero weights and average number of links are 536, 6.921488 and 6.090909 respectively as compared to wm_q of 448, 5.785124 and 5.090909
 
-I will look at the neighbour list of area [1].
+I will look at the neighbour list of area \[1\].
 
 ```{r}
 wm_qs[[1]]
 ```
 
-Notice that now [1] has six neighbours instead of five.
+Notice that now \[1\] has six neighbours instead of five.
 
 I will now obtain weights with *nb2listw()*.
 
@@ -513,7 +512,7 @@ b_weights <- lapply(wm_qs, function(x) 0*x + 1)
 b_weights[1]
 ```
 
-Notice that [1] now has six neighbours instead of five.
+Notice that \[1\] now has six neighbours instead of five.
 
 I will use *nb2listw()* and *glist()* to explicitly assign weight values.
 
@@ -559,8 +558,8 @@ w_sum_gdppc <- qtm(hunan, "w_sum GDPPC")
 tmap_arrange(lag_sum_gdppc, w_sum_gdppc, asp=1, ncol=2)
 ```
 
-#9. References
+# 9. References
 
-Kam, T. S. Spatial Weights and Applications. R for Geospatial Data Science and Analytics. https://r4gdsa.netlify.app/chap08 
+Kam, T. S. Spatial Weights and Applications. R for Geospatial Data Science and Analytics. https://r4gdsa.netlify.app/chap08
 
 Roger Bivand. Creating Neighbours using sf objects. https://cran.r-project.org/web/packages/spdep/vignettes/nb_sf.html

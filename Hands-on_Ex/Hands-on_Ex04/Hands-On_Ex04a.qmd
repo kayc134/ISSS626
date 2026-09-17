@@ -26,3 +26,235 @@ I will be analysing the spatial distribution of childcare centre in the Punggol 
 - Punggol_CC, a point feature geospatial data which store the location of childcare centres within Punggol Planning Area.
 
 ## 1. Installing and Launching R Packages
+
+```{r}
+pacman::p_load(sf, spNetwork, tmap, tidyverse, dplyr)
+```
+
+## 2. Data Import and Preparation
+
+I will first prepare the `Punggol_St` dataset using a Malaysia, Singapore and Brunei road network shapefile and URA’s 2019 Master Plan’s planning subzone boundary shapefile.
+
+```{r}
+roads <- st_read("data/malaysia-singapore-brunei-260916-free/gis_osm_roads_free_1.shp") %>% 
+  st_transform(crs = 3414)
+mpsz  <- st_read("data/mpsz/MP14_SUBZONE_NO_SEA_PL.shp") %>% 
+  st_transform(crs = 3414)
+
+punggol <- mpsz %>%
+  filter(PLN_AREA_N == "PUNGGOL")
+
+punggol_roads <- st_intersection(roads, st_union(punggol))
+
+st_write(
+  punggol_roads, 
+  dsn = "data/Punggol_St/Punggol_St.shp", 
+  driver = "ESRI Shapefile", 
+  delete_layer = TRUE
+)
+```
+
+I will now import `Punggol_St` as `network`, and plot it to check.
+
+::: callout-note
+## Note
+
+spNetwork functions like *lixelize_lines()* require pure single-part line geometries to build spatial network graphs without breaking. Hence, I used *st_cast("LINESTRING")* to convert complex or multi-part MULTILINESTRING features into individual LINESTRING segments, preventing spatial topology errors during network processing.
+:::
+
+```{r}
+network <- st_read("data/Punggol_St/Punggol_St.shp") %>%
+  st_cast("LINESTRING")
+
+plot(st_geometry(network))
+```
+
+I will now prepare `Punggol_CC`
+
+```{r}
+childcare_sf <- st_read("data/ChildCareServices.geojson")%>%
+  st_transform(crs = 3414)
+mpsz      <- st_read("data/MP14_SUBZONE_NO_SEA_PL.geojson")%>%
+  st_transform(crs = 3414)
+
+punggol <- mpsz %>%
+  filter(PLN_AREA_N == "PUNGGOL")
+
+punggol_cc <- st_intersection(childcare_sf, st_union(punggol)) %>%
+  st_zm(drop = TRUE, what = "ZM")
+
+st_write(
+  punggol_cc, 
+  dsn = "data/Punggol_CC/Punggol_CC.shp", 
+  driver = "ESRI Shapefile", 
+  delete_layer = TRUE
+)
+
+print(punggol_cc)
+```
+
+I will now import `Punggol_CC` as `childcare`.
+
+```{r}
+childcare <- st_read(dsn="data/Punggol_CC/Punggol_CC.shp") %>%
+  st_zm(drop = TRUE, what = "ZM")
+```
+
+## 3. Visualising the Geospatial Data
+
+Before we jump into the analysis, I will visualise the geospatial data using *plot()* of Base R.
+
+```{r}
+plot(st_geometry(network))
+plot(childcare,add=T,col='red',pch = 19)
+```
+
+To visualise the geospatial data with high cartographic quality and interactive manner, the mapping function of tmap package can be used.
+
+```{r}
+tmap_mode('view')
+tm_shape(childcare) + 
+  tm_dots() + 
+  tm_shape(network) +
+  tm_lines()
+```
+
+```{r}
+tmap_mode('plot')
+```
+
+## 4. Network KDE (NKDE) Analysis
+
+I will perform NKDE analysis by using appropriate functions provided in spNetwork package.
+
+### 4.1 Preparing the lixels objects
+
+Before computing NKDE, the SpatialLines object need to be cut into lixels with a specified minimal distance. This task can be performed using *lixelize_lines()* of spNetwork:
+
+- The length of a lixel, lx_length is set to 700m.
+- The minimum length of a lixel, mindist is set to 350m.
+
+After cut, if the length of the final lixel is shorter than the minimum distance, it is added to the previous lixel. If NULL, then *mindist = maxdist/10*. Also note that the segments that are already shorter than the minimum distance are not modified.
+
+```{r}
+lixels <- lixelize_lines(network, 
+                         700, 
+                         mindist = 375)
+```
+
+### 4.2 Generating line centre points
+
+Next, *lines_center()* of spNetwork will be used to generate a SpatialPointsDataFrame (i.e. samples) with line centre points. The points are located at center of the line based on the length of the line.
+
+```{r}
+samples <- lines_center(lixels) 
+```
+
+### 4.3 Performing NKDE
+
+I will now compute the NKDE:
+
+- *kernel_name* argument indicates that quartic kernel is used. Possible kernel methods supported by spNetwork are triangle, gaussian, scaled gaussian, tricube, cosine ,triweight, epanechnikov and uniform.
+- *method* argument indicates that simple method is used to calculate the NKDE. Currently, spNetwork support three popular methods, they are:
+  - *method=“simple”*. This first method was presented by Xie et al. (2008) and proposes an intuitive solution. The distances between events and sampling points are replaced by network distances, and the formula of the kernel is adapted to calculate the density over a linear unit instead of an areal unit.
+  - *method=“discontinuous”*. The method is proposed by Okabe et al (2008), which equally “divides” the mass density of an event at intersections of lixels.
+  - *method=“continuous”*. If the discontinuous method is unbiased, it leads to a discontinuous kernel function which is a bit counter-intuitive. Okabe et al (2008) proposed another version of the kernel, that divide the mass of the density at intersection but adjusts the density before the intersection to make the function continuous.
+
+```{r}
+densities <- nkde(network, 
+                  events = childcare,
+                  w = rep(1, nrow(childcare)),
+                  samples = samples,
+                  kernel_name = "quartic",
+                  bw = 300, 
+                  div= "bw", 
+                  method = "simple", 
+                  digits = 1, 
+                  tol = 1,
+                  grid_shape = c(1,1), 
+                  max_depth = 8,
+                  agg = 5, 
+                  sparse = TRUE,
+                  verbose = FALSE)
+```
+
+#### 4.3.1 Visualising NKDE
+
+Before I can visualise the NKDE values, I will insert the computed density values (i.e. densities) into samples and lixels objects as density fields.
+
+```{r}
+samples$density <- densities
+lixels$density <- densities
+```
+
+Since svy21 projection system is in meters, the computed density values are very small i.e. 0.0000005. I will rescale the density values from number of events per meter to number of events per kilometer.
+
+```{r}
+samples$density <- samples$density*1000
+lixels$density <- lixels$density*1000
+```
+
+I will use appropriate functions of tmap package to prepare interactive and high cartographic quality map visualisation.
+
+```{r}
+tmap_mode('view')
+tm_shape(lixels)+
+  tm_lines(col="density")+
+tm_shape(childcare)+
+  tm_dots()
+```
+
+The interactive map above reveals road segments (darker colour) with relatively higher density of childcare centres than road segments with relatively lower density of childcare centres (lighter colour).
+
+## 5. Network Constrained G- and K-Function Analysis
+
+In this section, I will perform complete spatial randomness (CSR) test by using *kfunctions()* of spNetwork package. The null hypothesis is defined as:
+
+- Ho: The observed spatial point events (i.e distribution of childcare centres) are uniformly distributed over a street network in Punggol Planning Area.
+
+The CSR test is based on the assumption of the binomial point process which implies the hypothesis that childcare centres are randomly and independently distributed over the street network.
+
+If this hypothesis is rejected, we may infer that the distribution of childcare centres are spatially interacting and dependent on each other. As a result, they may form non-random patterns.
+
+There are nine arguments used:
+
+- lines: A SpatialLinesDataFrame with the sampling points. The geometries must be a SpatialLinesDataFrame (may crash if some geometries are invalid).
+- points: A SpatialPointsDataFrame representing the points on the network. These points will be snapped on the network.
+- start: A double, the start value for evaluating the k and g functions.
+- end: A double, the last value for evaluating the k and g functions.
+- step: A double, the jump between two evaluations of the k and g function.
+- width: The width of each donut for the g-function.
+- nsim: An integer indicating the number of Monte Carlo simulations required. In the above example, 50 simulation was performed. Note: most of the time, more simulations are required for inference
+- resolution: When simulating random points on the network, selecting a resolution will reduce greatly the calculation time. When resolution is null the random points can occur everywhere on the graph. If a value is specified, the edges are split according to this value and the random points are selected vertices on the new network.
+- conf_int: A double indicating the width confidence interval (default = 0.05).
+
+```{r}
+kfun_childcare <- kfunctions(network, 
+                             childcare,
+                             start = 0, 
+                             end = 1000, 
+                             step = 50, 
+                             width = 50, 
+                             nsim = 50, 
+                             resolution = 50,
+                             verbose = FALSE, 
+                             conf_int = 0.05)
+```
+
+The output of *kfunctions()* is a list with the following values:
+
+- plotkA, a ggplot2 object representing the values of the k-function
+- plotgA, a ggplot2 object representing the values of the g-function
+- valuesA, a DataFrame with the values used to build the plots
+
+For example, we can visualise the ggplot2 object of k-function.
+
+```{r}
+kfun_childcare$plotk
+```
+
+The blue line is the empirical network K-function of the childcare centres in Punggol planning area. The gray envelop represents the results of the 50 simulations in the interval 2.5% - 97.5%. Because the blue line between the distance of 0 to 250 metres are above the gray area, we can infer that there is statistically significant spatial clustering at short distances (up to ~250 meters). There are more childcare centres located within 250 meters of one another along the network than would be expected by pure chance.
+
+## 6. References
+
+Kam, T. S. Network Constrained Spatial Point Patterns Analysis. R for Geospatial Data Science and Analytics. https://r4gdsa.netlify.app/chap07

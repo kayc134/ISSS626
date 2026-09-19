@@ -12,3 +12,4 @@ data
 _site/.RDataTmp1
 .RData
 *.RDataTmp*
+_freeze/

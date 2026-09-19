@@ -9,3 +9,6 @@
 **/*.quarto_ipynb
 data
 .RDataTmp1
+_site/.RDataTmp1
+.RData
+*.RDataTmp*

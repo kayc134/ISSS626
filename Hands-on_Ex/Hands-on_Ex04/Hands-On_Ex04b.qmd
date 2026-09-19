@@ -9,7 +9,7 @@ execute:
   eval: true
   message: false
   warning: false
-  freeze: auto
+  freeze: true
 editor: visual
 ---
 

@@ -1,0 +1,30 @@
+---
+title: "05a: Global Measures of Spatial Autocorrelation"
+author: "Chia Ka Ying"
+date: "2026-09-19"
+date-modified: "last-modified"
+format: html
+execute:
+  echo: true
+  eval: true
+  message: false
+  warning: false
+  freeze: true
+editor: visual
+---
+
+This exercise will be computing Global Measures of Spatial Autocorrelation (GMSA) by using **spdep** package. By the end to this hands-on exercise, you will be able to:
+
+- import geospatial data using appropriate function(s) of **sf** package,
+
+- import csv file using appropriate function of **readr** package,
+
+- perform relational join using appropriate join function of **dplyr** package,
+
+- compute Global Spatial Autocorrelation (GSA) statistics by using appropriate functions of **spdep** package,
+
+  - plot Moran scatterplot,
+
+  - compute and plot spatial correlogram using appropriate function of **spdep** package.
+
+- provide statistically correct interpretation of GSA statistics.

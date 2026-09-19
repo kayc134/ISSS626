@@ -1,0 +1,15 @@
+---
+title: "Geographically Weighted Summary Statistics"
+author: "Chia Ka Ying"
+date: "2026-09-19"
+date-modified: "last-modified"
+format: html
+execute:
+  echo: true
+  eval: true
+  message: false
+  warning: false
+  freeze: true
+editor: visual
+---
+

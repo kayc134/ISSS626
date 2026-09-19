@@ -28,6 +28,10 @@ website:
         - text: "Hands-On Exercise 08"
         - text: "Hands-On Exercise 09"
         - text: "Hands-On Exercise 10"
+      - text: "In-Class Exercise"
+        menu:
+        - text: "Geographically Weighted Summary Statistics"
+          href: "In-Class_Ex/In-Class_Ex04/In-Class_Ex04.html"
       - text: "Take-Home Exercise"
         menu:
         - text: "Study on Road Accidents in Bangkok Greater Metropolitan Area"

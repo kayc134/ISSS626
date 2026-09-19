@@ -9,3 +9,5 @@
 data
 .RDataTmp1
 .RDataTmp2
+*.RDataTmp*
+.RDataTmp3

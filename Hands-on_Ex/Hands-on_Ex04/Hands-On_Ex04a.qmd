@@ -35,7 +35,7 @@ pacman::p_load(sf, spNetwork, tmap, tidyverse, dplyr)
 
 I will first prepare the `Punggol_St` dataset using a Malaysia, Singapore and Brunei road network shapefile and URA’s 2019 Master Plan’s planning subzone boundary shapefile.
 
-```
+```{r}
 roads <- st_read("data/malaysia-singapore-brunei-260916-free/gis_osm_roads_free_1.shp") %>% 
   st_transform(crs = 3414)
 mpsz  <- st_read("data/mpsz/MP14_SUBZONE_NO_SEA_PL.shp") %>% 
@@ -62,7 +62,7 @@ I will now import `Punggol_St` as `network`, and plot it to check.
 spNetwork functions like *lixelize_lines()* require pure single-part line geometries to build spatial network graphs without breaking. Hence, I used *st_cast("LINESTRING")* to convert complex or multi-part MULTILINESTRING features into individual LINESTRING segments, preventing spatial topology errors during network processing.
 :::
 
-```
+```{r}
 network <- st_read("data/Punggol_St/Punggol_St.shp") %>%
   st_cast("LINESTRING")
 
@@ -71,7 +71,7 @@ plot(st_geometry(network))
 
 I will now prepare `Punggol_CC`
 
-```
+```{r}
 childcare_sf <- st_read("data/ChildCareServices.geojson")%>%
   st_transform(crs = 3414)
 mpsz      <- st_read("data/MP14_SUBZONE_NO_SEA_PL.geojson")%>%
@@ -95,7 +95,7 @@ print(punggol_cc)
 
 I will now import `Punggol_CC` as `childcare`.
 
-```
+```{r}
 childcare <- st_read(dsn="data/Punggol_CC/Punggol_CC.shp") %>%
   st_zm(drop = TRUE, what = "ZM")
 ```
@@ -104,14 +104,14 @@ childcare <- st_read(dsn="data/Punggol_CC/Punggol_CC.shp") %>%
 
 Before we jump into the analysis, I will visualise the geospatial data using *plot()* of Base R.
 
-```
+```{r}
 plot(st_geometry(network))
 plot(childcare,add=T,col='red',pch = 19)
 ```
 
 To visualise the geospatial data with high cartographic quality and interactive manner, the mapping function of tmap package can be used.
 
-```
+```{r}
 tmap_mode('view')
 tm_shape(childcare) + 
   tm_dots() + 
@@ -119,7 +119,7 @@ tm_shape(childcare) +
   tm_lines()
 ```
 
-```
+```{r}
 tmap_mode('plot')
 ```
 
@@ -136,7 +136,7 @@ Before computing NKDE, the SpatialLines object need to be cut into lixels with a
 
 After cut, if the length of the final lixel is shorter than the minimum distance, it is added to the previous lixel. If NULL, then *mindist = maxdist/10*. Also note that the segments that are already shorter than the minimum distance are not modified.
 
-```
+```{r}
 lixels <- lixelize_lines(network, 
                          700, 
                          mindist = 375)
@@ -146,7 +146,7 @@ lixels <- lixelize_lines(network,
 
 Next, *lines_center()* of spNetwork will be used to generate a SpatialPointsDataFrame (i.e. samples) with line centre points. The points are located at center of the line based on the length of the line.
 
-```
+```{r}
 samples <- lines_center(lixels) 
 ```
 
@@ -160,7 +160,7 @@ I will now compute the NKDE:
   - *method=“discontinuous”*. The method is proposed by Okabe et al (2008), which equally “divides” the mass density of an event at intersections of lixels.
   - *method=“continuous”*. If the discontinuous method is unbiased, it leads to a discontinuous kernel function which is a bit counter-intuitive. Okabe et al (2008) proposed another version of the kernel, that divide the mass of the density at intersection but adjusts the density before the intersection to make the function continuous.
 
-```
+```{r}
 densities <- nkde(network, 
                   events = childcare,
                   w = rep(1, nrow(childcare)),
@@ -182,21 +182,21 @@ densities <- nkde(network,
 
 Before I can visualise the NKDE values, I will insert the computed density values (i.e. densities) into samples and lixels objects as density fields.
 
-```
+```{r}
 samples$density <- densities
 lixels$density <- densities
 ```
 
 Since svy21 projection system is in meters, the computed density values are very small i.e. 0.0000005. I will rescale the density values from number of events per meter to number of events per kilometer.
 
-```
+```{r}
 samples$density <- samples$density*1000
 lixels$density <- lixels$density*1000
 ```
 
 I will use appropriate functions of tmap package to prepare interactive and high cartographic quality map visualisation.
 
-```
+```{r}
 tmap_mode('view')
 tm_shape(lixels)+
   tm_lines(col="density")+
@@ -228,7 +228,7 @@ There are nine arguments used:
 - resolution: When simulating random points on the network, selecting a resolution will reduce greatly the calculation time. When resolution is null the random points can occur everywhere on the graph. If a value is specified, the edges are split according to this value and the random points are selected vertices on the new network.
 - conf_int: A double indicating the width confidence interval (default = 0.05).
 
-```
+```{r}
 kfun_childcare <- kfunctions(network, 
                              childcare,
                              start = 0, 
@@ -249,7 +249,7 @@ The output of *kfunctions()* is a list with the following values:
 
 For example, we can visualise the ggplot2 object of k-function.
 
-```
+```{r}
 kfun_childcare$plotk
 ```
 

@@ -4,12 +4,8 @@
 .httr-oauth
 .DS_Store
 .quarto
-
 /.quarto/
 **/*.quarto_ipynb
 data
 .RDataTmp1
-_site/.RDataTmp1
-.RData
-*.RDataTmp*
-_freeze/
+.RDataTmp2

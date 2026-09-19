@@ -40,11 +40,11 @@ This report investigates the spatial distribution of road traffic accidents reco
 
 ## 3.1 Datasets
 
-| \# | Dataset | Type | Role |
+| \# | Dataset | Geometry | Role |
 |-----------------|------------------|-----------------|---------------------|
 | 1 | `geoBoundaries-THA-ADM1-all.shp` | Multi-polygon | Define the BMR study region (six provinces) |
-| 2 | `thai_road_accident_2019_2022.csv` | Point (event) | The 2022 point events |
-| 3 | `gis_osm_roads_free_1.shp` | Line | The constraining network (main roads only) |
+| 2 | `thai_road_accident_2019_2022.csv` | Point (event) | Provides 2022 traffic accidents |
+| 3 | `gis_osm_roads_free_1.shp` | Line | Provides road networks (main roads) |
 
 ## 3.2 Point Event Definition
 

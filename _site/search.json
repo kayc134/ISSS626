@@ -179,7 +179,7 @@
     "href": "Take-Home_Ex/Take-Home_Ex01/Take-Home_Ex01.html#datasets",
     "title": "01: Study on Road Accidents in Bangkok Greater Metropolitan Area",
     "section": "3.1 Datasets",
-    "text": "3.1 Datasets\n\n\n\n\n\n\n\n\n\n#\nDataset\nType\nRole\n\n\n\n\n1\ngeoBoundaries-THA-ADM1-all.shp\nMulti-polygon\nDefine the BMR study region (six provinces)\n\n\n2\nthai_road_accident_2019_2022.csv\nPoint (event)\nThe 2022 point events\n\n\n3\ngis_osm_roads_free_1.shp\nLine\nThe constraining network (main roads only)"
+    "text": "3.1 Datasets\n\n\n\n\n\n\n\n\n\n#\nDataset\nGeometry\nRole\n\n\n\n\n1\ngeoBoundaries-THA-ADM1-all.shp\nMulti-polygon\nDefine the BMR study region (six provinces)\n\n\n2\nthai_road_accident_2019_2022.csv\nPoint (event)\nProvides 2022 traffic accidents\n\n\n3\ngis_osm_roads_free_1.shp\nLine\nProvides road networks (main roads)"
   },
   {
     "objectID": "Take-Home_Ex/Take-Home_Ex01/Take-Home_Ex01.html#point-event-definition",

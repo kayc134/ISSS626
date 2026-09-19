@@ -13,3 +13,47 @@ execute:
 editor: visual
 ---
 
+Using steps learned from hands-on exercise, I will be working on this in-class exercise.
+
+## 1. Loading R Packages and Importing Data
+
+```{r}
+pacman::p_load(sf, ggstatsplot, spdep, tmap, tidyverse, knitr, GWmodel)
+```
+
+```{r}
+hunan_sf <- st_read(dsn="data/geospatial/hunan.shp",
+                layer = "Hunan")
+```
+
+```{r}
+hunan_2012 <- read_csv("data/aspatial/Hunan_2012.csv")
+```
+
+```{r}
+data.frame(Index = 1:ncol(left_join(hunan_sf, hunan_2012)), 
+           Name = names(left_join(hunan_sf, hunan_2012)))
+```
+
+```{r}
+hunan <- left_join(hunan_sf, hunan_2012) %>%
+  select(1:3, 7, 15, 16, 31, 32)
+```
+
+```{r}
+#| fig-width: 16
+#| fig-height: 6
+#| echo: false
+
+basemap <- tm_shape(hunan) +
+  tm_polygons() +
+  tm_text("NAME_3", size=0.5)
+
+gdppc <- qtm(hunan, "GDPPC") +
+  tm_layout(
+    legend.position = c("left", "bottom"))
+tmap_arrange(basemap, gdppc, asp=1, ncol=2)
+```
+  
+  
+  

@@ -9,7 +9,7 @@ execute:
   eval: true
   message: false
   warning: false
-  freeze: true
+  freeze: auto
 editor: visual
 ---
 
@@ -253,7 +253,7 @@ For example, we can visualise the ggplot2 object of k-function.
 kfun_childcare$plotk
 ```
 
-The blue line is the empirical network K-function of the childcare centres in Punggol planning area. The gray envelop represents the results of the 50 simulations in the interval 2.5% - 97.5%. Because the blue line between the distance of 0 to 250 metres are above the gray area, we can infer that there is statistically significant spatial clustering at short distances (up to ~250 meters). There are more childcare centres located within 250 meters of one another along the network than would be expected by pure chance.
+The blue line is the empirical network K-function of the childcare centres in Punggol planning area. The gray envelop represents the results of the 50 simulations in the interval 2.5% - 97.5%. Because the blue line between the distance of 0 to 250 metres are above the gray area, we can infer that there is statistically significant spatial clustering at short distances (up to \~250 meters). There are more childcare centres located within 250 meters of one another along the network than would be expected by pure chance.
 
 ## 6. References
 

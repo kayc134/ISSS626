@@ -284,7 +284,7 @@ clarkevans.test(
 
 ### 5.3 Bandwidth Selection for Kernel Density Estimation
 
-M*ethod selection & justification.* Following Baddeley et al. (2016), four automatic bandwidth selectors were compared before committing to one for the KDE surface — bw.diggle(), bw.CvL(), bw.scott(), and bw.ppl() — since bandwidth choice is exactly the kind of methodological decision the assignment requires to be justified rather than asserted.
+*Method selection & justification.* Following Baddeley et al. (2016), four automatic bandwidth selectors were compared before committing to one for the KDE surface — bw.diggle(), bw.CvL(), bw.scott(), and bw.ppl() — since bandwidth choice is exactly the kind of methodological decision the assignment requires to be justified rather than asserted.
 
 *Parameters and assumptions.* bw.diggle() minimises a cross-validation criterion tuned to isolate one dominant, tight cluster against a CSR background — it assumes essentially a single main hotspot. bw.CvL() uses the Cronie & van Lieshout criterion, generally more stable on multi-cluster patterns and less prone to pathological under-smoothing. bw.scott() is a non-adaptive rule-of-thumb based on the pattern's spread in x and y separately (hence two values), not tuned to the actual clustering structure. bw.ppl() uses likelihood cross-validation and is the method Baddeley et al. specifically recommend for patterns dominated by multiple tight local clusters rather than one large one — a better structural match for accident data, which is expected to hotspot at many individual junctions rather than one citywide cluster.
 

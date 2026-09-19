@@ -1,5 +1,5 @@
 ---
-title: "Geographically Weighted Summary Statistics"
+title: "04: Geographically Weighted Summary Statistics"
 author: "Chia Ka Ying"
 date: "2026-09-19"
 date-modified: "last-modified"
@@ -55,5 +55,60 @@ gdppc <- qtm(hunan, "GDPPC") +
 tmap_arrange(basemap, gdppc, asp=1, ncol=2)
 ```
   
-  
-  
+```{r}
+#gsww requires files in sp rather than sf
+hunan_sp <- hunan %>%
+  as_Spatial()
+```
+
+## 2. Determining adaptive bandwidth
+
+```{r}
+bw_CV <- bw.gwr(GDPPC ~ 1, #gwr is a function, ~1 because there is only one variable, and will need to replace GDPPC if want to use another variable, rather than just adding the other variable in
+                data=hunan_sp, 
+                approach='CV',
+                adaptive=TRUE,
+                kernel="bisquare",
+                longlat=T)
+```
+
+```{r}
+bw_AIC <- bw.gwr(GDPPC ~ 1, #gwr is a function, ~1 because there is only one variable, and will need to replace GDPPC if want to use another variable, rather than just adding the other variable in
+                data=hunan_sp, 
+                approach='AICc',
+                adaptive=TRUE,
+                kernel="bisquare",
+                longlat=T)
+```
+
+```{r}
+gwstat <- gwss(data = hunan_sp,
+               vars ='GDPPC',
+               bw = bw_AIC,
+               kernel = 'bisquare', #needs to be the same as the calculation
+               quantile = TRUE,
+               adaptive = TRUE,
+               longlat = T)
+```
+
+```{r}
+gwstat_df <- as.data.frame(gwstat$SDF) 
+```
+
+```{r}
+hunan_gstat <- cbind(hunan_sf, gwstat_df) #as there is no unique identifier for the join, need to be careful that the sequence was not changed previously
+```
+
+## 3. Plotting the Geovisualisation
+
+```{r}
+tm_shape(hunan_gstat) +
+  tm_polygons(fill = 'GDPPC_LM',
+              style = 'quantile',
+              n = 5,
+              values = 'brewer.blues', # can change to reds, greens
+              fill.legend = tm_legend(title = 'Local Mean')) +
+  tm_borders(fill_alpha = 0.5) +
+  tm_title('Distribution of geographically weighted mean') +
+  tm_layout(legend.position = c('left', 'bottom'))
+```

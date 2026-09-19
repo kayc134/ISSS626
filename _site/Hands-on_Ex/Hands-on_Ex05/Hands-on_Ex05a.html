@@ -9,7 +9,7 @@
 <meta name="author" content="Chia Ka Ying">
 <meta name="dcterms.date" content="2026-09-19">
 
-<title>05a: Global Measures of Spatial Autocorrelation – Kay’s GeoHub</title>
+<title>05a: Global Measures of Spatial Autocorrelation</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -31,161 +31,25 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../../">
-<link href="../../images/favicon.png" rel="icon" type="image/png">
-<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../../site_libs/quarto-html/popper.min.js"></script>
-<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-bcaea1afbde5c3fcfe46a7eae4a52071.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
-<script id="quarto-search-options" type="application/json">{
-  "location": "navbar",
-  "copy-button": false,
-  "collapse-after": 3,
-  "panel-placement": "end",
-  "type": "overlay",
-  "limit": 50,
-  "keyboard-shortcut": [
-    "f",
-    "/",
-    "s"
-  ],
-  "show-item-context": false,
-  "language": {
-    "search-no-results-text": "No results",
-    "search-matching-documents-text": "matching documents",
-    "search-copy-link-title": "Copy link to search",
-    "search-hide-matches-text": "Hide additional matches",
-    "search-more-match-text": "more match in this document",
-    "search-more-matches-text": "more matches in this document",
-    "search-clear-button-title": "Clear",
-    "search-text-placeholder": "",
-    "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit",
-    "search-label": "Search"
-  }
-}</script>
+<script src="Hands-On_Ex05a_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Hands-On_Ex05a_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="Hands-On_Ex05a_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="Hands-On_Ex05a_files/libs/quarto-html/popper.min.js"></script>
+<script src="Hands-On_Ex05a_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Hands-On_Ex05a_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Hands-On_Ex05a_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Hands-On_Ex05a_files/libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Hands-On_Ex05a_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Hands-On_Ex05a_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Hands-On_Ex05a_files/libs/bootstrap/bootstrap-215b371544c282197b31c8aa00ce3677.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
 
-<link rel="stylesheet" href="../../styles.css">
 </head>
 
-<body class="nav-fixed quarto-light">
+<body class="fullcontent quarto-light">
 
-<div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
-      <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../../index.html">
-    <span class="navbar-title">Kay’s GeoHub</span>
-    </a>
-  </div>
-            <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-  <span class="navbar-toggler-icon"></span>
-</button>
-          <div class="collapse navbar-collapse" id="navbarCollapse">
-            <ul class="navbar-nav navbar-nav-scroll me-auto">
-  <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-hands-on-exercise" role="link" data-bs-toggle="dropdown" aria-expanded="false">
- <span class="menu-text">Hands-On Exercise</span>
-    </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-hands-on-exercise">    
-        <li>
-    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex01/Hands-On_Ex01a.html">
- <span class="dropdown-text">01a: Geospatial Data Science with R</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex01/Hands-On_Ex01b.html">
- <span class="dropdown-text">01b: Thematic Mapping and GeoVisualisation with R</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex02/Hands-On_Ex02a.html">
- <span class="dropdown-text">02a: First Order Spatial Points Analysis Methods</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex02/Hands-On_Ex02b.html">
- <span class="dropdown-text">02b: Second Order Spatial Points Analysis Methods</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex03/Hands-On_Ex03.html">
- <span class="dropdown-text">03: Spatio-Temporal Point Patterns Analysis</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex04/Hands-On_Ex04a.html">
- <span class="dropdown-text">04a: Network Constrained Spatial Point Patterns Analysis</span></a>
-  </li>  
-        <li>
-    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex04/Hands-On_Ex04b.html">
- <span class="dropdown-text">04b: Spatial Weights and Applications</span></a>
-  </li>  
-        <li class="dropdown-header">Hands-On Exercise 05</li>
-        <li class="dropdown-header">Hands-On Exercise 06</li>
-        <li class="dropdown-header">Hands-On Exercise 07</li>
-        <li class="dropdown-header">Hands-On Exercise 08</li>
-        <li class="dropdown-header">Hands-On Exercise 09</li>
-        <li class="dropdown-header">Hands-On Exercise 10</li>
-    </ul>
-  </li>
-  <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-in-class-exercise" role="link" data-bs-toggle="dropdown" aria-expanded="false">
- <span class="menu-text">In-Class Exercise</span>
-    </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-in-class-exercise">    
-        <li>
-    <a class="dropdown-item" href="../../In-Class_Ex/In-Class_Ex04/In-Class_Ex04.html">
- <span class="dropdown-text">Geographically Weighted Summary Statistics</span></a>
-  </li>  
-    </ul>
-  </li>
-  <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-take-home-exercise" role="link" data-bs-toggle="dropdown" aria-expanded="false">
- <span class="menu-text">Take-Home Exercise</span>
-    </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-take-home-exercise">    
-        <li>
-    <a class="dropdown-item" href="../../Take-Home_Ex/Take-Home_Ex01/Take-Home_Ex01.html">
- <span class="dropdown-text">Study on Road Accidents in Bangkok Greater Metropolitan Area</span></a>
-  </li>  
-    </ul>
-  </li>
-</ul>
-            <ul class="navbar-nav navbar-nav-scroll ms-auto">
-  <li class="nav-item">
-    <a class="nav-link" href="../../index.html"> 
-<span class="menu-text">Home</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../../about.html"> 
-<span class="menu-text">About</span></a>
-  </li>  
-</ul>
-          </div> <!-- /navcollapse -->
-            <div class="quarto-navbar-tools">
-</div>
-      </div> <!-- /container-fluid -->
-    </nav>
-</header>
-<!-- content -->
-<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
-<!-- sidebar -->
-<!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
-    </div>
-<!-- main -->
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
@@ -238,9 +102,8 @@ ul.task-list li input[type="checkbox"] {
 <li><p>provide statistically correct interpretation of GSA statistics.</p></li>
 </ul>
 
-
-
-</main> <!-- /main -->
+</main>
+<!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";

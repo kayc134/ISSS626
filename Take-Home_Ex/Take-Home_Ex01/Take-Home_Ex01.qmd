@@ -206,14 +206,14 @@ tm_shape(bmr) + tm_polygons(col = "grey95") +
 
 An interactive map will allow for a more detailed exploration that the event points fall neatly within the road networks.
 
-```{r}
+```
 tmap_mode("view")
 tm_shape(bmr) + tm_polygons(col = "grey95", fill_alpha = 0.5) +
   tm_shape(roads_bmr) + tm_lines(col = "steelblue", lwd = 0.5) +
   tm_shape(accident_sf) + tm_dots(fill = "red", col = "red", size = 0.2)
 ```
 
-```{r}
+```
 tmap_mode("plot")
 ```
 
@@ -221,11 +221,11 @@ tmap_mode("plot")
 
 The sf data set will be converted to owin and ppp, which are required for SPPA. A check on the number of event points from `accident_sf` is first checked using *nrow()* for comparison with after owin clipping.
 
-```{r}
+```
 nrow(accident_sf)
 ```
 
-```{r}
+```
 bmr_owin <- as.owin(bmr)
 
 accident_ppp <- as.ppp(accident_sf)
@@ -238,7 +238,7 @@ The summary shows a four point drop, from 3,593 to 3,589. This is a result of th
 
 *unmark()* is used to ensure an unmarked pattern `accident_ppp_unmarked` for the subsequent analysis.
 
-```{r}
+```
 accident_ppp_unmarked <- unmark(accident_ppp_bmr)
 ```
 
@@ -248,7 +248,7 @@ accident_ppp_unmarked <- unmark(accident_ppp_bmr)
 
 The ppp will first be re-scaled to kilometers to make the statistical output more interpretable. This is particularly relevant for accident events, as using meters may result in an output of less than one accident.
 
-```{r}
+```
 accident_ppp_km <- rescale.ppp(accident_ppp_unmarked, 1000, "km")
 ```
 
@@ -256,7 +256,7 @@ accident_ppp_km <- rescale.ppp(accident_ppp_unmarked, 1000, "km")
 
 *Parameters and assumptions.* correction = "none" applies no edge correction, meaning points near the study-area boundary may have their true nearest neighbour lying just outside the window and undetected — a known source of bias that inflates the appearance of clustering (worth stating explicitly as a limitation). alternative = "clustered" tests the one-sided hypothesis R \< 1, chosen because clustering is the ex-ante expectation for accident data rather than dispersion. The test's null model assumes a homogeneous Poisson process — independent events at uniform intensity — an assumption clearly violated here by both the road network's uneven spatial distribution and underlying population/traffic-exposure variation.
 
-```{r}
+```
 clarkevans.test(
   accident_ppp_km,
   correction = "none",
@@ -271,7 +271,7 @@ clarkevans.test(
 
 *Parameters and assumptions.* nsim = 99 sets the simulation count; the minimum achievable p-value at this setting is 1/(99+1) = 0.01, which is exactly what was obtained — meaning the observed pattern was more extreme than every single simulated CSR realisation. The same CSR/independence assumptions as the analytic test apply to each simulated realisation.
 
-```{r}
+```
 clarkevans.test(
   accident_ppp_km,
   correction = "none",
@@ -288,7 +288,7 @@ clarkevans.test(
 
 *Parameters and assumptions.* bw.diggle() minimises a cross-validation criterion tuned to isolate one dominant, tight cluster against a CSR background — it assumes essentially a single main hotspot. bw.CvL() uses the Cronie & van Lieshout criterion, generally more stable on multi-cluster patterns and less prone to pathological under-smoothing. bw.scott() is a non-adaptive rule-of-thumb based on the pattern's spread in x and y separately (hence two values), not tuned to the actual clustering structure. bw.ppl() uses likelihood cross-validation and is the method Baddeley et al. specifically recommend for patterns dominated by multiple tight local clusters rather than one large one — a better structural match for accident data, which is expected to hotspot at many individual junctions rather than one citywide cluster.
 
-```{r}
+```
 bw.diggle(accident_ppp_km)
 bw.CvL(accident_ppp_km)
 bw.scott(accident_ppp_km)

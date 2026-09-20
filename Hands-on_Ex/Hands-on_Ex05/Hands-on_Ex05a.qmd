@@ -28,3 +28,89 @@ This exercise will be computing Global Measures of Spatial Autocorrelation (GMSA
   - compute and plot spatial correlogram using appropriate function of **spdep** package.
 
 - provide statistically correct interpretation of GSA statistics.
+
+## 1. Getting Started
+
+In spatial policy, one of the main development objective of the local government and planners is to ensure equal distribution of development in the province. In this case study, we are interested to examine the spatial pattern of a selected development indicator (i.e., GDP per capita) of Hunan Provice, People Republic of China, and to do the following:
+
+- To apply appropriate spatial statistical methods to discover if development are evenly distributed geographically. 
+- If not, to find out whether there is sign of spatial clustering.
+- And if yes, to find out where are these clusters.
+
+The following data sets will be used:
+
+Hunan county boundary layer. This is a geospatial data set in ESRI shapefile format.
+Hunan_2012.csv: This csv file contains selected Hunan’s local development indicators in 2012.
+
+I will now import the required packages to perform the study.
+
+```{r}
+pacman::p_load(sf, spdep, tmap, tidyverse)
+```
+
+## 2. Preparaing the Data
+
+### 2.1 Importing the Data
+
+I will now import `hunan` and `hunan2012`, which are a shapefile and csv respectively.
+
+```{r}
+hunan <- st_read(dsn = "data/geospatial", 
+                 layer = "Hunan")
+```
+
+```{r}
+hunan2012 <- read_csv("data/aspatial/Hunan_2012.csv")
+```
+### 2.2 Performing Relational Join
+
+I will update the attribute table of the `hunan` SpatialPolygonsDataFrame with the attribute fields of `hunan2012` dataframe using *left_join()*. Prior to doing so, I will do a check of the column names and index for reference in the argument.
+
+
+```{r}
+data.frame(Index = 1:ncol(left_join(hunan, hunan2012)), 
+           Name = names(left_join(hunan, hunan2012)))
+```
+
+```{r}
+hunan <- left_join(hunan, hunan2012) %>%
+  select(1:4, 7, 15)
+```
+
+### 2.3 Visualising Regional Development Indicator
+
+```{r}
+#| fig-width: 10
+#| fig-height: 6
+#| eval: false
+
+equal <- tm_shape(hunan) +
+  tm_polygons(fill = "GDPPC",
+              fill.scale = tm_scale_intervals(
+                style = "equal",
+                n = 5,
+                values = "brewer.blues")) +
+  tm_borders(fiil_alpha = 0.5) + 
+  tm_layout(legend.position = c("left", "bottom"), 
+            main.title = "Equal interval classification")
+
+quantile <- tm_shape(hunan) +
+  tm_polygons(fill = "GDPPC",
+              fill.scale = tm_scale_intervals(
+                style = "quantile",
+                n = 5)) +
+  tm_borders(fiil_alpha = 0.5) + 
+  tm_layout(legend.position = c("left", "bottom"), 
+            main.title = "Quantile classification")
+
+tmap_arrange(equal, 
+             quantile, 
+             asp=1, 
+             ncol=2)
+```
+
+## 3. Global Measures of Spatial Autocorrelation
+
+In this section, I will compute global spatial autocorrelation statistics and perform spatial complete randomness test for global spatial autocorrelation.
+
+### 3.1 Computing Contiguity Spatial Weights

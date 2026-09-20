@@ -1,0 +1,114 @@
+---
+title: "04: Geographically Weighted Summary Statistics"
+author: "Chia Ka Ying"
+date: "2026-09-19"
+date-modified: "last-modified"
+format: html
+execute:
+  echo: true
+  eval: true
+  message: false
+  warning: false
+  freeze: true
+editor: visual
+---
+
+Using steps learned from hands-on exercise, I will be working on this in-class exercise.
+
+## 1. Loading R Packages and Importing Data
+
+```{r}
+pacman::p_load(sf, ggstatsplot, spdep, tmap, tidyverse, knitr, GWmodel)
+```
+
+```{r}
+hunan_sf <- st_read(dsn="data/geospatial/hunan.shp",
+                layer = "Hunan")
+```
+
+```{r}
+hunan_2012 <- read_csv("data/aspatial/Hunan_2012.csv")
+```
+
+```{r}
+data.frame(Index = 1:ncol(left_join(hunan_sf, hunan_2012)), 
+           Name = names(left_join(hunan_sf, hunan_2012)))
+```
+
+```{r}
+hunan <- left_join(hunan_sf, hunan_2012) %>%
+  select(1:3, 7, 15, 16, 31, 32)
+```
+
+```{r}
+#| fig-width: 16
+#| fig-height: 6
+#| echo: false
+
+basemap <- tm_shape(hunan) +
+  tm_polygons() +
+  tm_text("NAME_3", size=0.5)
+
+gdppc <- qtm(hunan, "GDPPC") +
+  tm_layout(
+    legend.position = c("left", "bottom"))
+tmap_arrange(basemap, gdppc, asp=1, ncol=2)
+```
+
+```{r}
+#gsww requires files in sp rather than sf
+hunan_sp <- hunan %>%
+  as_Spatial()
+```
+
+## 2. Determining adaptive bandwidth
+
+```{r}
+bw_CV <- bw.gwr(GDPPC ~ 1, #gwr is a function, ~1 because there is only one variable, and will need to replace GDPPC if want to use another variable, rather than just adding the other variable in
+                data=hunan_sp, 
+                approach='CV',
+                adaptive=TRUE,
+                kernel="bisquare",
+                longlat=T)
+```
+
+```{r}
+bw_AIC <- bw.gwr(GDPPC ~ 1, #gwr is a function, ~1 because there is only one variable, and will need to replace GDPPC if want to use another variable, rather than just adding the other variable in
+                data=hunan_sp, 
+                approach='AICc',
+                adaptive=TRUE,
+                kernel="bisquare",
+                longlat=T)
+```
+
+```{r}
+gwstat <- gwss(data = hunan_sp,
+               vars ='GDPPC',
+               bw = bw_AIC,
+               kernel = 'bisquare', #needs to be the same as the calculation
+               quantile = TRUE,
+               adaptive = TRUE,
+               longlat = T)
+```
+
+```{r}
+gwstat_df <- as.data.frame(gwstat$SDF) 
+```
+
+```{r}
+hunan_gstat <- cbind(hunan_sf, gwstat_df) #as there is no unique identifier for the join, need to be careful that the sequence was not changed previously
+```
+
+## 3. Plotting the Geovisualisation
+
+```{r}
+tm_shape(hunan_gstat) +
+  tm_polygons(fill = 'GDPPC_LM',
+              style = 'quantile',
+              n = 5,
+              values = 'brewer.blues', # can change to reds, greens
+              fill.legend = tm_legend(title = 'Local Mean')) +
+  tm_borders(fill_alpha = 0.5) +
+  tm_title('Distribution of geographically weighted mean') +
+  tm_layout(legend.position = c('left', 'bottom'))
+```

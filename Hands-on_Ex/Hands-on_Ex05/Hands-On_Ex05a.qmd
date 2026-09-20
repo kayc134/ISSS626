@@ -33,14 +33,13 @@ This exercise will be computing Global Measures of Spatial Autocorrelation (GMSA
 
 In spatial policy, one of the main development objective of the local government and planners is to ensure equal distribution of development in the province. In this case study, we are interested to examine the spatial pattern of a selected development indicator (i.e., GDP per capita) of Hunan Provice, People Republic of China, and to do the following:
 
-- To apply appropriate spatial statistical methods to discover if development are evenly distributed geographically. 
+- To apply appropriate spatial statistical methods to discover if development are evenly distributed geographically.
 - If not, to find out whether there is sign of spatial clustering.
 - And if yes, to find out where are these clusters.
 
 The following data sets will be used:
 
-Hunan county boundary layer. This is a geospatial data set in ESRI shapefile format.
-Hunan_2012.csv: This csv file contains selected Hunan’s local development indicators in 2012.
+Hunan county boundary layer. This is a geospatial data set in ESRI shapefile format. Hunan_2012.csv: This csv file contains selected Hunan’s local development indicators in 2012.
 
 I will now import the required packages to perform the study.
 
@@ -62,10 +61,10 @@ hunan <- st_read(dsn = "data/geospatial",
 ```{r}
 hunan2012 <- read_csv("data/aspatial/Hunan_2012.csv")
 ```
+
 ### 2.2 Performing Relational Join
 
 I will update the attribute table of the `hunan` SpatialPolygonsDataFrame with the attribute fields of `hunan2012` dataframe using *left_join()*. Prior to doing so, I will do a check of the column names and index for reference in the argument.
-
 
 ```{r}
 data.frame(Index = 1:ncol(left_join(hunan, hunan2012)), 

@@ -82,5 +82,12 @@
     "title": "04b: Spatial Weights and Applications",
     "section": "7. Application of Spatial Weight Matrix",
     "text": "7. Application of Spatial Weight Matrix\nIn this section, I will create four different spatial lagged variables:\n\nSpatial lag with row-standardized weights;\nSpatial lag as a sum of neighbouring values;\nSpatial window average; and\nSpatial window sum."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Kay's GeoHub",
+    "section": "",
+    "text": "Geospatial analytics supports decision making, design and planning by providing insights derived from geographically referenced data. This includes the use of data wrangling, spatial statistics and spatial data visualisation technique.\nThis website serves as an archive for assignments for the course ISSS626 Geospatial Analytics and Application, taken in August 2026."
   }
 ]

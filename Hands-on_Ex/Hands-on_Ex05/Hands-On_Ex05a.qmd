@@ -81,7 +81,6 @@ hunan <- left_join(hunan, hunan2012) %>%
 ```{r}
 #| fig-width: 10
 #| fig-height: 6
-#| echo: false
 
 equal <- tm_shape(hunan) +
   tm_polygons(fill = "GDPPC",

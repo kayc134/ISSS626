@@ -1,0 +1,117 @@
+---
+title: "05: Global and Local Spatial Analysis"
+author: "Chia Ka Ying"
+date: "2026-09-26"
+date-modified: "last-modified"
+format: html
+execute:
+  echo: true
+  eval: true
+  message: false
+  warning: false
+  freeze: true
+editor: visual
+---
+
+## 1. Importing R Packages
+
+```{r}
+pacman::p_load(sf, sfdep, tmap, tidyverse)
+```
+
+## 2. Preparaing the Data
+
+### 2.1 Importing the Data
+
+I will now import `hunan` and `hunan2012`, which are a shapefile and csv respectively.
+
+```{r}
+hunan <- st_read(dsn = "data/geospatial", 
+                 layer = "Hunan")
+```
+
+```{r}
+hunan2012 <- read_csv("data/aspatial/Hunan_2012.csv")
+```
+
+### 2.2 Performing Relational Join
+
+I will create the dataframe `hunan_GDPPC` using `hunan` and `hunan2012` using *left_join()*. Prior to doing so, I will do a check of the column names and index for reference in the argument.
+
+```{r}
+data.frame(Index = 1:ncol(left_join(hunan, hunan2012)), 
+           Name = names(left_join(hunan, hunan2012)))
+```
+
+```{r}
+hunan_GDPPC <- left_join(hunan, hunan2012) %>%
+  select(1:4, 7, 15, 16)
+```
+
+## 3. Global Measure of Spatial Association
+
+#### 3.1 Computing Queen's contiguity weights
+
+I will not compute the Queen's contiguity weights, which requires three inputs on *nb*, *style* and *allow_zero*.
+
+```{r}
+wm_q <- hunan_GDPPC %>%
+  mutate(nb = st_contiguity(geometry),
+         wt = st_weights(nb,
+                         style = "W"),
+         .before = 1)
+```
+
+#### 3.2 Computing Global Moran's I
+
+```{r}
+moranI <- global_moran(wm_q$GDPPC,
+                       wm_q$nb,
+                       wm_q$wt)
+glimpse(moranI)
+```
+
+To ensure the computation is reproducible, we will use *set_seed()*. We will perform 100 simulations using *nsim = 99*. 
+
+```{r}
+set.seed(1234)
+
+global_moran_perm(wm_q$GDPPC,
+                      wm_q$nb,
+                      wm_q$wt,
+                  nsim = 99)
+```
+
+## 4. Local Measure of Spatial Association
+
+### 4.1 Computing Local Moran's I
+
+Note that when using sfdep package, note the p-values, `p_ii`, `p_ii_sim` and `p_folder_sim`, that are generated. Take note of the three interpretation columns `mean`, `median` and `pysal`. We should use `mean` if distribution is normal, `median` when distribution is skewed. The values in `pysal` are aligned with what is usually generated in Python. 
+
+```{r}
+lisa <- wm_q %>%
+  mutate(local_moran = local_moran(
+    GDPPC, nb, wt, nsim = 99),
+      .before = 1) %>%
+  unnest(local_moran)
+```
+
+### 4.2 Plotting LISA map
+
+```{r}
+lisa_sig <- lisa %>%
+  filter(p_ii_sim < 0.05)
+tmap_mode("plot")
+tm_shape(lisa) + # this is plotted as a grey backdrop, which includes all 88 counties
+  tm_polygons() +
+  tm_borders(fill_alpha = 0.5) +
+tm_shape(lisa_sig) + # this is plotted to show only those that are significant
+  tm_polygons(fill = "mean",
+            fill.legend = tm_legend( # fill.legend places the legend box outside the map
+              text.size = 1.15, # determines the legend title text size
+              width = 6)) +
+  tm_borders(fill_alpha = 0.4) +
+  tm_layout(legend.title.size = 1.25) # determines the legend text size
+```
+  
+  

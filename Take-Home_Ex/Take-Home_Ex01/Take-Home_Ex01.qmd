@@ -151,7 +151,13 @@ roads_select <- roads_raw %>%
 
 #### 4.2.3 Filtering road network to BMR boundary
 
-The road networks is now ready to be filtered to the BMR boundary using *st_crop()* and *st_bbox()* based on the boundary defined in `bmr`. 
+The road networks is now ready to be filtered to the BMR boundary using *st_crop()* and *st_bbox()* based on the boundary defined in `bmr`.
+
+```
+bmr_combined <- st_union(bmr)
+
+roads_bmr <- st_intersection(roads_select, bmr_combined)
+```
 
 ```{r}
 roads_bmr <- roads_select %>%

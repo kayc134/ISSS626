@@ -167,7 +167,9 @@ The road networks was filtered to the BMR boundary using *st_crop()* based on th
 ```{r}
 roads_bmr <- roads_select %>% 
   st_crop(bmr) %>% 
-  st_intersection(bmr) 
+  st_intersection(bmr) %>%
+  st_cast("MULTILINESTRING") %>%
+  st_cast("LINESTRING")
 ```
 
 The boundary and road networks were plotted for a visual check.
@@ -247,9 +249,10 @@ The data set was transformed into an sf data set, while filtering out the 189 re
 ```{r}
 accident_sf <- accident_2022 %>% 
   filter(!is.na(latitude), !is.na(longitude)) %>% 
-  distinct(longitude, latitude, .keep_all = TRUE) %>%
   st_as_sf(coords = c("longitude", "latitude"), crs = 4326) %>% 
   st_transform(crs = 32647)
+
+nrow(accident_sf)
 ```
 
 The three data sets were plotted together for a visual check.
@@ -289,7 +292,7 @@ The sf data set was converted to owin and ppp, which were required for SPPA. A c
 nrow(accident_sf)
 ```
 
-After owin clipping, there was a drop in four event points, from 3,272 to 3,268. This was a result of the accident event points outside the `bmr` boundary, even though they were labelled as BMR province in the data set. This handled the point events that fell outside the boundary.
+After owin clipping, there was a drop in four event points, from 3,593 to 3,589 This was a result of the accident event points outside the `bmr` boundary, even though they were labelled as BMR province in the data set. This handled the point events that fell outside the boundary.
 
 *rjitter()* from spadstat package was also used for point events of different traffic accidents that happened to overlap by moving them by 1 meter. Unlike *st_jitter*, the argument *retry = TRUE* in *rjitter()* addressed the possibility of a point event accidentally colliding with another after jittering. Based on the output, there was no point event that overlapped.
 
@@ -328,7 +331,11 @@ Complementing this, Network Kernel Density Estimation (NKDE) is applied. Traffic
 
 ### 5.1 Quadrat Analysis
 
-To detect non-random accident clustering across a road network, quadrat analysis divides the study area into a regular grid and compares observed cell counts against a Poisson distribution CSR using Chi-square.
+**Method Selection:** Quadrat analysis was selected as an initial exploratory step because it provides two things the later methods do not, i.e., a significance test (Chi-square goodness-of-fit) that directly quantifies deviation from CSR with a p-value, and an explainable intensity surface that can be cross-checked against road length per cell to distinguish areas of   accident concentration from areas that simply have more road exposure.
+
+To detect non-random accident clustering across a road network, quadrat analysis divides the study area into a grid and compares observed cell counts against a Poisson distribution CSR using Chi-square.
+
+**Parameter and Assumption:** An 8×8 grid was used, balancing the ability to detect localised variation against the Chi-square test's requirement that expected cell counts not be too small. As the BMR boundary is irregular, *st_intersection()* clipping means edge quadrats are genuinely smaller than interior ones. *intensity()* accounted for this using each quadrat's actual clipped area. The test's null hypothesis assumed a homogeneous Poisson process, where accidents occur independently and with equal probability anywhere in the study area. 
 
 #### 5.1.1 Chi-square quadrat test
 
@@ -337,13 +344,8 @@ The *quadratcount()* from spadstat package was used to divid the study area into
 ```{r}
 qcount <- quadratcount(accident_ppp_km, nx = 8, ny = 8)
 
-plot(accident_ppp_km, pch = 20, cex = 0.3, main = "Quadrat Count of Accidents")
-plot(qcount, add = TRUE, cex = 0.8, col = "red")
-
 qcount_intensity <- intensity(qcount)
-```
 
-```{r}
 quadrat.test(accident_ppp_km, nx = 8, ny = 8)
 ```
 
@@ -387,7 +389,7 @@ tm_shape(grid_bmr) +
   tm_layout(legend.title.size = 1)
 ```
 
-Quadrat intensity was plotted based on the 8 x 8 grid for visual inspection. There was a clear gradiant concentration in the bottom right, which seems to coincide with the Bangkok province, peaking at 2.5 accidents/km² as represented by the yellow cell. The yellow cell however, appeared to have a higher than normal proportion of accidents considering that it did not have a very dense road network, as compared to the green cells.
+Quadrat intensity was plotted based on the 8 x 8 grid for visual inspection. There was a clear gradiant concentration in the bottom right, which seemed to coincide with the Bangkok province, peaking at 2.5 accidents/km² as represented by the yellow cell. The yellow cell however, appeared to have a higher than normal proportion of accidents considering that it did not have a very dense road network, as compared to the green cells.
 
 An interactive map was plotted to check the infrastructures in the yellow cell.
 
@@ -428,7 +430,7 @@ To verify the visual observation, road segments were clipped to each quadrat usi
 ::: callout-note
 ## AI Use Disclosure
 
-Generative AI was used to draft the R code for for clipping road segments to each quadrat and summing road length per cell. The output was reviewed and run by the author to verify correctness against the study data.
+Generative AI was used to draft the R code for clipping road segments to each quadrat and summing road length per cell. The output was reviewed and run by the author to verify correctness against the study data.
 :::
 
 ```{r}
@@ -454,111 +456,84 @@ grid_bmr %>%
   head(10)
 ```
 
-Quadrats were ranked by intensity to identify the top 10 highest-accident-density cells. The table confirms the visual observation that the yellow cell, i.e., quadrat_id 23, has an accident count of 470 for its 378km of roads. It has 1.24 accidents per km of road, compared to the next highest at 0.47.
+Quadrats were ranked by intensity to identify the top 10 highest-accident-density cells. The table confirmed the visual observation that the yellow cell, i.e., quadrat_id 23, indeed had an unproportionate number of accidents compared to its road density, where there were 470 accidents for its 378km of roads. This was 1.24 accidents per km of road, compared to the next highest at 0.47 accidents.
+
+**Interpretation:** Together, these results provide consistent evidence against a planar CSR model. The Chi-square quadrat test rejects CSR (p < 0.05), and the 8×8 intensity map identifies a specific area of concentration at the bottom right of BMR, i.e., quadrat 23, coinciding with Suvarnabhumi Airport. This concentration was not due to denser road networks. Quadrat 23 recorded the highest accident rate per kilometre of road (1.24) despite having a smaller road network than several neighbouring cells, indicating genuine excess risk rather than proportional exposure. As anticipated, however, planar quadrat analysis treated the entire study area as available space, which is not the case for a network-bound process. This limitation motivates the network-constrained NKDE analysis that follows, which estimates intensity only along the network itself.
 
 ### 5.2 Network Kernel Density Estimate (NKDE)
 
-NKDE to estimating the density of such spatial point events, through search bandwidth selection and lixel length
+**Method Selection:** NKDE was selected as it estimates density using shortest-path distances along the network rather than Euclidean distances across the 2D plane, directly addressing the network-bound nature of traffic accidents. Unlike planar KDE, it cannot mistake road network density for accident risk, since intensity is calculated only at locations where accidents can actually occur.
 
-https://www.sciencedirect.com/science/article/abs/pii/S0198971508000318
+**Parameter and Assumption:** A lixel length of 200m and minimum distance of 50m, following the standard example provided in the spNetwork package documentation (Gelb, 2025), were initially considered. However, given the substantially larger scale of the BMR network compared to the single-city network used in that reference example, a coarser lixel length of 400m and minimum distance of 200m was adopted instead as a practical trade-off between spatial resolution and tractability.
 
-network quardrat analysis
+NKDE assumes the road network accurately represents where accidents can occur, and that bandwidth was appropriately sized to reveal genuine structure rather than noise or an over-smoothed trend. As roads outside the main-road classes were excluded from the network, accidents on minor roads were snapped to the nearest main-road segment during network construction, introducing some positional error at that scale.
 
-Kernel density estimation (KDE) is then applied in two forms for the same reason, i.e., a planar KDE surface is retained as an exploratory baseline, while a network-constrained KDE (NKDE) is treated as the primary first-order method, since it estimates intensity along the network itself rather than across the full 2-D plane. This avoids the systematic bias of interpreting uneven road density as uneven accident risk.
+#### 5.2.1 Preparing lixel objects
 
-#### 5.2.1 Bandwidth selection
+Before NKDE could be computed, the road network was split into short, roughly equal-length segments called lixels. This provided a consistent spatial unit along the network at which density could be sampled. *method = "discontinuous"* was used, which corrects the bias present in the "simple" method, where an event's mass is multiplied rather than divided at intersections (Sugihara et al., 2010). This produces an unbiased but discontinuous surface, adopted here over the smoother "continuous" method as a more computationally optimised choice.
 
-The objective of performing KDE is to determine the optimal estimate of the density of the process, as it impacts the data that is being smoothed. A bandwidth that is too small reproduces individual points, resulting in noise rather than a pattern, while too large would smooth away point events into a blob. Thus, bandwidth selection will impact the estimator (McSwiggan & Department of Mathematics and Statistics, UWA, 2019).
+As the BMR network is substantially larger than the package's reference example (Gelb, 2025), spNetwork's built-in strategies for large data sets were used.
 
-The use of *density()* requires an indicated bandwidth. The bandwidth was calculated using four different methods and plotted for visual inspection.
+a. *grid_shape*, which partitions the study area into a grid (with a buffer to avoid edge effects at cell boundaries) so computation proceeds cell-by-cell rather than across the whole network at once. 
 
-```{r}
-bw.diggle(accident_ppp_km)
-bw.CvL(accident_ppp_km)
-bw.scott(accident_ppp_km)
-bw.ppl(accident_ppp_km)
-```
+b. *agg = 5*, which aggregates events within a 5m radius before computing density, reducing the effective number of distinct points without materially affecting results at this resolution. 
+
+c. *multisession()* from the future package was used to further optimise computation across available cores.
 
 ```{r}
-#| fig-width: 10
-#| fig-height: 6
-
-kde_diggle <- density(accident_ppp_km, sigma = bw.diggle, edge = TRUE)
-kde_cvl    <- density(accident_ppp_km, sigma = bw.CvL, edge = TRUE)
-kde_scott    <- density(accident_ppp_km, sigma = bw.scott, edge = TRUE)
-kde_ppl    <- density(accident_ppp_km, sigma = bw.ppl, edge = TRUE)
-
-par(mfrow = c(2, 2))
-plot(kde_diggle, main = "bw.diggle")
-plot(kde_cvl, main = "bw.CvL")
-plot(kde_scott, main = "bw.scott")
-plot(kde_ppl, main = "bw.ppl")
-```
-
-**Interpretation.** Comparing the four bandwidth selectors visually rather than by their sigma values alone reveals a clearer picture. bw.diggle and bw.ppl (0.023 km and 0.75 km respectively) both produce maps that trace the underlying road network, with narrow bright lines following street shapes rather than distinct hotspot regions. This indicates under-smoothing, where the estimate at each location is driven by only the handful of nearest accident points. bw.CvL and bw.scott (7.06 km and 4-5 km) instead collapse the pattern into a single broad, diffuse blob covering a large area. This indicates over-smoothing.
-
-None of the bandwidth selector produces a map suited to identifying discrete, actionable hotspots. This demonstrates that a purely planar kernel density approach struggles to find a bandwidth that meaningfully separates "accident risk" from "road network shape" in data that is inherently constrained to the road network.
-
-bw.ppl is selected as the working bandwidth for the exploratory planar KDE baseline as it is the least extreme under-smoother and the closest to providing some accident point details. The output is treated as a baseline for comparison rather than the primary first-order evidence. This finding directly reinforces the report's methodological decision to rely on Network KDE (NKDE) as the primary first-order method, since NKDE smooths intensity along the network itself and is therefore not subject to the same trade-off between tracing the road pattern and diffusing it into a blob.
-
-https://api.research-repository.uwa.edu.au/ws/portalfiles/portal/81039500/THESIS_DOCTOR_OF_PHILOSOPHY_MCSWIGGAN_Gregory_Edward_2020.pdf (use of diggle)
-
-#### 5.1.2 Lixel
-
-### 5.4 Network KDE (NKDE)
-
-```{r}
-roads_bmr <- roads_bmr %>%
-  st_cast("MULTILINESTRING") %>%
-  st_cast("LINESTRING")
-
-class(st_geometry(roads_bmr))
-```
-
-REVIEW BELOW CODE
-
-```         
-lixels_bmr <- lixelize_lines(roads_bmr, 200, mindist = 100)
-
+lixels_bmr <- lixelize_lines(roads_bmr, 400, mindist = 200)
 samples_bmr <- lines_center(lixels_bmr)
 
-nkde_bmr <- nkde(
+future::plan(future::multisession(workers = 10))  
+
+nkde_bmr <- nkde.mc(
   lines = roads_bmr,
   events = accident_bmr,
   w = rep(1, nrow(accident_bmr)),
   samples = samples_bmr,
   kernel_name = "quartic",
   bw = 500,
-  div = "bw.ppl",
-  method = "simple",
+  method = "discontinuous",
+  div = "bw",
   digits = 1,
   tol = 1,
-  grid_shape = c(50, 50),
+  grid_shape = c(10, 10),
   max_depth = 8,
   agg = 5,
   sparse = TRUE,
   verbose = FALSE
 )
+
+future::plan(future::sequential) 
+
+samples_bmr$density <- nkde_bmr
+
+samples_bmr_sf <- st_as_sf(samples_bmr) %>%
+  mutate(density_scaled = density * 1000) %>%
+  arrange(density_scaled)
 ```
 
-```         
-samples_bmr$density <- nkde_bmr
-samples_bmr_sf <- st_as_sf(samples_bmr)
+#### 5.2.2 Plotting NKDE 
 
+A fixed bandwidth of 500m was used, chosen because full data-driven bandwidth selection was too slow to run at BMR's scale. Instead, 500m was obtained from the spNetwork package's own bike-accident example (Gelb, 2025), where cross-validation found an optimal bandwidth of around 550 to 600m, and an adaptive-bandwidth approach found around 450 to 500m using the same discontinuous method used here. As this is a similar urban road-accident dataset, 500m offers a reasonable, evidence-informed estimate.
+
+```{r}
 tm_shape(bmr) + tm_polygons(col = "grey95") +
+  tm_shape(roads_bmr) + tm_lines(col = "grey70", lwd = 0.2) +
   tm_shape(samples_bmr_sf) +
   tm_dots(
-    fill = "density",
-    fill.scale = tm_scale_intervals(style = "quantile", values = "viridis"),
-    fill.legend = tm_legend(title = "NKDE Density"),
-    size = 0.05
+    fill = "density_scaled",
+    fill.scale = tm_scale_intervals(style = "kmeans", n = 7, values = rev(RColorBrewer::brewer.pal(7, "Spectral"))),
+    fill.legend = tm_legend(title = "NKDE Density (×1000)"),
+    size = 0.2
   ) +
   tm_layout(
-    main.title = "Network KDE of Accidents — BMR (bw = 500 m)",
+    main.title = "Network KDE of Accidents",
     main.title.size = 1,
-    legend.outside = TRUE
   )
 ```
+
+**Interpretation:** The NKDE plot shows density concentrating heavily along a small number of specific roads, with the brightest red segments appearing along the same area surfaced in the quadrat analysis finding in Section 5.1.2. This road-based detail is a pattern the quadrat method could only capture at the resolution of an 8×8 grid, while NKDE was able to surface individual road segments, showing that risk is not spread across the general area but tied to specific stretches of road. The majority of the network remains at very low density (blue), including most of the western BMR, again consistent with the quadrat findings. 
 
 ## 6. Second-Order SPPA
 
@@ -576,22 +551,28 @@ https://opentransportationjournal.com/VOLUME/20/ELOCATOR/e26671212488767/FULLTEX
 
 Baddeley, A., Turner, R., & Rubak, E. (n.d.). quadratcount: Quadrat counting for a point pattern on a linear network. Rdocumentation. https://www.rdocumentation.org/packages/spatstat.linnet/versions/3.5-0/topics/quadratcount
 
-*Download OpenStreetMap for Thailand \| Geofabrik Download Server*. (n.d.). Geofabrik Download Server. https://download.geofabrik.de/asia/thailand.html
+Download OpenStreetMap for Thailand \| Geofabrik Download Server. (n.d.). Geofabrik Download Server. https://download.geofabrik.de/asia/thailand.html
+
+Gelb, J. (2025, October 4). Network Kernel Density Estimate. https://cran.r-project.org/web/packages/spNetwork/vignettes/NKDE.html
 
 Kaart: Road Classifications Guide - OpenStreetMap Wiki. (n.d.). https://wiki.openstreetmap.org/wiki/Kaart:\_Road_Classifications_Guide
 
 Kam, T. S. R for Geospatial Data Science and Analytics. https://r4gdsa.netlify.app/
 
-Klokan Technologies GmbH (https://www.klokantech.com/). (n.d.). *EPSG.io: Coordinate Systems worldwide*. https://epsg.io/
+Klokan Technologies GmbH (https://www.klokantech.com/). (n.d.). EPSG.io: Coordinate Systems worldwide. https://epsg.io/
 
 McSwiggan, G. & Department of Mathematics and Statistics, UWA. (2019). Spatial point process methods for linear networks with applications to road accident analysis. https://api.research-repository.uwa.edu.au/ws/portalfiles/portal/81039500/THESIS_DOCTOR_OF_PHILOSOPHY_MCSWIGGAN_Gregory_Edward_2020.pdf
 
 Nicholson, A. (1998). Analysis of spatial distributions of accidents. Safety Science, 71–91. https://www.sciencedirect.com/science/article/abs/pii/S0925753598000563
 
+Okabe, A., Satoh, T., Sugihara, K.: A kernel density estimation method for networks, its computational method and a GIS-based tool. International Journal of Geographical Information Science 23, 7–32 (2009)
+
 Okabe, A., & Yamada, I. (2001). The K-function method on a network and its computational implementation. Geographical Analysis, 33(3), 271–290.
 
-R, T. (2023). *Thailand Road Accident \[2019-2022\]*. Kaggle. https://www.kaggle.com/datasets/thaweewatboy/thailand-road-accident-2019-2022
+R, T. (2023). Thailand Road Accident \[2019-2022\]. Kaggle. https://www.kaggle.com/datasets/thaweewatboy/thailand-road-accident-2019-2022
 
 Runfola D, Anderson A, Baier H, Crittenden M, Dowker E, Fuhrig S, et al. (2020) geoBoundaries: A global database of political administrative boundaries. PLoS ONE 15(4): e0231866. https://doi.org/10.1371/journal.pone.0231866.
 
 Shiode, S. (2008). Analysis of a distribution of point events using the Network‐Based Quadrat Method. Geographical Analysis, 40(4), 380–400. https://doi.org/10.1111/j.0016-7363.2008.00735.x
+
+Sugihara, K., Satoh, T., & Okabe, A. (2010). Simple and unbiased kernel function for network analysis. 2010 10th International Symposium on Communications and Information Technologies, 827–832. IEEE.

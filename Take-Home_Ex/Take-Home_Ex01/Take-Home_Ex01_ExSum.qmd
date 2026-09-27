@@ -38,7 +38,7 @@ format:
 
 ### Core Analytical Objectives
 
-1.  Integrate spatial boundaries, road networks and accident point events for geospatial data analysis.
+1.  Integrate boundaries, road networks and accident point events for analysis.
 2.  Investigate first-order properties using planar (quadrat analysis) and networked-constrained (NKDE) methods.
 3.  Investigate second-order properties using network-constrained K- and G-functions.
 4.  Translate analysis insights into public-safety recommendations.
@@ -56,7 +56,7 @@ format:
 
 ### BMR Map
 
-![Study Area: Bangkok Metropolitan Region with main road networks and accident point events overlay](images/bmr_plot.jpg){fig-align="center" width="80%"} 
+![Study Area: Bangkok Metropolitan Region with main road networks and accident point events overlay](images/bmr_plot.jpg){fig-align="center" height="80%" width="80%"}
 :::
 
 ------------------------------------------------------------------------
@@ -84,26 +84,27 @@ format:
 
   - Exploratory step for chi-square and intensity visual observation
   - p-value of < 0.05, thus rejecting null hypothesis of CSR
-  - One cell with extreme intensity value, where Suvarnabhumi Airport is located
-![](images/quadrat.png){.absolute top="170" left="30" fig-alt="bmr_plot" fig-align="center"}
+  - One cell with extreme intensity value, i.e., quadrat where Suvarnabhumi Airport is located
+![](images/quadrat.png){fig-align="center" height="80%" width="80%"}
   
 ### Network Kernel Density Estimate 
 
   - Estimates density using shortest-path distances along the network
-  - Observed density concentrating heavily along a small number of specific roads, with the brightest red segments in the same areas as the quadrat analysis
-![](images/NKDE.png){.absolute top="170" left="30" fig-alt="bmr_plot" fig-align="center"}
+  - Observed density concentrating heavily along a small number of specific roads, with the brightest red segments in the same areas as the quadrat analysis, i.e., quadrat 23
+![](images/NKDE.png){fig-align="center" height="80%" width="80%"}
+
+:::
 
 ------------------------------------------------------------------------
 
 ## 5. Analytical Approach: Second-Order SPPA{.smaller}
 
 ::: panel-tabset
-### Network K-Function
+### Network K-function
 
-  - Evaluated multi-scale spatial clustering or dispersion of accidents along network distances.
-  - Compared observed point distribution against a Monte Carlo simulated null hypothesis of CSR.
+  - Tested whether quadrat 23’s elevated accident rate reflects a broader area cluster.
   - Observed blue line sits definitively above the simulation envelope across the entire 0 to 2000m range tested. Null hypothesis was rejected,
-![](images/kplot.png){.absolute top="170" left="30" fig-alt="bmr_plot" fig-align="center"}
+![](images/kplot.png){fig-align="center" height="80%" width="80%"}
 
 ### Network G-function
 
@@ -111,24 +112,27 @@ format:
   - Complements K-function finding to check clustering at difference distances
   - Observed blue line sits definitively above the simulated envelope, across the entire 0 to 2000m range tested. Null hypothesis rejected.
   ![](images/gplot.png){.absolute top="170" left="30" fig-alt="bmr_plot" fig-align="center"}
+
 :::
 
 ------------------------------------------------------------------------
 
 ## 6. Analytical Approach: Value-Added Analysis{.smaller}
 
-::: {.panel-tabset}
-### Local Moran's I (LISA)
-* **Objective:** Evaluate whether quadrat 23 (Suvarnabhumi Airport area) represents a statistically significant **High-High spatial cluster** or an isolated spatial outlier relative to surrounding grid cells.
-* **Findings:** Identifies statistically significant local spatial autocorrelation ($p < 0.05$), confirming that high accident rates in the airport corridor are spatially systemic rather than random chance.
+To answer two follow-up questions: is the hotspot a real cluster or an outlier, and do fatal accidents cluster with the non-fatal accidents
 
-```{r}
-#| label: fig-lisa-map
-#| fig-alt: "LISA cluster map showing High-High accident hotspots around Suvarnabhumi Airport (Quadrat 23)."
-#| echo: false
-# Placeholder: Insert tmap / ggplot code for Local Moran's I cluster map
-# tm_shape(quadrat_lisa) + tm_polygons(col = "quadrant", palette = "Set1")
-```
+::: panel-tabset
+### Local Moran’s I
+
+  - Tested whether quadrat 23’s elevated accident rate reflects a broader area cluster.
+  - Observed clear separation of groups in scatterplot.
+  - Reinforces cluster finding that quadrat 23 is the most severe point within a cluster, rather than an isolated spike
+  ![](images/morani.png){fig-align="center" height="80%" width="80%"}
+
+### Network Cross-K/G Function: Fatal vs Non-Fatal Accidents
+
+  - Bivariate cross-K/G function, to test whether fatal and non-fatal accidents are spatially associated with one another along the network
+  ![](images/xkplot.png){.absolute top="170" left="30" fig-alt="bmr_plot" fig-align="left"}   ![](images/xgplot.png){.absolute .fragment top="170" left="30" fig-alt="bmr_plot" fig-align="right"}
 
 ------------------------------------------------------------------------
 

@@ -600,7 +600,7 @@ Both questions carry direct implications for how the public-safety planning reco
 
 ### 7.1 Local Moran's I
 
-**Method Selection:** Local Indicators of Spatial Association (LISA), specifically Local Moran's I, classify each spatial unit into one of four categories based on its own value relative to its neighbours: High-High and Low-Low (i.e., a value similar to its surrounding neighbourhood, forming part of a genuine cluster), and High-Low and Low-High (i.e., a value markedly different from its neighbours, indicating a spatial outlier). This is selected because it directly tests whether Quadrat 23's elevated accident rate reflects a broader areal cluster consistent with the road-network-wide clustering found in Section 6, or a localised outlier relative to its immediate surroundings. This is a distinction the point-pattern methods in Sections 5 and 6 could not resolve on their own, since they either treat the whole network as one continuous space (K/G-functions) or measure exposure without reference to neighbouring areas (Section 5.1.2's road-length comparison).
+**Method Selection:** Local Indicators of Spatial Association (LISA) through Local Moran's I was used to classify each spatial unit relative to its neighbours. High-High and Low-Low indicate a genuine cluster, while High-Low and Low-High indicate a spatial outlier. This method was selected because it directly tests whether quadrat 23's elevated accident rate reflects a broader area cluster, consistent with the network-wide clustering in Section 6, or a localised outlier. This is a distinction Sections 5 and 6 could not resolve, since they either treat the network as one continuous space (K/G-functions) or measure exposure without reference to neighbouring areas (Section 5.1.2). The classification is examined through the standardised Moran scatterplot, alongside the underlying ii statistic and its significance.
 
 **Parameter and Assumption:** Queen contiguity is used to define neighbours using *st_contiguity()*, with row-standardised weights *style = "W"*. A simulation count of nsim = 999 is used. The method assumes the spatial weights matrix appropriately represents meaningful spatial relationships between quadrats, where edge quadrats with fewer neighbours, as noted in Section 5.1, may yield less stable local estimates than interior quadrats.
 
@@ -661,7 +661,45 @@ p_ii.map <- tm_shape(lisa) +
 tmap_arrange(ii.map, p_ii.map, asp = 1, ncol = 2)
 ```
 
-**Interpretation:** Local Moran's I identifies a large, statistically significant High-High cluster spanning 9 contiguous quadrats across the central to southern-eastern BMR, including quadrat 23 (ii = 5.00, p \< 0.05).
+**Interpretation:** Local Moran's I identifies a large, statistically significant High-High cluster spanning 9 contiguous quadrats across the central to southern-eastern BMR, including quadrat 23 (ii = 5.00, p \< 0.05). 
+
+```{r}
+lisa <- lisa %>%
+  mutate(
+    z_intensity = scale(intensity) %>% as.vector(),
+    z_lag_intensity = st_lag(z_intensity, nb, wt)
+  )
+
+ggplot(data = lisa,
+       aes(x = z_intensity,
+           y = z_lag_intensity,
+           color = mean)) +
+  geom_point(size = 2) +
+  geom_smooth(method = "lm",
+              se = FALSE,
+              color = "black") +
+  geom_hline(yintercept = mean(lisa$z_lag_intensity), lty = 2) +
+  geom_vline(xintercept = mean(lisa$z_intensity), lty = 2) +
+  scale_color_manual(
+    values = c("High-High" = "red",
+               "Low-Low" = "blue",
+               "Low-High" = "lightblue",
+               "High-Low" = "pink")) +
+  labs(x = "Standardised Accident Intensity",
+       y = "Standardised Spatial Lag of Accident Intensity",
+       title = "Standardised Moran Scatterplot of Accident Intensity",
+       color = "LISA Quadrant") +
+  theme_minimal()
+```
+
+```{r}
+lisa %>%
+  st_drop_geometry() %>%
+  filter(quadrat_id == 23) %>%
+  select(quadrat_id, z_intensity, z_lag_intensity, mean)
+```
+
+**Interpretation:** The scatterplot shows clear separation into groups rather than a uniform scatter: Low-Low quadrats cluster tightly in the lower-left, while High-High quadrats separate distinctly in the upper-right, visually confirming the significant clustering found above. Quadrat 23 has by far the highest standardised intensity (z = 4.68), but a lower lag intensity compared to its neighbours (z = 1.05). This reinforces the cluster finding that quadrat 23 is the most severe point within a cluster, rather than an isolated spike inflating an otherwise average neighbourhood.
 
 This corroborates the network K/G-function findings in Section 6, that clustering is not confined to a single point but extends across a wider area, consistent with the K-function's distance-independent result. It also adds a distinction the earlier road-length comparison in Section 5.1.2 could not make on its own. Rather than being a High-Low outlier standing apart from its surroundings, quadrat 23 sits within a broader region of similarly elevated risk. Its disproportionate accident rate relative to road length remains real, but occurs within, not despite, this wider cluster.
 
@@ -726,7 +764,7 @@ The analyses in Sections 5 to 7 converge on a consistent finding. Road traffic a
 
 A specific corridor spanning several contiguous quadrats around quadrat, plausibly associated with Suvarnabhumi Airport access infrastructure, is a genuine statistical concentration of both accident frequency and severity, not an artefact of road density or chance.
 
-### 8.2 Reccommendations
+### 8.2 Recommendations
 
 **Emergency response and resource allocation:** Given the confirmed cluster's spatial extent (Section 7.1) rather than a single point, pre-positioning ambulance or traffic-police resources across the identified network is directly supported by the evidence. The fatal/non-fatal co-clustering finding (Section 7.2) further supports treating this network as a priority for reducing response time specifically, since severe outcomes are concentrated exactly where accident volume is highest. However, selecting the specific road segments or stations for resource pre-positioning would require additional information not present in this dataset, such as real-time traffic congestion patterns, peak-hour travel times and existing response-unit coverage.
 
@@ -734,7 +772,7 @@ A specific corridor spanning several contiguous quadrats around quadrat, plausib
 
 **Resource allocation across the BMR.** The cold spot in the north-western BMR indicates comparatively lower accident-related demand there. This can inform relative prioritisation of accident-focused resources, though it should not be read as evidence of lower risk per unit of exposure, e.g., per vehicle-km, which this analysis does not measure.
 
-*Required additional information:* the specific causal mechanism behind the corridor's excess risk, e.g., airport-related traffic conflict, road geometry and driver behaviour, is not identified by this analysis and would require site-level investigation. Land-use and long-term infrastructure planning decisions would need traffic volume and exposure data this study does not include. This study also does not claim that the identified provinces or roads are inherently more dangerous per unit of traffic, only that raw and network-adjusted accident concentration is elevated there in 2022.
+**Required additional information:** the specific causal mechanism behind the corridor's excess risk, e.g., airport-related traffic conflict, road geometry and driver behaviour, is not identified by this analysis and would require site-level investigation. Land-use and long-term infrastructure planning decisions would need traffic volume and exposure data this study does not include. This study also does not claim that the identified provinces or roads are inherently more dangerous per unit of traffic, only that raw and network-adjusted accident concentration is elevated there in 2022.
 
 ::: callout-note
 ## AI Use Disclosure
@@ -742,7 +780,7 @@ A specific corridor spanning several contiguous quadrats around quadrat, plausib
 AI tools were used to provide language assistance during the preparation of this report. AI support was limited to improving the clarity, structure and fluency of written content, including refinement of sentence construction, grammar and academic writing style. All analysis, interpretations, conclusions, insights, hypotheses, business recommendations and managerial implications presented in this report were independently developed by the author based on the dataset, statistical outputs and domain knowledge. AI did not generate the underlying analytical findings or determine the conclusions reached in this study.
 :::
 
-## References
+## 9. References
 
 Baddeley, A., Turner, R., & Rubak, E. (n.d.). quadratcount: Quadrat counting for a point pattern on a linear network. Rdocumentation. https://www.rdocumentation.org/packages/spatstat.linnet/versions/3.5-0/topics/quadratcount
 

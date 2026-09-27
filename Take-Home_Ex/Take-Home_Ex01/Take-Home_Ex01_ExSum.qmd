@@ -33,14 +33,14 @@ format:
 
 ### Primary Research Questions
 
-- **First-Order Property:** Do 2022 traffic accidents across the Bangkok Metropolitan Region (BMR) occur with uniform intensity, or do they form distinct spatial hotspots?
+- **First-Order Property:** Do 2022 traffic accidents across the Bangkok Metropolitan Region (BMR) occur with uniform intensity, or do they form distinct spatial hot spots?
 - **Second-Order Property:** Do accident point patterns show statistically significant spatial interaction (clustering or inhibition) when constrained to the physical road network?
 
 ### Core Analytical Objectives
 
-1.  Integrate spatial boundaries, road networks, and point accident logs into an S2/UTM projected framework.
-2.  Compare **Planar Quadrat Analysis** with **Network Kernel Density Estimation (NKDE)**.
-3.  Test spatial interaction hypotheses using network-constrained K- and G-functions.
+1.  Integrate spatial boundaries, road networks and accident point events for geospatial data analysis.
+2.  Investigate first-order properties using planar (quadrat analysis) and networked-constrained (NKDE) methods.
+3.  Investigate second-order properties using network-constrained K- and G-functions.
 4.  Translate analysis insights into public-safety recommendations.
 
 ------------------------------------------------------------------------
@@ -51,12 +51,12 @@ format:
 ### Spatial Boundary
 
 - **Study Window:** Bangkok Metropolitan Region (BMR), Thailand.
-- **Provinces Included (6):** Bangkok, Nonthaburi, Pathum Thani, Samut Prakan, Nakhon Pathom, and Samut Sakhon.
-- **Coordinate Reference System:** Reprojected to **WGS 84 / UTM Zone 47N (EPSG: 32647)** for accurate distance measurements in meters.
+- **Provinces Included (6):** Bangkok, Nonthaburi, Pathum Thani, Samut Prakan, Nakhon Pathom and Samut Sakhon.
+- **Coordinate Reference System:** Reprojected to WGS 84 / UTM Zone 47N (EPSG: 32647).
 
 ### BMR Map
 
-![Study Area: Bangkok Metropolitan Region with main road networks and accident point events overlay and](images/bmr_plot.jpg){.absolute top="170" left="30" fig-alt="bmr_plot" fig-align="center"}
+![Study Area: Bangkok Metropolitan Region with main road networks and accident point events overlay](images/bmr_plot.jpg){fig-align="center" width="80%"} 
 :::
 
 ------------------------------------------------------------------------
@@ -67,41 +67,51 @@ format:
 
 - **Boundaries:** `geoBoundaries-THA-ADM1-all.shp` (Province limits).
 - **Accidents:** `thai_road_accident_2019_2022.csv` (Point events).
-- **Roads:** OpenStreetMap `gis_osm_roads_free_1.shp` (Filtered to main road classes: motorway, trunk, primary, secondary, tertiary).
+- **Roads:** `gis_osm_roads_free_1.shp` (Filtered to main road classes).
 
 ### Data Quality & Pre-processing
 
 - **Temporal & Spatial Subsetting:** Extracted 2022 records strictly within BMR boundaries.
 - **Missing & Erroneous Values:** Removed 189 records missing coordinate attributes. Retained 5 records with 0 recorded vehicles after verifying descriptions.
-- **Spatial Alignment & Overlaps:** Filtered 4 points falling outside the boundary window. Applied jittering (`rjitter()`) to resolve co-located coordinates. Final dataset: **3,589 accident points**.
+- **Spatial Alignment & Overlaps:** Filtered 4 points falling outside the boundary window. Applied jittering (`rjitter()`) to resolve co-located coordinates but no point event was affected. Final dataset: **3,589 accident points**.
 
 ------------------------------------------------------------------------
 
 ## 4. Analytical Approach: First-Order SPPA{.smaller}
 
-### Planar vs. Network-Constrained Analysis
+::: panel-tabset
+### Planar Quadrat Analysis
 
-- **Planar Quadrat Analysis:**
-  - Evaluates overall intensity uniformity across 2D Euclidean space.
-  - *Limitation:* Ignores underlying road geometry.
-- **Network Kernel Density Estimation (NKDE):**
-  - Constrains point density calculation to the 1D physical road network rather than unconstrained 2D space.
-  - Prevents overestimating risk in un-roaded spaces (e.g., parks, water bodies).
-  - Computes continuous density surfaces along main road segments to pinpoint precise risk corridors.
+  - Exploratory step for chi-square and intensity visual observation
+  - p-value of < 0.05, thus rejecting null hypothesis of CSR
+  - One cell with extreme intensity value, where Suvarnabhumi Airport is located
+![](images/quadrat.png){.absolute top="170" left="30" fig-alt="bmr_plot" fig-align="center"}
+  
+### Network Kernel Density Estimate 
+
+  - Estimates density using shortest-path distances along the network
+  - Observed density concentrating heavily along a small number of specific roads, with the brightest red segments in the same areas as the quadrat analysis
+![](images/NKDE.png){.absolute top="170" left="30" fig-alt="bmr_plot" fig-align="center"}
 
 ------------------------------------------------------------------------
 
 ## 5. Analytical Approach: Second-Order SPPA{.smaller}
 
-### Network-Constrained Point Interaction
+::: panel-tabset
+### Network K-Function
 
-- **Network K-Function:**
-  - Evaluates multi-scale spatial clustering or dispersion of accidents along network distances.
-  - Compares observed point distribution against a Monte Carlo simulated null hypothesis of Complete Spatial Randomness (CSR) along the network.
-- **Network G-Function:**
-  - Measures nearest-neighbor distance distributions along network edges.
-- **Rationale:**
-  - standard planar 2D K/G functions falsely assume isotropic movement across continuous space, producing misleading statistical significance on network-bound data.
+  - Evaluated multi-scale spatial clustering or dispersion of accidents along network distances.
+  - Compared observed point distribution against a Monte Carlo simulated null hypothesis of CSR.
+  - Observed blue line sits definitively above the simulation envelope across the entire 0 to 2000m range tested. Null hypothesis was rejected,
+![](images/kplot.png){.absolute top="170" left="30" fig-alt="bmr_plot" fig-align="center"}
+
+### Network G-function
+
+  - Measured nearest-neighbor distance distributions along network edges.
+  - Complements K-function finding to check clustering at difference distances
+  - Observed blue line sits definitively above the simulated envelope, across the entire 0 to 2000m range tested. Null hypothesis rejected.
+  ![](images/gplot.png){.absolute top="170" left="30" fig-alt="bmr_plot" fig-align="center"}
+:::
 
 ------------------------------------------------------------------------
 

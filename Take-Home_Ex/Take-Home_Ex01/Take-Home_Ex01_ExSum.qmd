@@ -16,20 +16,20 @@ format:
 
 ### Executive Summary Structure
 
-1.  [Research Questions & Objectives](#/research-questions-objectives)
-2.  [Study Area & Spatial Scope](#/study-area-spatial-scope)
-3.  [Data Sources & Quality Handling](#/data-sources-quality-handling)
-4.  [Analytical Approach: First-Order SPPA](#/analytical-approach-first-order-sppa)
-5.  [Analytical Approach: Second-Order SPPA](#/analytical-approach-second-order-sppa)
-6.  [Analytical Approach: Value-Added Analysis](#/analytical-approach-value-added-analysis)
-7.  [Key Spatial Findings](#/key-spatial-findings)
-8.  [Visual Evidence: Hotspot & Corridor Risk](#/visual-evidence-hotspot-corridor-risk)
-9.  [Public-Safety Implications & Recommendations](#/public-safety-implications-recommendations) 
-10. [Methodological Limitations](#/methodological-limitations)
+1.  [Research Questions & Objectives](#research-questions-objectives)
+2.  [Study Area & Spatial Scope](#study-area-spatial-scope)
+3.  [Data Sources & Quality Handling](#data-sources-quality-handling)
+4.  [Analytical Approach: First-Order SPPA](#analytical-approach-first-order-sppa)
+5.  [Analytical Approach: Second-Order SPPA](#analytical-approach-second-order-sppa)
+6.  [Analytical Approach: Value-Added Analysis](#analytical-approach-value-added-analysis)
+7.  [Key Spatial Findings](#key-spatial-findings)
+8.  [Recommendations](#recommendations) 
+9.  [Methodological Limitations](#methodological-limitations)
+10. [References](#references)
 
 ------------------------------------------------------------------------
 
-## 1. Research Questions & Objectives{.smaller}
+## 1. Research Questions & Objectives {.smaller}
 
 ### Primary Research Questions
 
@@ -45,7 +45,7 @@ format:
 
 ------------------------------------------------------------------------
 
-## 2. Study Area & Spatial Scope{.smaller}
+## 2. Study Area & Spatial Scope {.smaller}
 
 ::: panel-tabset
 ### Spatial Boundary
@@ -61,7 +61,7 @@ format:
 
 ------------------------------------------------------------------------
 
-## 3. Data Sources & Quality Handling{.smaller}
+## 3. Data Sources & Quality Handling {.smaller}
 
 ### Datasets Used
 
@@ -77,47 +77,51 @@ format:
 
 ------------------------------------------------------------------------
 
-## 4. Analytical Approach: First-Order SPPA{.smaller}
+## 4. Analytical Approach: First-Order SPPA {.smaller}
 
 ::: panel-tabset
 ### Planar Quadrat Analysis
 
   - Exploratory step for chi-square and intensity visual observation
   - p-value of < 0.05, thus rejecting null hypothesis of CSR
-  - One cell with extreme intensity value, i.e., quadrat where Suvarnabhumi Airport is located
-![](images/quadrat.png){fig-align="center" height="80%" width="80%"}
+  - One cell with extreme intensity value, i.e., quadrat where Suvarnabhumi Airport is
+  
+  ![](images/quadrat.png){fig-align="center" height="80%" width="80%"}
   
 ### Network Kernel Density Estimate 
 
   - Estimates density using shortest-path distances along the network
   - Observed density concentrating heavily along a small number of specific roads, with the brightest red segments in the same areas as the quadrat analysis, i.e., quadrat 23
-![](images/NKDE.png){fig-align="center" height="80%" width="80%"}
+  
+  ![](images/NKDE.png){fig-align="center" height="80%" width="80%"}
 
 :::
 
 ------------------------------------------------------------------------
 
-## 5. Analytical Approach: Second-Order SPPA{.smaller}
+## 5. Analytical Approach: Second-Order SPPA {.smaller}
 
 ::: panel-tabset
 ### Network K-function
 
-  - Tested whether quadrat 23’s elevated accident rate reflects a broader area cluster.
-  - Observed blue line sits definitively above the simulation envelope across the entire 0 to 2000m range tested. Null hypothesis was rejected,
-![](images/kplot.png){fig-align="center" height="80%" width="80%"}
+  - Tested whether accidents cluster with one another beyond what random placement on the network would predict
+  - Observed blue line sits definitively above the simulation envelope across the entire 0 to 2000m range tested. Null hypothesis was rejected.
+  
+  ![](images/kplot.png){fig-align="center" height="80%" width="80%"}
 
 ### Network G-function
 
   - Measured nearest-neighbor distance distributions along network edges.
   - Complements K-function finding to check clustering at difference distances
   - Observed blue line sits definitively above the simulated envelope, across the entire 0 to 2000m range tested. Null hypothesis rejected.
+  
   ![](images/gplot.png){.absolute top="170" left="30" fig-alt="bmr_plot" fig-align="center"}
 
 :::
 
 ------------------------------------------------------------------------
 
-## 6. Analytical Approach: Value-Added Analysis{.smaller}
+## 6. Analytical Approach: Value-Added Analysis {.smaller}
 
 To answer two follow-up questions: is the hotspot a real cluster or an outlier, and do fatal accidents cluster with the non-fatal accidents
 
@@ -127,68 +131,86 @@ To answer two follow-up questions: is the hotspot a real cluster or an outlier, 
   - Tested whether quadrat 23’s elevated accident rate reflects a broader area cluster.
   - Observed clear separation of groups in scatterplot.
   - Reinforces cluster finding that quadrat 23 is the most severe point within a cluster, rather than an isolated spike
+  
   ![](images/morani.png){fig-align="center" height="80%" width="80%"}
 
 ### Network Cross-K/G Function: Fatal vs Non-Fatal Accidents
 
   - Bivariate cross-K/G function, to test whether fatal and non-fatal accidents are spatially associated with one another along the network
-  ![](images/xkplot.png){.absolute top="170" left="30" fig-alt="bmr_plot" fig-align="left"}   ![](images/xgplot.png){.absolute .fragment top="170" left="30" fig-alt="bmr_plot" fig-align="right"}
+  - Fatal accidents consistently occur closer to non-fatal accidents than random co-location would predict
 
-------------------------------------------------------------------------
-
-## 7. Key Findings{.smaller}
-
-### Spatial Distribution & Intensity
-
-- Traffic accidents across BMR are **non-random and highly clustered** along primary arterial road corridors.
-- Core urban centers and major expressways/interchanges exhibit significant density spikes compared to peripheral roads.
-
-### Network Constraints & Clustering
-
-- **Significant Clustering:** Network K-function simulations demonstrate statistically significant clustering at multiple network distance bands ($p < 0.05$).
-- High-density clusters concentrate along main transit corridors connecting Bangkok to adjoining industrial and suburban provinces (Pathum Thani, Samut Prakan, and Samut Sakhon).
-
-------------------------------------------------------------------------
-
-## 8. Visual Evidence & Hotspots{.smaller}
-
-### Empirical Highlights
-
-- **Corridor Concentration:** High-risk segments strictly coincide with high-capacity road classes (motorways, trunks, primary roads).
-- **Spatial Distribution:**
-  - Primary hotspots cluster densely around major suburban entry/exit routes and primary intersections in Bangkok.
-  - Rural/secondary road networks exhibit low, dispersed baseline accident frequencies.
-- **Geovisualization Integration:** Combined `tmap` network density visualizations clearly highlight spatial disparities in risk that unconstrained planar maps obscure.
-
-------------------------------------------------------------------------
-
-## 9. Public-Safety Implications & Recommendations
-
-::: {.panel-tabset}
-
-### Public-Safety Implications
-Targeted Enforcement: Deploy automated speed cameras and traffic enforcement along identified high-density NKDE arterial corridors rather than uniform district distribution.
-
-Optimized EMS Placement: Position Emergency Medical Services (EMS) response units near critical inter-provincial highway interchanges to cut emergency response times.
-
-Engineering Audits: High-density accident corridors highlight structural road engineering flaws (e.g., risky lane merges, poor lighting, or missing pedestrian crossings).
-
-###  Recommendations
-Prioritise Infrastructure Audits: Focus road safety investments and structural redesign on top-quantile NKDE risk corridors.
-
-Dynamic Spatiotemporal Models: Expand SPPA modeling to include temporal slicing (rush-hour vs. overnight and rainy season).
-
-Cross-Border Safety Task Force: Form a joint traffic safety council spanning Bangkok, Pathum Thani, Samut Prakan, and Nonthaburi to co-manage shared high-risk inter-provincial highways.
 :::
 
 ------------------------------------------------------------------------
 
-## 10. Methodological Limitations{.smaller}
+## 7. Key Spatial Findings {.smaller}
+
+### Spatial Distribution & Intensity
+
+- Non-Random Network Clustering: Accidents are strongly concentrated in the central to south-eastern BMR road networks.
+- Co-Location of Severity: Cross-K/G analysis shows fatal accidents consistently cluster near non-fatal crashes at short range.
+- Network vs. Spatial Resolution: Network KDE successfully refined broad area concentrations (from Quadrat analysis) down to specific high-risk road segments.
+
+
+### Network Constraints & Clustering
+
+- Statistically Significant Clustering: Network K-function simulations confirm significant spatial aggregation across multiple network distance bands (p < 0.05).
+- Local Spatial Autocorrelation: Local Moran’s I confirms these high-intensity segments represent quadrat clusters rather than isolated outliers.
+
+------------------------------------------------------------------------
+
+## 8. Recommendations {.smaller}
+
+- Emergency response: Pre-position resources across the identified cluster (not one point), where fatal and non-fatal accidents co-locate, prioritising response-time reduction there. Needs congestion/peak-hour data to finalise sites.
+
+- Road safety & infrastructure: Quadrat 23's high accident rate despite a smaller road network supports targeted engineering review (signage, speed enforcement, intersections) ahead of higher-road-length areas. Not evidence of a specific design cause — needs site-level assessment.
+
+- Resource allocation: The north-western cold spot suggests lower relative accident demand. Not evidence of lower risk per unit of exposure — exposure data not available.
+
+------------------------------------------------------------------------
+
+## 9. Methodological Limitations {.smaller}
 
 ### Analytic & Data Constraints
 
-- **Road Network Simplification:** Analysis was restricted to main road classifications (motorway, trunk, primary, secondary, tertiary), excluding local service roads.
-- **Reporting & Location Bias:** Reliance on GPS coordinates reported in primary accident logs; minor spatial misalignments or geo-referencing errors may exist.
-- **Temporal Aggregation:** 2022 accident data was analyzed as a single static cross-section, masking diurnal, seasonal, or day-of-week temporal fluctuations.
-- **Attribute Depth:** Analysis focuses primarily on point location and network topology, without modeling vehicle speed, road geometry (curvature), or weather interactions.
+- Road Network Simplification: Restricted to main road classes (motorway, trunk, primary, secondary, tertiary), excluding minor/service roads.
 
+- Coordinate Data Quality: 189 records with missing coordinates were dropped, and 4 points fell outside the study boundary despite being labelled within it — some residual geo-referencing imprecision may remain.
+
+- No Exposure Normalisation: Accident counts are not adjusted for traffic volume or vehicle-km; elevated intensity may partly reflect exposure rather than per-unit risk.
+
+- Temporal Aggregation: 2022 accidents were analysed as a single static pattern; seasonal and day-of-week patterns were not explored.
+
+- Attribute Depth: Analysis focuses on location and network topology; available attributes such as weather and road description were not incorporated spatially.
+
+------------------------------------------------------------------------
+
+## 10. References {.smaller}
+
+Baddeley, A., Turner, R., & Rubak, E. (n.d.). quadratcount: Quadrat counting for a point pattern on a linear network. Rdocumentation. https://www.rdocumentation.org/packages/spatstat.linnet/versions/3.5-0/topics/quadratcount
+
+Download OpenStreetMap for Thailand | Geofabrik Download Server. (n.d.). Geofabrik Download Server. https://download.geofabrik.de/asia/thailand.html
+
+Gelb, J. (2025, October 4). Network Kernel Density Estimate. https://cran.r-project.org/web/packages/spNetwork/vignettes/NKDE.html
+
+Kaart: Road Classifications Guide - OpenStreetMap Wiki. (n.d.). https://wiki.openstreetmap.org/wiki/Kaart:_Road_Classifications_Guide
+
+Kam, T. S. R for Geospatial Data Science and Analytics. https://r4gdsa.netlify.app/
+
+Klokan Technologies GmbH. (n.d.). EPSG.io: Coordinate Systems worldwide. https://epsg.io/
+
+McSwiggan, G. & Department of Mathematics and Statistics, UWA. (2019). Spatial point process methods for linear networks with applications to road accident analysis. https://api.research-repository.uwa.edu.au/ws/portalfiles/portal/81039500/THESIS_DOCTOR_OF_PHILOSOPHY_MCSWIGGAN_Gregory_Edward_2020.pdf
+
+Okabe, A., Satoh, T., Sugihara, K.: A kernel density estimation method for networks, its computational method and a GIS-based tool. International Journal of Geographical Information Science 23, 7–32 (2009)
+
+Okabe, A., & Yamada, I. (2001). The K-function method on a network and its computational implementation. Geographical Analysis, 33(3), 271–290.
+
+R, T. (2023). Thailand Road Accident [2019-2022]. Kaggle. https://www.kaggle.com/datasets/thaweewatboy/thailand-road-accident-2019-2022
+
+Runfola D, Anderson A, Baier H, Crittenden M, Dowker E, Fuhrig S, et al. (2020) geoBoundaries: A global database of political administrative boundaries. PLoS ONE 15(4): e0231866. https://doi.org/10.1371/journal.pone.0231866.
+
+Shiode, S. (2008). Analysis of a distribution of point events using the Network‐Based Quadrat Method. Geographical Analysis, 40(4), 380–400. https://doi.org/10.1111/j.0016-7363.2008.00735.x
+
+Sugihara, K., Satoh, T., & Okabe, A. (2010). Simple and unbiased kernel function for network analysis. 2010 10th International Symposium on Communications and Information Technologies, 827–832. IEEE.
+
+Yamada, I., & Thill, J.-C. (2004, June). Comparison of planar and network K-functions in traffic accident analysis. ScienceDirect. https://www.sciencedirect.com/science/article/abs/pii/S0966692303000619

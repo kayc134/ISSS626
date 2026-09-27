@@ -1,0 +1,6 @@
+---
+title: "Executive Summary for Study on Road Accidents in Bangkok Greater Metropolitan Area"
+format: revealjs
+slide-number: true
+preview-links: auto
+---

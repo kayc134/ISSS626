@@ -1,6 +1,10 @@
 ---
-title: "Executive Summary for Study on Road Accidents in Bangkok Greater Metropolitan Area"
+title: "Executive Summary"
+subtitle: "Study on Road Accidents in Bangkok Greater Metropolitan Area"
+author: "Chia Ka Ying"
+date: "27 September 2026"
 format: revealjs
 slide-number: true
+show-slide-number: all
 preview-links: auto
 ---

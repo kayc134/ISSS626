@@ -19,6 +19,8 @@ Road traffic accidents are among the most persistent and spatially patterned pub
 
 This report investigates the spatial distribution of road traffic accidents recorded in **2022** across the **Bangkok Metropolitan Region (BMR)**, comprising Bangkok, Nonthaburi, Nakhon Pathom, Pathum Thani, Samut Prakan and Samut Sakhon. First-order and second-order spatial point pattern analysis (SPPA), with a network-constrained treatment justified by the road-bound nature of the event will be used.
 
+Please refer to the [Executive Summary](https://kay-geohub.vercel.app/Take-Home_Ex/Take-Home_Ex01/Take-Home_Ex01_ExSum.html#/title-slide) for the key analysis and recommendations.
+
 ## 2. Research Questions and Objectives
 
 **Primary research questions:**
@@ -29,12 +31,12 @@ b.  Do accidents exhibit evidence of spatial interaction, i.e., clustering, inhi
 
 **Objectives:**
 
-a. Prepare and integrate real-world geospatial data for point-pattern analysis.
-b. Investigate first-order properties of the traffic accident point pattern across space, using both planar (quadrat analysis) and network-constrained (Network Kernel Density Estimation) methods.
-c. Investigate second-order properties of the accident point pattern using network-constrained methods (network K- and G-functions), reflecting the road-bound nature of the event process established in Section 1.
-d. Critically evaluate the assumptions, methodological choices and limitations of the methods used.
-e. Communicate findings through appropriate geovisualisation.
-f. Translate findings into public-safety planning implications.
+a.  Prepare and integrate real-world geospatial data for point-pattern analysis.
+b.  Investigate first-order properties of the traffic accident point pattern across space, using both planar (quadrat analysis) and network-constrained (Network Kernel Density Estimation) methods.
+c.  Investigate second-order properties of the accident point pattern using network-constrained methods (network K- and G-functions), reflecting the road-bound nature of the event process established in Section 1.
+d.  Critically evaluate the assumptions, methodological choices and limitations of the methods used.
+e.  Communicate findings through appropriate geovisualisation.
+f.  Translate findings into public-safety planning implications.
 
 ## 3. Data and Scope of Study
 
@@ -331,11 +333,11 @@ Complementing this, Network Kernel Density Estimation (NKDE) is applied. Traffic
 
 ### 5.1 Quadrat Analysis
 
-**Method Selection:** Quadrat analysis was selected as an initial exploratory step because it provides two things the later methods do not, i.e., a significance test (Chi-square goodness-of-fit) that directly quantifies deviation from CSR with a p-value, and an explainable intensity surface that can be cross-checked against road length per cell to distinguish areas of   accident concentration from areas that simply have more road exposure.
+**Method Selection:** Quadrat analysis was selected as an initial exploratory step because it provides two things the later methods do not, i.e., a significance test (Chi-square goodness-of-fit) that directly quantifies deviation from CSR with a p-value, and an explainable intensity surface that can be cross-checked against road length per cell to distinguish areas of accident concentration from areas that simply have more road exposure.
 
 To detect non-random accident clustering across a road network, quadrat analysis divides the study area into a grid and compares observed cell counts against a Poisson distribution CSR using Chi-square.
 
-**Parameter and Assumption:** An 8×8 grid was used, balancing the ability to detect localised variation against the Chi-square test's requirement that expected cell counts not be too small. As the BMR boundary is irregular, *st_intersection()* clipping means edge quadrats are genuinely smaller than interior ones. *intensity()* accounted for this using each quadrat's actual clipped area. The test's null hypothesis assumed a homogeneous Poisson process, where accidents occur independently and with equal probability anywhere in the study area. 
+**Parameter and Assumption:** An 8×8 grid was used, balancing the ability to detect localised variation against the Chi-square test's requirement that expected cell counts not be too small. As the BMR boundary is irregular, *st_intersection()* clipping means edge quadrats are genuinely smaller than interior ones. *intensity()* accounted for this using each quadrat's actual clipped area. The test's null hypothesis assumed a homogeneous Poisson process, where accidents occur independently and with equal probability anywhere in the study area.
 
 #### 5.1.1 Chi-square quadrat test
 
@@ -458,7 +460,7 @@ grid_bmr %>%
 
 Quadrats were ranked by intensity to identify the top 10 highest-accident-density cells. The table confirmed the visual observation that the yellow cell, i.e., quadrat_id 23, indeed had an unproportionate number of accidents compared to its road density, where there were 470 accidents for its 378km of roads. This was 1.24 accidents per km of road, compared to the next highest at 0.47 accidents.
 
-**Interpretation:** Together, these results provide consistent evidence against a planar CSR model. The Chi-square quadrat test rejects CSR (p < 0.05), and the 8×8 intensity map identifies a specific area of concentration at the bottom right of BMR, i.e., quadrat 23, coinciding with Suvarnabhumi Airport. This concentration was not due to denser road networks. Quadrat 23 recorded the highest accident rate per kilometre of road (1.24) despite having a smaller road network than several neighbouring cells, indicating genuine excess risk rather than proportional exposure. As anticipated, however, planar quadrat analysis treated the entire study area as available space, which is not the case for a network-bound process. This limitation motivates the network-constrained NKDE analysis that follows, which estimates intensity only along the network itself.
+**Interpretation:** Together, these results provide consistent evidence against a planar CSR model. The Chi-square quadrat test rejects CSR (p \< 0.05), and the 8×8 intensity map identifies a specific area of concentration at the bottom right of BMR, i.e., quadrat 23, coinciding with Suvarnabhumi Airport. This concentration was not due to denser road networks. Quadrat 23 recorded the highest accident rate per kilometre of road (1.24) despite having a smaller road network than several neighbouring cells, indicating genuine excess risk rather than proportional exposure. As anticipated, however, planar quadrat analysis treated the entire study area as available space, which is not the case for a network-bound process. This limitation motivates the network-constrained NKDE analysis that follows, which estimates intensity only along the network itself.
 
 ### 5.2 Network Kernel Density Estimate (NKDE)
 
@@ -474,11 +476,11 @@ Before NKDE could be computed, the road network was split into short, roughly eq
 
 As the BMR network is substantially larger than the package's reference example (Gelb, 2025), spNetwork's built-in strategies for large data sets were used.
 
-a. *grid_shape*, which partitions the study area into a grid (with a buffer to avoid edge effects at cell boundaries) so computation proceeds cell-by-cell rather than across the whole network at once. 
+a.  *grid_shape*, which partitions the study area into a grid (with a buffer to avoid edge effects at cell boundaries) so computation proceeds cell-by-cell rather than across the whole network at once.
 
-b. *agg = 5*, which aggregates events within a 5m radius before computing density, reducing the effective number of distinct points without materially affecting results at this resolution. 
+b.  *agg = 5*, which aggregates events within a 5m radius before computing density, reducing the effective number of distinct points without materially affecting results at this resolution.
 
-c. *multisession()* from the future package was used to further optimise computation across available cores.
+c.  *multisession()* from the future package was used to further optimise computation across available cores.
 
 ```{r}
 lixels_bmr <- lixelize_lines(roads_bmr, 400, mindist = 200)
@@ -513,7 +515,7 @@ samples_bmr_sf <- st_as_sf(samples_bmr) %>%
   arrange(density_scaled)
 ```
 
-#### 5.2.2 Plotting NKDE 
+#### 5.2.2 Plotting NKDE
 
 A fixed bandwidth of 500m was used, chosen because full data-driven bandwidth selection was too slow to run at BMR's scale. Instead, 500m was obtained from the spNetwork package's own bike-accident example (Gelb, 2025), where cross-validation found an optimal bandwidth of around 550 to 600m, and an adaptive-bandwidth approach found around 450 to 500m using the same discontinuous method used here. As this is a similar urban road-accident dataset, 500m offers a reasonable, evidence-informed estimate.
 
@@ -533,7 +535,7 @@ tm_shape(bmr) + tm_polygons(col = "grey95") +
   )
 ```
 
-**Interpretation:** The NKDE plot shows density concentrating heavily along a small number of specific roads, with the brightest red segments appearing along the same area surfaced in the quadrat analysis finding in Section 5.1.2. This road-based detail is a pattern the quadrat method could only capture at the resolution of an 8×8 grid, while NKDE was able to surface individual road segments, showing that risk is not spread across the general area but tied to specific stretches of road. The majority of the network remains at very low density (blue), including most of the western BMR, again consistent with the quadrat findings. 
+**Interpretation:** The NKDE plot shows density concentrating heavily along a small number of specific roads, with the brightest red segments appearing along the same area surfaced in the quadrat analysis finding in Section 5.1.2. This road-based detail is a pattern the quadrat method could only capture at the resolution of an 8×8 grid, while NKDE was able to surface individual road segments, showing that risk is not spread across the general area but tied to specific stretches of road. The majority of the network remains at very low density (blue), including most of the western BMR, again consistent with the quadrat findings.
 
 ## 6. Second-Order SPPA
 
@@ -571,7 +573,7 @@ kfun_bmr <- kfunctions(roads_bmr,
 kfun_bmr$plotk
 ```
 
-**Interpretation:** The observed blue line sits definitively above the simulation envelope across the entire 0 to 2000m range tested. The null hypothesis is thus rejected. The blue line also steadily increases with distance, indicating that clustering compounds uniformly. This means accidents are far more clustered together than a network-random pattern would produce, and this holds at every distance scale. 
+**Interpretation:** The observed blue line sits definitively above the simulation envelope across the entire 0 to 2000m range tested. The null hypothesis is thus rejected. The blue line also steadily increases with distance, indicating that clustering compounds uniformly. This means accidents are far more clustered together than a network-random pattern would produce, and this holds at every distance scale.
 
 ### 6.2 Network G-Function
 
@@ -583,16 +585,16 @@ kfun_bmr$plotk
 kfun_bmr$plotg
 ```
 
-**Interpretation:** The observed blue line sits definitively above the simulated envelope, across the entire 0 to 2000m range tested. The null hypothesis is thus rejected. The gap between the line and envelope is slightly higher below 500m distance, with a sharp spike slightly below 250m. This indicates that accidents happen below 500m of another accident far more often, particularly at about 250m. 
+**Interpretation:** The observed blue line sits definitively above the simulated envelope, across the entire 0 to 2000m range tested. The null hypothesis is thus rejected. The gap between the line and envelope is slightly higher below 500m distance, with a sharp spike slightly below 250m. This indicates that accidents happen below 500m of another accident far more often, particularly at about 250m.
 
 Both K- and G-functions corroborates, and substantially strengthens, the first-order findings from quadrat analysis and NKDE. Accidents in the BMR are not merely following where roads are, or even where roads are especially dense, but are genuinely clustering at every scale examined, particularly at distances below 500m, particularly at about 250m.
 
 ## 7. Value-Added Analysis
 
-The first- and second-order analysis established that accidents in the BMR cluster significantly beyond what network geometry alone would predict, with the strongest signal concentrated in quadrat 23, where Suvarnabhumi Airport is located. This section extends these findings using two methods to addresss two questions the first- and second-order analyses could not answer on their own: 
+The first- and second-order analysis established that accidents in the BMR cluster significantly beyond what network geometry alone would predict, with the strongest signal concentrated in quadrat 23, where Suvarnabhumi Airport is located. This section extends these findings using two methods to addresss two questions the first- and second-order analyses could not answer on their own:
 
-a) Is quadrat 23's extreme accident rate a statistically significant spatial outlier relative to its immediate surroundings, or does it simply reflect the same local variation expected by chance.
-b) Do the most severe accidents cluster in the same locations as accidents overall, or do they exhibit a distinct spatial pattern. 
+a)  Is quadrat 23's extreme accident rate a statistically significant spatial outlier relative to its immediate surroundings, or does it simply reflect the same local variation expected by chance.
+b)  Do the most severe accidents cluster in the same locations as accidents overall, or do they exhibit a distinct spatial pattern.
 
 Both questions carry direct implications for how the public-safety planning recommendations in Section 8 should be scoped and targeted.
 
@@ -659,7 +661,7 @@ p_ii.map <- tm_shape(lisa) +
 tmap_arrange(ii.map, p_ii.map, asp = 1, ncol = 2)
 ```
 
-**Interpretation:** Local Moran's I identifies a large, statistically significant High-High cluster spanning 9 contiguous quadrats across the central to southern-eastern BMR, including quadrat 23 (ii = 5.00, p < 0.05).
+**Interpretation:** Local Moran's I identifies a large, statistically significant High-High cluster spanning 9 contiguous quadrats across the central to southern-eastern BMR, including quadrat 23 (ii = 5.00, p \< 0.05).
 
 This corroborates the network K/G-function findings in Section 6, that clustering is not confined to a single point but extends across a wider area, consistent with the K-function's distance-independent result. It also adds a distinction the earlier road-length comparison in Section 5.1.2 could not make on its own. Rather than being a High-Low outlier standing apart from its surroundings, quadrat 23 sits within a broader region of similarly elevated risk. Its disproportionate accident rate relative to road length remains real, but occurs within, not despite, this wider cluster.
 
@@ -669,7 +671,7 @@ Together, the three analyses point to the same conclusion at increasing spatial 
 
 **Method Selection:** The network K/G-function analysis in Section 6 treated all accidents as a single, undifferentiated point pattern. This section extends that analysis using spNetwork's bivariate cross-K/G function, which tests whether two distinct point types, i.e., fatal and non-fatal accidents, are spatially associated with one another along the network, beyond what their individual frequencies alone would predict. This was not covered in the core exercise and directly extends the network-constrained second-order framework already established in Section 6. This addresses a materially different and more policy-relevant question on whether the most severe accidents cluster in the same locations.
 
-**Parameter and Assumption:** Accidents are split into two groups using number_of_fatalities > 0, using a binary treatment, since fatalities are a rare and heavily zero-inflated outcome. The same network `roads_bmr`, distance range (start = 0, end = 2000), and resolution settings used in Section 6.1 are retained for direct comparability between the univariate and bivariate results. Given the substantially smaller number of fatal accidents relative to non-fatal accidents, nsim = 19 is used for the same computational reasons as Section 6.1. The null hypothesis assumes that, given the fixed locations of non-fatal accidents on the network, fatal accidents are randomly and independently distributed.
+**Parameter and Assumption:** Accidents are split into two groups using number_of_fatalities \> 0, using a binary treatment, since fatalities are a rare and heavily zero-inflated outcome. The same network `roads_bmr`, distance range (start = 0, end = 2000), and resolution settings used in Section 6.1 are retained for direct comparability between the univariate and bivariate results. Given the substantially smaller number of fatal accidents relative to non-fatal accidents, nsim = 19 is used for the same computational reasons as Section 6.1. The null hypothesis assumes that, given the fixed locations of non-fatal accidents on the network, fatal accidents are randomly and independently distributed.
 
 ::: callout-note
 ## AI Use Disclosure
@@ -724,7 +726,7 @@ The analyses in Sections 5 to 7 converge on a consistent finding. Road traffic a
 
 A specific corridor spanning several contiguous quadrats around quadrat, plausibly associated with Suvarnabhumi Airport access infrastructure, is a genuine statistical concentration of both accident frequency and severity, not an artefact of road density or chance.
 
-### 8.2 Reccommendations 
+### 8.2 Reccommendations
 
 **Emergency response and resource allocation:** Given the confirmed cluster's spatial extent (Section 7.1) rather than a single point, pre-positioning ambulance or traffic-police resources across the identified network is directly supported by the evidence. The fatal/non-fatal co-clustering finding (Section 7.2) further supports treating this network as a priority for reducing response time specifically, since severe outcomes are concentrated exactly where accident volume is highest. However, selecting the specific road segments or stations for resource pre-positioning would require additional information not present in this dataset, such as real-time traffic congestion patterns, peak-hour travel times and existing response-unit coverage.
 

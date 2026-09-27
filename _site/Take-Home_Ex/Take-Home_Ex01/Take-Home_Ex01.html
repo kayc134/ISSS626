@@ -236,7 +236,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#introduction-and-study-context" id="toc-introduction-and-study-context" class="nav-link active" data-scroll-target="#introduction-and-study-context">1. Introduction and Study Context</a></li>
   <li><a href="#research-questions-and-objectives" id="toc-research-questions-and-objectives" class="nav-link" data-scroll-target="#research-questions-and-objectives">2. Research Questions and Objectives</a></li>
   <li><a href="#data-and-scope-of-study" id="toc-data-and-scope-of-study" class="nav-link" data-scroll-target="#data-and-scope-of-study">3. Data and Scope of Study</a></li>
-  <li><a href="#datasets" id="toc-datasets" class="nav-link" data-scroll-target="#datasets">3.1 Datasets</a></li>
+  <li><a href="#data-sets" id="toc-data-sets" class="nav-link" data-scroll-target="#data-sets">3.1 Data Sets</a></li>
   <li><a href="#point-event-definition" id="toc-point-event-definition" class="nav-link" data-scroll-target="#point-event-definition">3.2 Point Event Definition</a></li>
   <li><a href="#data-quality-handling-applied-to-point-events" id="toc-data-quality-handling-applied-to-point-events" class="nav-link" data-scroll-target="#data-quality-handling-applied-to-point-events">3.3 Data-Quality Handling Applied to Point Events:</a></li>
   <li><a href="#spatial-study-window" id="toc-spatial-study-window" class="nav-link" data-scroll-target="#spatial-study-window">3.4 Spatial Study Window</a></li>
@@ -252,8 +252,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#quadrat-analysis" id="toc-quadrat-analysis" class="nav-link" data-scroll-target="#quadrat-analysis">5.1 Quadrat Analysis</a></li>
   <li><a href="#network-kernel-density-estimate-nkde" id="toc-network-kernel-density-estimate-nkde" class="nav-link" data-scroll-target="#network-kernel-density-estimate-nkde">5.2 Network Kernel Density Estimate (NKDE)</a></li>
   </ul></li>
-  <li><a href="#second-order-sppa" id="toc-second-order-sppa" class="nav-link" data-scroll-target="#second-order-sppa">6. Second-Order SPPA</a></li>
-  <li><a href="#value-added-analysis" id="toc-value-added-analysis" class="nav-link" data-scroll-target="#value-added-analysis">7. Value-Added Analysis</a></li>
+  <li><a href="#second-order-sppa" id="toc-second-order-sppa" class="nav-link" data-scroll-target="#second-order-sppa">6. Second-Order SPPA</a>
+  <ul class="collapse">
+  <li><a href="#network-k-function-analysis" id="toc-network-k-function-analysis" class="nav-link" data-scroll-target="#network-k-function-analysis">6.1 Network K-Function Analysis</a></li>
+  <li><a href="#network-g-function" id="toc-network-g-function" class="nav-link" data-scroll-target="#network-g-function">6.2 Network G-Function</a></li>
+  </ul></li>
+  <li><a href="#value-added-analysis" id="toc-value-added-analysis" class="nav-link" data-scroll-target="#value-added-analysis">7. Value-Added Analysis</a>
+  <ul class="collapse">
+  <li><a href="#local-morans-i" id="toc-local-morans-i" class="nav-link" data-scroll-target="#local-morans-i">7.1 Local Moran’s I</a></li>
+  <li><a href="#network-cross-kg-function-fatal-vs-non-fatal-accidents" id="toc-network-cross-kg-function-fatal-vs-non-fatal-accidents" class="nav-link" data-scroll-target="#network-cross-kg-function-fatal-vs-non-fatal-accidents">7.2 Network Cross-K/G Function: Fatal vs Non-Fatal Accidents</a></li>
+  </ul></li>
+  <li><a href="#public-safety-planning-and-management-implications" id="toc-public-safety-planning-and-management-implications" class="nav-link" data-scroll-target="#public-safety-planning-and-management-implications">8. Public-Safety Planning and Management Implications</a>
+  <ul class="collapse">
+  <li><a href="#summary-of-analysis" id="toc-summary-of-analysis" class="nav-link" data-scroll-target="#summary-of-analysis">8.1 Summary of Analysis</a></li>
+  <li><a href="#reccommendations" id="toc-reccommendations" class="nav-link" data-scroll-target="#reccommendations">8.2 Reccommendations</a></li>
+  </ul></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 </nav>
@@ -302,6 +315,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="introduction-and-study-context">1. Introduction and Study Context</h2>
 <p>Road traffic accidents are among the most persistent and spatially patterned public-safety problems facing rapidly urbanising and urbanised regions. Unlike many other point-based public-safety events, traffic accidents are constrained to occur on the road network rather than freely across the two-dimensional landscape . This structural feature of the data has direct consequences for which analytical methods are valid.</p>
 <p>This report investigates the spatial distribution of road traffic accidents recorded in <strong>2022</strong> across the <strong>Bangkok Metropolitan Region (BMR)</strong>, comprising Bangkok, Nonthaburi, Nakhon Pathom, Pathum Thani, Samut Prakan and Samut Sakhon. First-order and second-order spatial point pattern analysis (SPPA), with a network-constrained treatment justified by the road-bound nature of the event will be used.</p>
+<p>Please refer to the <a href="https://kay-geohub.vercel.app/Take-Home_Ex/Take-Home_Ex01/Take-Home_Ex01_ExSum.html#/title-slide">Executive Summary</a> for the key analysis and recommendations.</p>
 </section>
 <section id="research-questions-and-objectives" class="level2">
 <h2 class="anchored" data-anchor-id="research-questions-and-objectives">2. Research Questions and Objectives</h2>
@@ -313,8 +327,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Objectives:</strong></p>
 <ol type="a">
 <li>Prepare and integrate real-world geospatial data for point-pattern analysis.</li>
-<li>Investigate first-order properties of the accident point pattern across space.</li>
-<li>Investigate second-order properties using both planar and network-constrained methods.</li>
+<li>Investigate first-order properties of the traffic accident point pattern across space, using both planar (quadrat analysis) and network-constrained (Network Kernel Density Estimation) methods.</li>
+<li>Investigate second-order properties of the accident point pattern using network-constrained methods (network K- and G-functions), reflecting the road-bound nature of the event process established in Section 1.</li>
 <li>Critically evaluate the assumptions, methodological choices and limitations of the methods used.</li>
 <li>Communicate findings through appropriate geovisualisation.</li>
 <li>Translate findings into public-safety planning implications.</li>
@@ -323,8 +337,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="data-and-scope-of-study" class="level2">
 <h2 class="anchored" data-anchor-id="data-and-scope-of-study">3. Data and Scope of Study</h2>
 </section>
-<section id="datasets" class="level2">
-<h2 class="anchored" data-anchor-id="datasets">3.1 Datasets</h2>
+<section id="data-sets" class="level2">
+<h2 class="anchored" data-anchor-id="data-sets">3.1 Data Sets</h2>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -373,7 +387,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><p><strong>Erroneous values:</strong> (see section 4.3.4) Under the field <code>number_of_vehicles_involved</code>, there were five records indicating zero vehicles were involved in the traffic accident. The details were explored and these appeared to be data entry errors as the accident descriptions mentioned collisions. These five records were treated as data entry errors but retained, considering there woould not be any analysis involving number of vehicles.</p></li>
 <li><p><strong>Duplicate observations:</strong> (see section 4.3.4) Using the values in <code>acc_code</code> which provided a unique ID for each traffic accident, the <em>distinct()</em> function was used to check and remove any duplicate event point. There was no duplicate event point identified.</p></li>
 <li><p><strong>Invalid coordinates or geometries:</strong> (see section 4.4) Four event points that were misaligned or located outside the study area were dropped by subsetting the ppp point object against the owin object.</p></li>
-<li><p><strong>Overlapping observations:</strong> (see section 4.4) Even after removing duplicate observations, there might be point events of different traffic accidents that overlap. Using <em>rjitter()</em>, these point events would be moved by one meter.</p></li>
+<li><p><strong>Overlapping observations:</strong> (see section 4.4) Even after removing duplicate observations, there might be point events of different traffic accidents that overlap. Using <em>rjitter()</em>, any identified overlapping point events would be moved by one meter.</p></li>
 </ol>
 </section>
 <section id="spatial-study-window" class="level2">
@@ -390,7 +404,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="importing-geographical-boundary-data" class="level4">
 <h4 class="anchored" data-anchor-id="importing-geographical-boundary-data">4.1.1 Importing geographical boundary data</h4>
 <p>Prior to preparing the geospatial analytical workspace, it is important to check the details of the dataset. This would aid in the extraction of the provinces in BMR into a shapefile <code>bmr</code>.</p>
-<p><em>st_transform(crs = 32647)</em> reprojects the data into WGS 84 / UTM Zone 47N (Klokan Technologies GmbH (https://www.klokantech.com/), n.d.).</p>
+<p><em>st_transform(crs = 32647)</em> reprojects the data into WGS 84 / UTM Zone 47N (Klokan Technologies GmbH, n.d.).</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>adm1 <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"data/geospatial/geoBoundaries-THA-ADM1-all/geoBoundaries-THA-ADM1.shp"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs =</span> <span class="dv">32647</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -847,7 +861,7 @@ Quadrats: 59 tiles (irregular windows)</code></pre>
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Generative AI was used to draft the R code for constructing the 8 × 8 quadrat grid over the BMR boundary and calculating accident intensity (accidents per km²) per quadrat. The output was reviewed and run by the author to verify correctness against the study data.</p>
+<p>AI tools were used to draft the R code for constructing the 8 × 8 quadrat grid over the BMR boundary and calculating accident intensity (accidents per km²) per quadrat. The output was reviewed and run by the author to verify correctness against the study data.</p>
 </div>
 </div>
 <div class="cell">
@@ -930,7 +944,7 @@ Quadrats: 59 tiles (irregular windows)</code></pre>
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Generative AI was used to draft the R code for clipping road segments to each quadrat and summing road length per cell. The output was reviewed and run by the author to verify correctness against the study data.</p>
+<p>AI tools were used to draft the R code for clipping road segments to each quadrat and summing road length per cell. The output was reviewed and run by the author to verify correctness against the study data.</p>
 </div>
 </div>
 <div class="cell">
@@ -1061,13 +1075,255 @@ Quadrats: 59 tiles (irregular windows)</code></pre>
 </section>
 <section id="second-order-sppa" class="level2">
 <h2 class="anchored" data-anchor-id="second-order-sppa">6. Second-Order SPPA</h2>
-<p>Network Constrained G- and K-Function Analysis</p>
-<p>K-means clustering to identify hotspots https://pubmed.ncbi.nlm.nih.gov/19393780/</p>
+<p>While the first-order SPPA evaluated large-scale variations in event intensity across the study area, the second-order analysis examined small-scale spatial interactions and distance dependencies between the accident events themselves. This was to determine whether road traffic accidents in the BMR exhibited significant spatial clustering, spatial dispersion or CSR across varying distance scales. The analysis tests whether the occurrence of a traffic accident at a specific location influences the probability of other accidents occurring nearby. To account for the physical constraints of transport infrastructure, both planar and network-constrained second-order functions—specifically Ripley’s K-function and its network equivalent—are evaluated against appropriate spatial null models.</p>
+<section id="network-k-function-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="network-k-function-analysis">6.1 Network K-Function Analysis</h3>
+<p><strong>Method Selection:</strong> Network K-function analysis was selected because the standard planar K-function’s assumption of an infinitely continuous 2D space, with distances measured as straight-line Euclidean distance, does not hold for traffic accidents, which are geocoded to and constrained by the road network. Under this constraint, the relevant question is not whether accidents deviate from randomness across the full plane, but whether they deviate from randomness within the network itself, with distances measured as shortest-path network distance rather than Euclidean distance (Yamada &amp; Thill, 2004). This directly extends the network-constrained reasoning already established for NKDE in Section 5.2, from a density surface to a formal test of spatial interaction between events.</p>
+<p><strong>Parameter and Assumption:</strong> Monte Carlo simulation was used to empirically estimate the sampling distribution, comparing the observed K-function against 20 random realisations of points placed uniformly along the network rather than against an analytically derived benchmark. The test’s null hypothesis assumes CSR on the network, i.e.&nbsp;that accidents are equally likely to occur at any location along the road network and occur independently of one another. This differs from the planar CSR assumption used in Section 5.1, which treats the entire study area as available space; the network-constrained null model instead only requires deviation to be assessed relative to where accidents can actually occur.</p>
+<p>Ho: The observed spatial point events (i.e., traffic accidents) are uniformly distributed over a street network in BMR.</p>
+<p>A simulation count of <em>nsim = 19</em> was used for computational optimisation given the network’s size. This gives a minimum achievable p-value of 1/(nsim+1) = 0.05, enough to detect a clear rejection of network CSR, consistent with the strong clustering already found in Section 5.1. The trade-off is a coarser confidence envelope, estimated from only 19 simulated curves rather than a larger number, which limits precise interpretation if results fall close to the envelope boundary rather than clearly outside it.</p>
+<section id="computing-the-network-k-function" class="level4">
+<h4 class="anchored" data-anchor-id="computing-the-network-k-function">6.1.1 Computing the Network K-Function</h4>
+<p><em>start = 0</em> and <em>end = 2000</em> were selected to test clustering at scales from the immediate network vicinity up to roughly four times the NKDE bandwidth (500m; Section 5.2.2), allowing comparison of whether clustering persists beyond the scale already revealed by density estimation, while remaining within a distance range still meaningful for targeted public-safety intervention. step and width were both set to 200m, giving 10 evenly-spaced distance bands across this range, a resolution fine enough to locate the approximate distance at which clustering becomes non-significant, without excessive computation time at metro scale.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">267</span>)</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>kfun_bmr <span class="ot">&lt;-</span> <span class="fu">kfunctions</span>(roads_bmr,</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>                        accident_bmr,</span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>                        <span class="at">start =</span> <span class="dv">0</span>,</span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>                        <span class="at">end =</span> <span class="dv">2000</span>,</span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>                        <span class="at">step =</span> <span class="dv">200</span>,</span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>                        <span class="at">width =</span> <span class="dv">200</span>,</span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>                        <span class="at">nsim =</span> <span class="dv">19</span>,</span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a>                        <span class="at">resolution =</span> <span class="dv">200</span>,</span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a>                        <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>kfun_bmr<span class="sc">$</span>plotk</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_Ex01_files/figure-html/unnamed-chunk-33-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Interpretation:</strong> The observed blue line sits definitively above the simulation envelope across the entire 0 to 2000m range tested. The null hypothesis is thus rejected. The blue line also steadily increases with distance, indicating that clustering compounds uniformly. This means accidents are far more clustered together than a network-random pattern would produce, and this holds at every distance scale.</p>
+</section>
+</section>
+<section id="network-g-function" class="level3">
+<h3 class="anchored" data-anchor-id="network-g-function">6.2 Network G-Function</h3>
+<p><strong>Method Selection:</strong> While the K-function is cumulative, summing all event pairs within a given distance, the G-function instead uses nearest-neighbour distances, making it sensitive to local clustering e.g., accidents occurring very close to one another, such as at a single junction. Running both K- and G-functions provides a check on each other. If the G-function shows strong short-range clustering while the K-function’s signal is concentrated at similarly small distances, this corroborates a genuinely local hotspot effect rather than a broader network-level pattern that only appears clustered when aggregated cumulatively.</p>
+<p><strong>Parameter and Assumption:</strong> As the K- and G-functions are computed together in a single <em>kfunctions()</em> call, the same parameters and assumptions described in Section 6.1 apply here.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>kfun_bmr<span class="sc">$</span>plotg</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_Ex01_files/figure-html/unnamed-chunk-34-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Interpretation:</strong> The observed blue line sits definitively above the simulated envelope, across the entire 0 to 2000m range tested. The null hypothesis is thus rejected. The gap between the line and envelope is slightly higher below 500m distance, with a sharp spike slightly below 250m. This indicates that accidents happen below 500m of another accident far more often, particularly at about 250m.</p>
+<p>Both K- and G-functions corroborates, and substantially strengthens, the first-order findings from quadrat analysis and NKDE. Accidents in the BMR are not merely following where roads are, or even where roads are especially dense, but are genuinely clustering at every scale examined, particularly at distances below 500m, particularly at about 250m.</p>
+</section>
 </section>
 <section id="value-added-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="value-added-analysis">7. Value-Added Analysis</h2>
-<p>Moran’s I for spatial pattern of road accidents (second-order) https://www.sciencedirect.com/science/article/abs/pii/S0966692397000379</p>
-<p>https://opentransportationjournal.com/VOLUME/20/ELOCATOR/e26671212488767/FULLTEXT/</p>
+<p>The first- and second-order analysis established that accidents in the BMR cluster significantly beyond what network geometry alone would predict, with the strongest signal concentrated in quadrat 23, where Suvarnabhumi Airport is located. This section extends these findings using two methods to addresss two questions the first- and second-order analyses could not answer on their own:</p>
+<ol type="a">
+<li>Is quadrat 23’s extreme accident rate a statistically significant spatial outlier relative to its immediate surroundings, or does it simply reflect the same local variation expected by chance.</li>
+<li>Do the most severe accidents cluster in the same locations as accidents overall, or do they exhibit a distinct spatial pattern.</li>
+</ol>
+<p>Both questions carry direct implications for how the public-safety planning recommendations in Section 8 should be scoped and targeted.</p>
+<section id="local-morans-i" class="level3">
+<h3 class="anchored" data-anchor-id="local-morans-i">7.1 Local Moran’s I</h3>
+<p><strong>Method Selection:</strong> Local Indicators of Spatial Association (LISA), specifically Local Moran’s I, classify each spatial unit into one of four categories based on its own value relative to its neighbours: High-High and Low-Low (i.e., a value similar to its surrounding neighbourhood, forming part of a genuine cluster), and High-Low and Low-High (i.e., a value markedly different from its neighbours, indicating a spatial outlier). This is selected because it directly tests whether Quadrat 23’s elevated accident rate reflects a broader areal cluster consistent with the road-network-wide clustering found in Section 6, or a localised outlier relative to its immediate surroundings. This is a distinction the point-pattern methods in Sections 5 and 6 could not resolve on their own, since they either treat the whole network as one continuous space (K/G-functions) or measure exposure without reference to neighbouring areas (Section 5.1.2’s road-length comparison).</p>
+<p><strong>Parameter and Assumption:</strong> Queen contiguity is used to define neighbours using <em>st_contiguity()</em>, with row-standardised weights <em>style = “W”</em>. A simulation count of nsim = 999 is used. The method assumes the spatial weights matrix appropriately represents meaningful spatial relationships between quadrats, where edge quadrats with fewer neighbours, as noted in Section 5.1, may yield less stable local estimates than interior quadrats.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sfdep)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>wm_q <span class="ot">&lt;-</span> grid_bmr <span class="sc">%&gt;%</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">nb =</span> <span class="fu">st_contiguity</span>(geometry),</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">wt =</span> <span class="fu">st_weights</span>(</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>          nb, <span class="at">style =</span> <span class="st">"W"</span>),</span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">.before =</span> <span class="dv">1</span>)</span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(wm_q<span class="sc">$</span>nb)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Neighbour list object:
+Number of regions: 59 
+Number of nonzero links: 368 
+Percentage nonzero weights: 10.57167 
+Average number of links: 6.237288 
+Link number distribution:
+
+ 3  5  7  8 
+10 16  6 27 
+10 least connected regions:
+1 7 15 23 31 47 55 56 57 59 with 3 links
+27 most connected regions:
+9 10 11 12 13 17 18 19 20 21 25 26 27 28 29 33 34 35 36 37 40 41 42 43 44 45 53 with 8 links</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">267</span>)</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>lisa <span class="ot">&lt;-</span> wm_q <span class="sc">%&gt;%</span></span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">local_moran =</span> <span class="fu">local_moran</span>(</span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>    intensity, nb, wt, <span class="at">nsim =</span> <span class="dv">999</span>),</span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">.before =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(local_moran)</span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a>lisa <span class="sc">%&gt;%</span></span>
+<span id="cb56-10"><a href="#cb56-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb56-11"><a href="#cb56-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(quadrat_id <span class="sc">==</span> <span class="dv">23</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb56-12"><a href="#cb56-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(quadrat_id, ii, p_ii, mean)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 4
+  quadrat_id    ii      p_ii mean     
+       &lt;int&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;fct&gt;    
+1         23  5.00 0.0000452 High-High</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>ii.map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(lisa) <span class="sc">+</span></span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">fill =</span> <span class="st">"ii"</span>,</span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill.scale =</span> <span class="fu">tm_scale_intervals</span>(</span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">style =</span> <span class="st">"pretty"</span>,</span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">n =</span> <span class="dv">5</span>,</span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">values =</span> <span class="st">"brewer.RdBu"</span>),</span>
+<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill.legend =</span> <span class="fu">tm_legend</span>(</span>
+<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a>                <span class="at">title =</span> <span class="st">"Local Moran's I"</span>,</span>
+<span id="cb58-9"><a href="#cb58-9" aria-hidden="true" tabindex="-1"></a>                <span class="at">position =</span> <span class="fu">tm_pos_out</span>())) <span class="sc">+</span></span>
+<span id="cb58-10"><a href="#cb58-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">fill_alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb58-11"><a href="#cb58-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_title</span>(<span class="st">"Local Moran's I"</span>)</span>
+<span id="cb58-12"><a href="#cb58-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-13"><a href="#cb58-13" aria-hidden="true" tabindex="-1"></a>p_ii.map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(lisa) <span class="sc">+</span></span>
+<span id="cb58-14"><a href="#cb58-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">fill =</span> <span class="st">"p_ii"</span>,</span>
+<span id="cb58-15"><a href="#cb58-15" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill.scale =</span> <span class="fu">tm_scale_intervals</span>(</span>
+<span id="cb58-16"><a href="#cb58-16" aria-hidden="true" tabindex="-1"></a>                <span class="at">breaks =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="cn">Inf</span>, <span class="fl">0.001</span>, <span class="fl">0.01</span>, <span class="fl">0.05</span>, <span class="fl">0.1</span>, <span class="cn">Inf</span>),</span>
+<span id="cb58-17"><a href="#cb58-17" aria-hidden="true" tabindex="-1"></a>                <span class="at">values =</span> <span class="st">"-brewer.Reds"</span>),</span>
+<span id="cb58-18"><a href="#cb58-18" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill.legend =</span> <span class="fu">tm_legend</span>(</span>
+<span id="cb58-19"><a href="#cb58-19" aria-hidden="true" tabindex="-1"></a>                <span class="at">title =</span> <span class="st">"p-value"</span>,</span>
+<span id="cb58-20"><a href="#cb58-20" aria-hidden="true" tabindex="-1"></a>                <span class="at">position =</span> <span class="fu">tm_pos_out</span>()</span>
+<span id="cb58-21"><a href="#cb58-21" aria-hidden="true" tabindex="-1"></a>              )) <span class="sc">+</span></span>
+<span id="cb58-22"><a href="#cb58-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">fill_alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb58-23"><a href="#cb58-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_title</span>(<span class="st">"p-values of Local Moran's I"</span>)</span>
+<span id="cb58-24"><a href="#cb58-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-25"><a href="#cb58-25" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(ii.map, p_ii.map, <span class="at">asp =</span> <span class="dv">1</span>, <span class="at">ncol =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_Ex01_files/figure-html/unnamed-chunk-38-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Interpretation:</strong> Local Moran’s I identifies a large, statistically significant High-High cluster spanning 9 contiguous quadrats across the central to southern-eastern BMR, including quadrat 23 (ii = 5.00, p &lt; 0.05).</p>
+<p>This corroborates the network K/G-function findings in Section 6, that clustering is not confined to a single point but extends across a wider area, consistent with the K-function’s distance-independent result. It also adds a distinction the earlier road-length comparison in Section 5.1.2 could not make on its own. Rather than being a High-Low outlier standing apart from its surroundings, quadrat 23 sits within a broader region of similarly elevated risk. Its disproportionate accident rate relative to road length remains real, but occurs within, not despite, this wider cluster.</p>
+<p>Together, the three analyses point to the same conclusion at increasing spatial resolution. Accidents concentrate in a specific area (Section 5.1), cluster with one another at every distance tested (Section 6), and form a genuine multi-quadrat cluster rather than an isolated anomaly (Section 7.1). This supports an area-wide intervention across the identified cluster, rather than one scoped to quadrat 23 alone.</p>
+</section>
+<section id="network-cross-kg-function-fatal-vs-non-fatal-accidents" class="level3">
+<h3 class="anchored" data-anchor-id="network-cross-kg-function-fatal-vs-non-fatal-accidents">7.2 Network Cross-K/G Function: Fatal vs Non-Fatal Accidents</h3>
+<p><strong>Method Selection:</strong> The network K/G-function analysis in Section 6 treated all accidents as a single, undifferentiated point pattern. This section extends that analysis using spNetwork’s bivariate cross-K/G function, which tests whether two distinct point types, i.e., fatal and non-fatal accidents, are spatially associated with one another along the network, beyond what their individual frequencies alone would predict. This was not covered in the core exercise and directly extends the network-constrained second-order framework already established in Section 6. This addresses a materially different and more policy-relevant question on whether the most severe accidents cluster in the same locations.</p>
+<p><strong>Parameter and Assumption:</strong> Accidents are split into two groups using number_of_fatalities &gt; 0, using a binary treatment, since fatalities are a rare and heavily zero-inflated outcome. The same network <code>roads_bmr</code>, distance range (start = 0, end = 2000), and resolution settings used in Section 6.1 are retained for direct comparability between the univariate and bivariate results. Given the substantially smaller number of fatal accidents relative to non-fatal accidents, nsim = 19 is used for the same computational reasons as Section 6.1. The null hypothesis assumes that, given the fixed locations of non-fatal accidents on the network, fatal accidents are randomly and independently distributed.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>AI Use Disclosure
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>AI tools were used to draft the R code for classifying accidents into fatal and non-fatal groups (based on <code>number_of_fatalities</code>). The output was reviewed and run by the author to verify correctness against the study data.</p>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>accident_bmr <span class="ot">&lt;-</span> accident_bmr <span class="sc">%&gt;%</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">fatal =</span> <span class="fu">if_else</span>(number_of_fatalities <span class="sc">&gt;</span> <span class="dv">0</span>, <span class="st">"Fatal"</span>, <span class="st">"Non-fatal"</span>))</span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>accident_fatal <span class="ot">&lt;-</span> accident_bmr <span class="sc">%&gt;%</span> <span class="fu">filter</span>(fatal <span class="sc">==</span> <span class="st">"Fatal"</span>)</span>
+<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a>accident_nonfatal <span class="ot">&lt;-</span> accident_bmr <span class="sc">%&gt;%</span> <span class="fu">filter</span>(fatal <span class="sc">==</span> <span class="st">"Non-fatal"</span>)</span>
+<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(accident_fatal)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 158</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(accident_nonfatal)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3431</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">267</span>)</span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>cross_kfun <span class="ot">&lt;-</span> <span class="fu">cross_kfunctions</span>(roads_bmr,</span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>                                accident_fatal,</span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a>                                accident_nonfatal,</span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>                                <span class="at">start =</span> <span class="dv">0</span>,</span>
+<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a>                                <span class="at">end =</span> <span class="dv">2000</span>,</span>
+<span id="cb63-8"><a href="#cb63-8" aria-hidden="true" tabindex="-1"></a>                                <span class="at">step =</span> <span class="dv">200</span>,</span>
+<span id="cb63-9"><a href="#cb63-9" aria-hidden="true" tabindex="-1"></a>                                <span class="at">width =</span> <span class="dv">200</span>,</span>
+<span id="cb63-10"><a href="#cb63-10" aria-hidden="true" tabindex="-1"></a>                                <span class="at">nsim =</span> <span class="dv">19</span>,</span>
+<span id="cb63-11"><a href="#cb63-11" aria-hidden="true" tabindex="-1"></a>                                <span class="at">resolution =</span> <span class="dv">200</span>,</span>
+<span id="cb63-12"><a href="#cb63-12" aria-hidden="true" tabindex="-1"></a>                                <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>cross_kfun<span class="sc">$</span>plotk</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_Ex01_files/figure-html/unnamed-chunk-41-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>cross_kfun<span class="sc">$</span>plotg</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_Ex01_files/figure-html/unnamed-chunk-42-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Interpretation:</strong> Both the cross-K and cross-G functions reject spatial independence between fatal and non-fatal accidents, with observed values remaining above the simulation envelope across the entire 0 to 2,000m range. Fatal accidents consistently occur closer to non-fatal accidents than random co-location would predict, most strongly at short range, as observed in the cross-G function’s early peak at about 250m, which shows fatal accidents frequently have a non-fatal accident as an immediate nearest neighbour.</p>
+<p>This means the hotspot area is not just where accidents are frequent, but where severe and less-severe accidents occur alongside each other.</p>
+</section>
+</section>
+<section id="public-safety-planning-and-management-implications" class="level2">
+<h2 class="anchored" data-anchor-id="public-safety-planning-and-management-implications">8. Public-Safety Planning and Management Implications</h2>
+<section id="summary-of-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="summary-of-analysis">8.1 Summary of Analysis</h3>
+<p>The analyses in Sections 5 to 7 converge on a consistent finding. Road traffic accidents in the BMR are not randomly distributed, nor do they simply follow road network density. Quadrat analysis (Section 5.1) identified a specific area of concentration, i.e., quadrat 23 where Suvarnabhumi Airport, with an accident rate per kilometre of road roughly 2.6 times higher than the next-highest quadrat. This indicated a disproportion road exposure alone cannot explain. NKDE (Section 5.2) resolved this concentration to specific networks rather than the whole area. Network K/G-functions (Section 6) confirmed accidents cluster with one another at every distance tested up to 2km, and Local Moran’s I (Section 7.1) confirmed this is a genuine multi-quadrat cluster, not an isolated anomaly. The cross-K/G analysis (Section 7.2) further showed fatal accidents are not spatially separate from this pattern, as they occur consistently near non-fatal accidents, most strongly at short range.</p>
+<p>A specific corridor spanning several contiguous quadrats around quadrat, plausibly associated with Suvarnabhumi Airport access infrastructure, is a genuine statistical concentration of both accident frequency and severity, not an artefact of road density or chance.</p>
+</section>
+<section id="reccommendations" class="level3">
+<h3 class="anchored" data-anchor-id="reccommendations">8.2 Reccommendations</h3>
+<p><strong>Emergency response and resource allocation:</strong> Given the confirmed cluster’s spatial extent (Section 7.1) rather than a single point, pre-positioning ambulance or traffic-police resources across the identified network is directly supported by the evidence. The fatal/non-fatal co-clustering finding (Section 7.2) further supports treating this network as a priority for reducing response time specifically, since severe outcomes are concentrated exactly where accident volume is highest. However, selecting the specific road segments or stations for resource pre-positioning would require additional information not present in this dataset, such as real-time traffic congestion patterns, peak-hour travel times and existing response-unit coverage.</p>
+<p><strong>Road-safety and infrastructure planning:</strong> Quadrant 23’s disproportionate accident rate relative to its road length (Section 5.1.2), smaller network, higher rate, suggests engineering review, i.e., signage, speed enforcement, intersection design, is warranted there specifically, ahead of areas with more road-km but proportionally fewer accidents. This is a reasonable planning priority, but not evidence that any specific design flaw causes the pattern, which would require site-level engineering assessment beyond this data set.</p>
+<p><strong>Resource allocation across the BMR.</strong> The cold spot in the north-western BMR indicates comparatively lower accident-related demand there. This can inform relative prioritisation of accident-focused resources, though it should not be read as evidence of lower risk per unit of exposure, e.g., per vehicle-km, which this analysis does not measure.</p>
+<p><em>Required additional information:</em> the specific causal mechanism behind the corridor’s excess risk, e.g., airport-related traffic conflict, road geometry and driver behaviour, is not identified by this analysis and would require site-level investigation. Land-use and long-term infrastructure planning decisions would need traffic volume and exposure data this study does not include. This study also does not claim that the identified provinces or roads are inherently more dangerous per unit of traffic, only that raw and network-adjusted accident concentration is elevated there in 2022.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>AI Use Disclosure
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>AI tools were used to provide language assistance during the preparation of this report. AI support was limited to improving the clarity, structure and fluency of written content, including refinement of sentence construction, grammar and academic writing style. All analysis, interpretations, conclusions, insights, hypotheses, business recommendations and managerial implications presented in this report were independently developed by the author based on the dataset, statistical outputs and domain knowledge. AI did not generate the underlying analytical findings or determine the conclusions reached in this study.</p>
+</div>
+</div>
+</section>
 </section>
 <section id="references" class="level2">
 <h2 class="anchored" data-anchor-id="references">References</h2>
@@ -1076,15 +1332,15 @@ Quadrats: 59 tiles (irregular windows)</code></pre>
 <p>Gelb, J. (2025, October 4). Network Kernel Density Estimate. https://cran.r-project.org/web/packages/spNetwork/vignettes/NKDE.html</p>
 <p>Kaart: Road Classifications Guide - OpenStreetMap Wiki. (n.d.). https://wiki.openstreetmap.org/wiki/Kaart:_Road_Classifications_Guide</p>
 <p>Kam, T. S. R for Geospatial Data Science and Analytics. https://r4gdsa.netlify.app/</p>
-<p>Klokan Technologies GmbH (https://www.klokantech.com/). (n.d.). EPSG.io: Coordinate Systems worldwide. https://epsg.io/</p>
+<p>Klokan Technologies GmbH. (n.d.). EPSG.io: Coordinate Systems worldwide. https://epsg.io/</p>
 <p>McSwiggan, G. &amp; Department of Mathematics and Statistics, UWA. (2019). Spatial point process methods for linear networks with applications to road accident analysis. https://api.research-repository.uwa.edu.au/ws/portalfiles/portal/81039500/THESIS_DOCTOR_OF_PHILOSOPHY_MCSWIGGAN_Gregory_Edward_2020.pdf</p>
-<p>Nicholson, A. (1998). Analysis of spatial distributions of accidents. Safety Science, 71–91. https://www.sciencedirect.com/science/article/abs/pii/S0925753598000563</p>
 <p>Okabe, A., Satoh, T., Sugihara, K.: A kernel density estimation method for networks, its computational method and a GIS-based tool. International Journal of Geographical Information Science 23, 7–32 (2009)</p>
 <p>Okabe, A., &amp; Yamada, I. (2001). The K-function method on a network and its computational implementation. Geographical Analysis, 33(3), 271–290.</p>
 <p>R, T. (2023). Thailand Road Accident [2019-2022]. Kaggle. https://www.kaggle.com/datasets/thaweewatboy/thailand-road-accident-2019-2022</p>
 <p>Runfola D, Anderson A, Baier H, Crittenden M, Dowker E, Fuhrig S, et al.&nbsp;(2020) geoBoundaries: A global database of political administrative boundaries. PLoS ONE 15(4): e0231866. https://doi.org/10.1371/journal.pone.0231866.</p>
 <p>Shiode, S. (2008). Analysis of a distribution of point events using the Network‐Based Quadrat Method. Geographical Analysis, 40(4), 380–400. https://doi.org/10.1111/j.0016-7363.2008.00735.x</p>
 <p>Sugihara, K., Satoh, T., &amp; Okabe, A. (2010). Simple and unbiased kernel function for network analysis. 2010 10th International Symposium on Communications and Information Technologies, 827–832. IEEE.</p>
+<p>Yamada, I., &amp; Thill, J.-C. (2004, June). Comparison of planar and network K-functions in traffic accident analysis. ScienceDirect. https://www.sciencedirect.com/science/article/abs/pii/S0966692303000619</p>
 
 
 </section>

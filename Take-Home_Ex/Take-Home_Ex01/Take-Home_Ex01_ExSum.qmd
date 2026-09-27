@@ -85,15 +85,13 @@ format:
   - Exploratory step for chi-square and intensity visual observation
   - p-value of < 0.05, thus rejecting null hypothesis of CSR
   - One cell with extreme intensity value, i.e., quadrat where Suvarnabhumi Airport is
-  
-  ![](images/quadrat.png){fig-align="center" height="80%" width="80%"}
+  ![](images/quadrat.png){fig-align="center" height="70%" width="70%"}
   
 ### Network Kernel Density Estimate 
 
   - Estimates density using shortest-path distances along the network
   - Observed density concentrating heavily along a small number of specific roads, with the brightest red segments in the same areas as the quadrat analysis, i.e., quadrat 23
-  
-  ![](images/NKDE.png){fig-align="center" height="80%" width="80%"}
+  ![](images/NKDE.png){fig-align="center" height="70%" width="70%"}
 
 :::
 
@@ -106,16 +104,14 @@ format:
 
   - Tested whether accidents cluster with one another beyond what random placement on the network would predict
   - Observed blue line sits definitively above the simulation envelope across the entire 0 to 2000m range tested. Null hypothesis was rejected.
-  
-  ![](images/kplot.png){fig-align="center" height="80%" width="80%"}
+  ![](images/kplot.png){fig-align="center" height="70%" width="70%"}
 
 ### Network G-function
 
   - Measured nearest-neighbor distance distributions along network edges.
   - Complements K-function finding to check clustering at difference distances
   - Observed blue line sits definitively above the simulated envelope, across the entire 0 to 2000m range tested. Null hypothesis rejected.
-  
-  ![](images/gplot.png){.absolute top="170" left="30" fig-alt="bmr_plot" fig-align="center"}
+  ![](images/gplot.png){fig-align="center" height="70%" width="70%"}
 
 :::
 
@@ -131,13 +127,15 @@ To answer two follow-up questions: is the hotspot a real cluster or an outlier, 
   - Tested whether quadrat 23’s elevated accident rate reflects a broader area cluster.
   - Observed clear separation of groups in scatterplot.
   - Reinforces cluster finding that quadrat 23 is the most severe point within a cluster, rather than an isolated spike
-  
-  ![](images/morani.png){fig-align="center" height="80%" width="80%"}
+  ![](images/morani.png){fig-align="center" height="70%" width="70%"}
 
 ### Network Cross-K/G Function: Fatal vs Non-Fatal Accidents
 
   - Bivariate cross-K/G function, to test whether fatal and non-fatal accidents are spatially associated with one another along the network
   - Fatal accidents consistently occur closer to non-fatal accidents than random co-location would predict
+  
+  ![](images/xkplot.png){fig-align="left" height="40%" width="40%"}
+  ![](images/xgplot.png){fig-align="right" height="40%" width="40%"}
 
 :::
 

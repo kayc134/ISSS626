@@ -1,0 +1,83 @@
+---
+title: "06 Geographical Segmentation with Spatially Constrained Clustering Techniques"
+author: "Chia Ka Ying"
+date: "2026-09-28"
+date-modified: "last-modified"
+format: html
+execute:
+  echo: true
+  eval: true
+  message: false
+  warning: false
+  freeze: true
+editor: visual
+---
+
+In this section, I will be delineating homogeneous region by using geographically referenced multivariate data. There are two major analysis, namely:
+
+- Hierarchical cluster analysis; and
+- Spatially constrained cluster analysis.
+
+## 1. Getting Started
+
+In geobusiness and spatial policy, it is a common practice to delineate the market or planning area into homogeneous regions by using multivariate data. In this hands-on exercise, we are interested to delineate Shan State, Myanmar into homogeneous regions by using multiple Information and Communication technology (ICT) measures, namely radio, television, land line phone, mobile phone, computer and Internet at home.
+
+The following two data sets will be used:
+
+- Myanmar Township Boundary Data (i.e. myanmar_township_boundaries): This is a GIS data in ESRI shapefile format. It consists of township boundary information of Myanmar. The spatial data are captured in polygon features.
+- Shan-ICT.csv: This is an extract of The 2014 Myanmar Population and Housing Census Myanmar at the township level.
+
+## 2. Installing and Loading R Packages
+
+The following R packages will be installed. Note that there are some packages that were not used in previous exercises.
+
+```{r}
+pacman::p_load(spdep, tmap, sf, ClustGeo, 
+               ggpubr, cluster, factoextra, NbClust,
+               heatmaply, corrplot, psych, tidyverse, GGally)
+```
+
+## 3. Data Import and Preparation
+
+### 3.1 Importing geospatial data
+
+The Myanmar Township Boundary GIS data and its associated attribute table will be imported into R environment.
+
+The Myanmar Township Boundary GIS data is in ESRI shapefile format. It will be imported into R environment by using the *st_read()* function of sf.
+
+```{r}
+shan_sf <- st_read(dsn = "data/geospatial", 
+                   layer = "myanmar_township_boundaries") %>%
+  filter(ST %in% c("Shan (East)", "Shan (North)", "Shan (South)")) %>%
+  select(c(2:7))
+```
+
+The imported township boundary object is called `shan_sf`. It is saved in simple feature data.frame format. 
+
+```{r}
+shan_sf
+```
+
+The sf data.frame is conformed to Hardy Wickham’s tidy framework. Using *glimpse()*, the data type of fields can be checked.
+
+```{r}
+glimpse(shan_sf)
+```
+
+### 3.2 Importing aspatial data into R environment
+
+The `Shan-ICT.csv` file will be loaded as `ict`. 
+
+```{r}
+ict <- read_csv ("data/aspatial/Shan-ICT.csv")
+```
+
+The imported InfoComm variables were extracted from The 2014 Myanmar Population and Housing Census Myanmar. It is saved in R’s *tibble data.frame* format. The summary statistics is then checked.
+
+```{r}
+summary(ict)
+```
+
+### 3.2 Deriving new variable using dplyr package
+
+

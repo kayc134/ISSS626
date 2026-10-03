@@ -38,6 +38,8 @@ website:
           href: "In-Class_Ex/In-Class_Ex04/In-Class_Ex04.html"
         - text: "05: Global and Local Spatial Analysis"
           href: "In-Class_Ex/In-Class_Ex05/In-Class_Ex05.html"
+        - text: "06: Emerging Hot Spot Analysis"
+          href: "In-Class_Ex/In-Class_Ex06/In-Class_Ex06.html"
       - text: "Take-Home Exercise"
         menu:
         - text: "Study on Road Accidents in Bangkok Greater Metropolitan Area"

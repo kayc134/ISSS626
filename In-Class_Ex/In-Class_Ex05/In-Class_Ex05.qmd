@@ -71,7 +71,7 @@ moranI <- global_moran(wm_q$GDPPC,
 glimpse(moranI)
 ```
 
-To ensure the computation is reproducible, we will use *set_seed()*. We will perform 100 simulations using *nsim = 99*. 
+To ensure the computation is reproducible, we will use *set_seed()*. We will perform 100 simulations using *nsim = 99*.
 
 ```{r}
 set.seed(1234)
@@ -86,7 +86,7 @@ global_moran_perm(wm_q$GDPPC,
 
 ### 4.1 Computing Local Moran's I
 
-Note that when using sfdep package, note the p-values, `p_ii`, `p_ii_sim` and `p_folder_sim`, that are generated. Take note of the three interpretation columns `mean`, `median` and `pysal`. We should use `mean` if distribution is normal, `median` when distribution is skewed. The values in `pysal` are aligned with what is usually generated in Python. 
+Note that when using sfdep package, note the p-values, `p_ii`, `p_ii_sim` and `p_folder_sim`, that are generated. Take note of the three interpretation columns `mean`, `median` and `pysal`. We should use `mean` if distribution is normal, `median` when distribution is skewed. The values in `pysal` are aligned with what is usually generated in Python.
 
 ```{r}
 lisa <- wm_q %>%
@@ -113,5 +113,69 @@ tm_shape(lisa_sig) + # this is plotted to show only those that are significant
   tm_borders(fill_alpha = 0.4) +
   tm_layout(legend.title.size = 1.25) # determines the legend text size
 ```
-  
-  
+
+## 5. Hot Spot and Cold Spot Area Analysis (HCSA)
+
+### 5.1 Computing local Gi\* statistics
+
+```{r}
+wm_idw <- hunan_GDPPC %>%
+  mutate(nb = include_self(
+    st_contiguity(geometry)),
+    wts = st_inverse_distance(nb, 
+                              geometry, 
+                              scale = 1,
+                              alpha = 1),
+         .before = 1)
+```
+
+```{r}
+HCSA <- wm_idw %>% 
+  mutate(local_Gi = local_gstar_perm(
+    GDPPC, nb, wts, nsim = 99),
+         .before = 1) %>%
+  unnest(local_Gi)
+```
+
+### 5.2 Visualising Gi*
+
+```{r}
+tmap_mode("plot")
+tm_shape(HCSA) +
+  tm_fill("gi_star") + 
+  tm_borders(fill_alpha = 0.5) +
+  tm_view(set.zoom.limits = c(6,8)) +
+  tm_title(
+    "local G*i for GDP per capita")
+```
+
+### 5.3 Visualising p-value of local Gi*
+
+```{r}
+tmap_mode("plot")
+tm_shape(HCSA) +
+  tm_polygons(
+    fill = "p_sim",
+    fill.scale = tm_scale_intervals(
+      breaks = c(0, 0.001, 0.01, 0.05, 1.0),
+      labels = c("p < 0.001", "p < 0.01", "p < 0.05", "Not Significant"),
+      values = c("#de2d26", "#fc9272", "#fee0d2", "#e0e0e0")),
+    fill.legend = tm_legend(
+      title = "p-values")
+    ) + 
+  tm_title("p-values of G*i for GDP per capita") +
+  tm_borders(fill_alpha = 0.5)
+```
+
+```{r}
+HCSA_sig <- HCSA  %>%
+  filter(p_sim < 0.05)
+tmap_mode("plot")
+tm_shape(HCSA) +
+  tm_polygons() +
+  tm_borders(fill_alpha = 0.5) +
+tm_shape(HCSA_sig) +
+  tm_polygons(fill = "cluster") + 
+  tm_borders(fill_alpha = 0.4) +
+  tm_title("Hot and Cold Spots map for GDP per capita")
+```

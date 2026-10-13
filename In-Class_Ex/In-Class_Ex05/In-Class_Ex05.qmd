@@ -137,7 +137,7 @@ HCSA <- wm_idw %>%
   unnest(local_Gi)
 ```
 
-### 5.2 Visualising Gi*
+### 5.2 Visualising Gi\*
 
 ```{r}
 tmap_mode("plot")
@@ -149,7 +149,7 @@ tm_shape(HCSA) +
     "local G*i for GDP per capita")
 ```
 
-### 5.3 Visualising p-value of local Gi*
+### 5.3 Visualising p-value of local Gi\*
 
 ```{r}
 tmap_mode("plot")

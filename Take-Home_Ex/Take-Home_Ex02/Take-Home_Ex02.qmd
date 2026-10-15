@@ -12,3 +12,253 @@ execute:
   freeze: true
 editor: visual
 ---
+
+## 1. Introduction and Study Context
+
+Myanmar has experienced ongoing armed conflict since 1948, following its independence from the United Kingdom. Dominated primarily by ethnic-based struggles for self-determination between various Ethnic Armed Organisations (EAOs) and the national armed forces (the Tatmadaw), the situation entered a critical new phase following the February 2021 military coup. The overthrow of the democratically elected government led by the National League for Democracy triggered widespread civil unrest, which rapidly escalated into nationwide armed resistance.
+
+Today, Myanmar represents one of the world's most complex and prolonged civil conflicts, characterised by fragmented territorial control, massive civilian displacement and persistent political violence. Understanding the spatial and temporal evolution of these conflict events is vital not only for academic inquiry but also for informing broader peace-building and humanitarian initiatives.
+
+## 2. Research Objectives and Questions
+
+### 2.1 Research Objectives
+
+While general trends of the civil war are widely recognised, traditional aspatial reporting often fails to capture how violence clusters geographically or how conflict intensity shifts over time across different administrative boundaries. This study utilises an Exploratory Spatial Data Analysis (ESDA) framework in R to examine conflict dynamics at the township level from 1 January 2021 to 30 September 2025.
+
+The objectives of this exercise are:
+
+- Geospatial Data Wrangling & Exploration: To aggregate and structure Armed Conflict Location & Event Data Project (ACLED) event data with Myanmar Township Boundaries (MIMU v9.4) to construct a robust space-time cube.
+- Local Measures of Spatial Association (LMSA): To compute spatial autocorrelation statistics and identify exact geographic hotspots, cold spots, and spatial outliers where political violence clusters significantly.
+- Emerging Hot Spot Analysis (EHSA): To apply space-time pattern mining (including the Mann-Kendall test on local Gi\* values) to evaluate how conflict trends evolve across both space and time.
+- Bivariate LISA: Test whether the shift towards aerial warfare has produced a geography of emerging hot spots different from that of ground battles, and whether the two are spatially coupled.
+
+### 2.2 Research Questions
+
+- **RQ1:** Where is political violence concentrated, and is that concentration statistically significant once spatial dependence is accounted for?
+- **RQ2:** Which townships are spatial outliers, e.g., a violent township surrounded by calm ones?
+- **RQ3:** How have hot spots evolved between Q1 2021 and Q3 2025?
+- **RQ4:** Do air/drone strikes form emerging hot spots in places different from armed clashes, and are air strikes clustered around townships with heavy ground fighting?
+
+## 3. Getting Started
+
+### 3.1 Installing R Packages
+
+| Package | Purpose in this exercise |
+|------------------------------------|------------------------------------|
+| **sf** | Read the shapefile, convert ACLED points, reprojection, point-in-polygon join |
+| **tidyverse / lubridate** | Cleaning, deriving quarters, aggregation, zero-filling |
+| **sfdep / spdep** | Contiguity, weights, global and local Moran's I, Gi\*, spacetime cube, EHSA |
+| **Kendall** | Mann-Kendall monotonic trend test used inside EHSA |
+| **tmap, ggstatsplot** | Choropleths and significance maps |
+| **patchwork, knitr, kableExtra** | Layout of charts and tables |
+
+```{r}
+pacman::p_load(sf, tidyverse, lubridate, sfdep, 
+              spdep, Kendall, tmap,  
+              ggstatsplot, patchwork, knitr, kableExtra)
+```
+
+### 3.2 Dataset
+
+| Dataset | Source | Format |
+|-------------------------------|---------------|------------------------|
+| ACLED Myanmar, 1 Jan 2021 – 30 Sep 2025 | [ACLED](https://acleddata.com/) | CSV, 87,109 events × 31 fields |
+| Myanmar township boundaries (adm3), MIMU v9.4 | [MIMU GeoNode](https://geonode.themimu.info/) | ESRI shapefile, 330 townships |
+
+### 3.3 Importing Dataset
+
+The geospatial data for Myanmar township boundaries is imported as `mmr_ts_raw` and transformed. *names()* is used to check for the columns in the dataset. 
+
+```{r}
+mmr_ts_raw <- st_read("data/geospatial/mmr_polbnda_adm3_250k_mimu_1.shp")
+
+names(mmr_ts_raw)
+```
+
+The apatial data of ACLED events is imported as `acled_raw` and its columns and values are viewed using *glimpse()*
+
+```{r}
+acled_raw <- read_csv("data/aspatial/ACLED_Data_Myanmar_Jan2021-Sep2025.csv",
+                      show_col_types = FALSE)
+glimpse(acled_raw)
+```
+
+## 4. Data Wrangling
+
+### 4.1 CRS Transformation
+
+Myanmar spans roughly 92°E–101°E and straddles UTM zones 46N and 47N, so no single UTM zone covers it without distortion. WGS 84 / UTM zone 47N (EPSG:32647) is used, which contains most townships.
+
+```{r}
+mmr_ts <- mmr_ts_raw %>%
+  select(ST, DT, TS, TS_PCODE) %>%
+  st_transform(32647)
+```
+
+### 4.2 Fixing townships and centroids
+
+#### 4.2.1 Multi-part townships
+
+A township may be made of several separate pieces of land, which may lead to two problems:
+
+- **The same township stored as several rows.** Every township must be exactly one row, so that it is one location in the space-time cube. We therefore merge rows by `TS_PCODE`. If each `TS_PCODE` only has one row, this changes nothing.
+- **One row holding many polygon parts.** All parts for mapping and assigning events were kept, so events on islands are still counted. But the centroid of a multi-part township can land in a water body or outside the township, which matters for distance-based analysis.
+
+::: callout-note
+### AI Use Disclosure
+
+AI tools were used to draft the R code for reducing the dataframe such that there is only one row for every unique combination of `ST`, `DT`, `TS` and `TS_PCODE` before performing a spatial union using *summarise()*, and to find townships with more than one part `n_parts`. The output was reviewed and run by the author to verify correctness against the study data.
+:::
+
+```{r}
+mmr_ts %>% st_drop_geometry() %>% count(TS_PCODE) %>% filter(n > 1) #check for rows that share the same TS_PCODE
+
+mmr_ts <- mmr_ts %>%
+  group_by(ST, DT, TS, TS_PCODE) %>% 
+  summarise(.groups = "drop") %>%
+  st_cast("MULTIPOLYGON") 
+nrow(mmr_ts)
+
+ts_parts <- mmr_ts %>%
+  st_cast("POLYGON", warn = FALSE) %>%
+  mutate(part_km2 = as.numeric(st_area(geometry)) / 1e6) #find the largest piece in kilometres square
+
+ts_parts %>% st_drop_geometry() %>%
+  count(TS_PCODE, name = "n_parts") %>%
+  summarise(townships = n(),
+            multipart_townships = sum(n_parts > 1),
+            total_parts = sum(n_parts),
+            max_parts = max(n_parts))
+```
+
+Based on the results, there are 41 multi-part townships with 906 pieces in total. The most fragmented township has 159 pieces.
+
+#### 4.2.2 Centroids that fall outside boundary
+
+*st_centroid* is used to compute the geometric center. *st_intersects()* is used to build a table using `ts_centroid` and `mmr_ts` to test TRUE/FALSE for each centroid against the township using *sparse = FALSE*, while *diag()* was used to ensure that the comparison is made for each centroid with its own township by comparing the values diagonally down the table. 
+
+*filter(!centroid_inside)* returns a list of centroid that does not fall within the township.
+
+```{r}
+ts_centroid <- st_centroid(st_geometry(mmr_ts))
+centroid_inside <- diag(st_intersects(ts_centroid, mmr_ts, sparse = FALSE))
+
+mmr_ts %>% st_drop_geometry() %>%
+  filter(!centroid_inside) %>% select(ST, DT, TS)
+```
+
+These eight townships indicated under `TS` have a centroid outside their own boundary, such as in a water body or in another township. This would impact any distance-based neighbour analysis.
+
+Hence, for each township we take its largest land part and use `st_point_on_surface()` on that part. The result, which we call the anchor point, will then lie on land inside the township's main body.
+
+Geometric centroids can fall outside their parent polygon, whereas point-on-surface operations guarantee a point inside it (Lovelace, et al., 2026). For multi-part areal units, Pebesma and Bivand (2023) represent each unit by its largest polygon. This approach combines the two ideas by using a point on the surface of each township's largest land part.
+
+::: callout-note
+### AI Use Disclosure
+
+A### AI Use Disclosure
+
+AI tools were used to draft the R code that reorders the anchor points to match the township layer using *match()* on `TS_PCODE` and the *stopifnot()* checks that confirm the township codes are in identical order and that every anchor point falls inside the township boundaries. The output was reviewed and run by the author to verify correctness against the study data.
+:::
+
+```{r}
+ts_anchor <- ts_parts %>% #build anchor points 
+  group_by(TS_PCODE) %>%
+  slice_max(part_km2, n = 1, with_ties = FALSE) %>% #keep only the largest piece in each township
+  ungroup() %>%
+  st_point_on_surface() %>% #compute point guaranteed to be inside polygon
+  select(TS_PCODE)
+
+ts_anchor <- ts_anchor[match(mmr_ts$TS_PCODE, ts_anchor$TS_PCODE), ]
+stopifnot(identical(ts_anchor$TS_PCODE, mmr_ts$TS_PCODE),
+          all(lengths(st_intersects(ts_anchor, mmr_ts)) > 0))
+```
+
+The following plot is used to show the shifting of the original centroid (red) to the anchor point (blue).
+
+```{r}
+#| fig-width: 12
+#| fig-height: 7
+off_centroid <- which(!centroid_inside)
+
+anchor_maps <- lapply(off_centroid, function(i) {
+  tm_shape(mmr_ts[i, ]) +
+    tm_polygons(fill = "grey90", col = "grey40") +
+    tm_shape(st_sf(geometry = ts_centroid[i])) +
+    tm_dots(fill = "red", size = 0.6) +
+    tm_shape(ts_anchor[i, ]) +
+    tm_dots(fill = "blue", size = 0.6) +
+    tm_title(mmr_ts$TS[i], size = 0.9) +
+    tm_layout(frame = FALSE)
+})
+tmap_arrange(anchor_maps, list(ncol = 4))
+```
+
+The study boundary is then plotted for checking.
+
+::: callout-note
+### Note
+When the map was first written with older tmap arguments (`style = "cat"` and `palette = "brewer.set3"`), tmap 4 converted them automatically. The conversion added a **"Missing"** category to the legend, even though every township has a state/region value. 
+
+The code was therefore rewritten in native tmap 4 syntax: `fill.scale = tm_scale_categorical()` and `fill.legend = tm_legend()`. This removes the false "Missing" entry. In addition, the 12-colour Brewer *Set3* palette was stretched with `colorRampPalette()` to give one distinct colour for each of the 18 states/regions. Otherwise colours would repeat and some neighbouring states would share a colour.
+:::
+
+```{r}
+#| fig-width: 8
+#| fig-height: 9
+mmr_st <- mmr_ts %>% group_by(ST) %>% summarise(.groups = "drop")
+
+n_st   <- n_distinct(mmr_ts$ST)
+st_cols <- colorRampPalette(RColorBrewer::brewer.pal(12, "Set3"))(n_st)
+
+tm_shape(mmr_ts) +
+  tm_polygons(fill = "ST",
+              fill.scale = tm_scale_categorical(values = st_cols),
+              fill.legend = tm_legend(title = "State / Region")) +
+  tm_borders(fill_alpha = 0.5) +
+  tm_shape(mmr_st) +
+  tm_borders(col = "grey20", lwd = 1) +
+  tm_title("Myanmar townships by State / Region (n = 330)") +
+  tm_compass(position = c("right", "top")) +
+  tm_scalebar(position = c("right", "bottom")) +
+  tm_layout(legend.outside = TRUE, legend.outside.position = "right")
+```
+
+### 4.2 ACLED Events
+
+ACLED distinguishes three `disorder_type`s: **Political violence**, **Demonstrations** and **Strategic developments**. *count()* is used to compute the occurrence of the ACLED events and *kable()* is used to generate a table to visualise the variables for further analysis.
+
+```{r}
+acled_raw %>%
+  count(disorder_type, event_type, sort = TRUE) %>%
+  kable(caption = "ACLED events by disorder and event type") %>%
+  kable_styling(full_width = FALSE)
+```
+
+After reviewing the data, it was decided that events whose `disorder_type` **contains "Political violence"** would be retained for analysis. This covers:
+
+- **Battles** (armed clashes, territorial changes)
+- **Explosions/Remote violence** (air/drone strikes, shelling, IEDs)
+- **Violence against civilians**
+- Violent riots, and the 261 protests coded as "Political violence; Demonstrations" (i.e., protests met with lethal force)
+
+The following two categories were excluded:
+
+- **Strategic developments** (arrests, looting, base establishment). These are not violent clashes in themselves and are recorded far less consistently.
+- **Peaceful protests.** These measure civil resistance, not armed conflict.
+
+| Field | Role in this study |
+|---|---|
+| `disorder_type` | **Violence variable**: used to select political violence |
+| `event_type` | **Armed-conflict variable**: Battles, Explosions/Remote violence, Violence against civilians |
+| `sub_event_type` | Finer breakdown of `event_type` (e.g. Armed clash, Air/drone strike), used in the value-added analysis |
+| `admin1` / `admin2` / `admin3` | State / district / township (used only to cross-check the spatial join) |
+| `latitude` / `longitude` | Village-level location, used for plotting and for assigning events to townships |
+
+
+
+## References
+
+Lovelace, R., Nowosad, J., & Muenchow, J. (2026). *Geocomputation with R*. https://r.geocompx.org/geometry-operations.html
+
+Pebesma, E., & Bivand, R. (2023). *Spatial Data Science: With Applications in R*, ch. 14 Proximity and Areal Data. https://r-spatial.org/book/14-Areal.html

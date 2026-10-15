@@ -28,6 +28,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -76,6 +111,10 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<script src="../../site_libs/kePrint-0.0.1/kePrint.js"></script>
+
+<link href="../../site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
 
 
 <link rel="stylesheet" href="../../styles.css">
@@ -204,8 +243,32 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction-and-study-context" id="toc-introduction-and-study-context" class="nav-link active" data-scroll-target="#introduction-and-study-context">1. Introduction and Study Context</a></li>
+  <li><a href="#research-objectives-and-questions" id="toc-research-objectives-and-questions" class="nav-link" data-scroll-target="#research-objectives-and-questions">2. Research Objectives and Questions</a>
+  <ul class="collapse">
+  <li><a href="#research-objectives" id="toc-research-objectives" class="nav-link" data-scroll-target="#research-objectives">2.1 Research Objectives</a></li>
+  <li><a href="#research-questions" id="toc-research-questions" class="nav-link" data-scroll-target="#research-questions">2.2 Research Questions</a></li>
+  </ul></li>
+  <li><a href="#getting-started" id="toc-getting-started" class="nav-link" data-scroll-target="#getting-started">3. Getting Started</a>
+  <ul class="collapse">
+  <li><a href="#installing-r-packages" id="toc-installing-r-packages" class="nav-link" data-scroll-target="#installing-r-packages">3.1 Installing R Packages</a></li>
+  <li><a href="#dataset" id="toc-dataset" class="nav-link" data-scroll-target="#dataset">3.2 Dataset</a></li>
+  <li><a href="#importing-dataset" id="toc-importing-dataset" class="nav-link" data-scroll-target="#importing-dataset">3.3 Importing Dataset</a></li>
+  </ul></li>
+  <li><a href="#data-wrangling" id="toc-data-wrangling" class="nav-link" data-scroll-target="#data-wrangling">4. Data Wrangling</a>
+  <ul class="collapse">
+  <li><a href="#crs-transformation" id="toc-crs-transformation" class="nav-link" data-scroll-target="#crs-transformation">4.1 CRS Transformation</a></li>
+  <li><a href="#fixing-townships-and-centroids" id="toc-fixing-townships-and-centroids" class="nav-link" data-scroll-target="#fixing-townships-and-centroids">4.2 Fixing townships and centroids</a></li>
+  <li><a href="#acled-events" id="toc-acled-events" class="nav-link" data-scroll-target="#acled-events">4.2 ACLED Events</a></li>
+  </ul></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -236,7 +299,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">October 14, 2026</p>
+      <p class="date-modified">October 15, 2026</p>
     </div>
   </div>
     
@@ -247,8 +310,472 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<section id="introduction-and-study-context" class="level2">
+<h2 class="anchored" data-anchor-id="introduction-and-study-context">1. Introduction and Study Context</h2>
+<p>Myanmar has experienced ongoing armed conflict since 1948, following its independence from the United Kingdom. Dominated primarily by ethnic-based struggles for self-determination between various Ethnic Armed Organisations (EAOs) and the national armed forces (the Tatmadaw), the situation entered a critical new phase following the February 2021 military coup. The overthrow of the democratically elected government led by the National League for Democracy triggered widespread civil unrest, which rapidly escalated into nationwide armed resistance.</p>
+<p>Today, Myanmar represents one of the world’s most complex and prolonged civil conflicts, characterised by fragmented territorial control, massive civilian displacement and persistent political violence. Understanding the spatial and temporal evolution of these conflict events is vital not only for academic inquiry but also for informing broader peace-building and humanitarian initiatives.</p>
+</section>
+<section id="research-objectives-and-questions" class="level2">
+<h2 class="anchored" data-anchor-id="research-objectives-and-questions">2. Research Objectives and Questions</h2>
+<section id="research-objectives" class="level3">
+<h3 class="anchored" data-anchor-id="research-objectives">2.1 Research Objectives</h3>
+<p>While general trends of the civil war are widely recognised, traditional aspatial reporting often fails to capture how violence clusters geographically or how conflict intensity shifts over time across different administrative boundaries. This study utilises an Exploratory Spatial Data Analysis (ESDA) framework in R to examine conflict dynamics at the township level from 1 January 2021 to 30 September 2025.</p>
+<p>The objectives of this exercise are:</p>
+<ul>
+<li>Geospatial Data Wrangling &amp; Exploration: To aggregate and structure Armed Conflict Location &amp; Event Data Project (ACLED) event data with Myanmar Township Boundaries (MIMU v9.4) to construct a robust space-time cube.</li>
+<li>Local Measures of Spatial Association (LMSA): To compute spatial autocorrelation statistics and identify exact geographic hotspots, cold spots, and spatial outliers where political violence clusters significantly.</li>
+<li>Emerging Hot Spot Analysis (EHSA): To apply space-time pattern mining (including the Mann-Kendall test on local Gi* values) to evaluate how conflict trends evolve across both space and time.</li>
+<li>Bivariate LISA: Test whether the shift towards aerial warfare has produced a geography of emerging hot spots different from that of ground battles, and whether the two are spatially coupled.</li>
+</ul>
+</section>
+<section id="research-questions" class="level3">
+<h3 class="anchored" data-anchor-id="research-questions">2.2 Research Questions</h3>
+<ul>
+<li><strong>RQ1:</strong> Where is political violence concentrated, and is that concentration statistically significant once spatial dependence is accounted for?</li>
+<li><strong>RQ2:</strong> Which townships are spatial outliers, e.g., a violent township surrounded by calm ones?</li>
+<li><strong>RQ3:</strong> How have hot spots evolved between Q1 2021 and Q3 2025?</li>
+<li><strong>RQ4:</strong> Do air/drone strikes form emerging hot spots in places different from armed clashes, and are air strikes clustered around townships with heavy ground fighting?</li>
+</ul>
+</section>
+</section>
+<section id="getting-started" class="level2">
+<h2 class="anchored" data-anchor-id="getting-started">3. Getting Started</h2>
+<section id="installing-r-packages" class="level3">
+<h3 class="anchored" data-anchor-id="installing-r-packages">3.1 Installing R Packages</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Package</th>
+<th>Purpose in this exercise</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>sf</strong></td>
+<td>Read the shapefile, convert ACLED points, reprojection, point-in-polygon join</td>
+</tr>
+<tr class="even">
+<td><strong>tidyverse / lubridate</strong></td>
+<td>Cleaning, deriving quarters, aggregation, zero-filling</td>
+</tr>
+<tr class="odd">
+<td><strong>sfdep / spdep</strong></td>
+<td>Contiguity, weights, global and local Moran’s I, Gi*, spacetime cube, EHSA</td>
+</tr>
+<tr class="even">
+<td><strong>Kendall</strong></td>
+<td>Mann-Kendall monotonic trend test used inside EHSA</td>
+</tr>
+<tr class="odd">
+<td><strong>tmap, ggstatsplot</strong></td>
+<td>Choropleths and significance maps</td>
+</tr>
+<tr class="even">
+<td><strong>patchwork, knitr, kableExtra</strong></td>
+<td>Layout of charts and tables</td>
+</tr>
+</tbody>
+</table>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, tidyverse, lubridate, sfdep, </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>              spdep, Kendall, tmap,  </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>              ggstatsplot, patchwork, knitr, kableExtra)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="dataset" class="level3">
+<h3 class="anchored" data-anchor-id="dataset">3.2 Dataset</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th>Source</th>
+<th>Format</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>ACLED Myanmar, 1 Jan 2021 – 30 Sep 2025</td>
+<td><a href="https://acleddata.com/">ACLED</a></td>
+<td>CSV, 87,109 events × 31 fields</td>
+</tr>
+<tr class="even">
+<td>Myanmar township boundaries (adm3), MIMU v9.4</td>
+<td><a href="https://geonode.themimu.info/">MIMU GeoNode</a></td>
+<td>ESRI shapefile, 330 townships</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="importing-dataset" class="level3">
+<h3 class="anchored" data-anchor-id="importing-dataset">3.3 Importing Dataset</h3>
+<p>The geospatial data for Myanmar township boundaries is imported as <code>mmr_ts_raw</code> and transformed. <em>names()</em> is used to check for the columns in the dataset.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>mmr_ts_raw <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"data/geospatial/mmr_polbnda_adm3_250k_mimu_1.shp"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading layer `mmr_polbnda_adm3_250k_mimu_1' from data source 
+  `C:\kayc134\ISSS626_kayc\Take-Home_Ex\Take-Home_Ex02\data\geospatial\mmr_polbnda_adm3_250k_mimu_1.shp' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 330 features and 8 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 92.1721 ymin: 9.605884 xmax: 101.17 ymax: 28.54554
+Geodetic CRS:  WGS 84</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(mmr_ts_raw)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "ST"       "ST_PCODE" "DT"       "DT_PCODE" "TS"       "TS_PCODE" "TS_MMR"  
+[8] "PCode_V"  "geometry"</code></pre>
+</div>
+</div>
+<p>The apatial data of ACLED events is imported as <code>acled_raw</code> and its columns and values are viewed using <em>glimpse()</em></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>acled_raw <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/aspatial/ACLED_Data_Myanmar_Jan2021-Sep2025.csv"</span>,</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(acled_raw)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 87,109
+Columns: 31
+$ event_id_cnty      &lt;chr&gt; "MMR10920", "MMR10906", "MMR10932", "MMR10933", "MM…
+$ event_date         &lt;date&gt; 2021-01-01, 2021-01-01, 2021-01-01, 2021-01-01, 20…
+$ year               &lt;dbl&gt; 2021, 2021, 2021, 2021, 2021, 2021, 2021, 2021, 202…
+$ time_precision     &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …
+$ disorder_type      &lt;chr&gt; "Political violence", "Political violence", "Politi…
+$ event_type         &lt;chr&gt; "Violence against civilians", "Battles", "Battles",…
+$ sub_event_type     &lt;chr&gt; "Attack", "Armed clash", "Armed clash", "Armed clas…
+$ actor1             &lt;chr&gt; "Unidentified Armed Group (Myanmar)", "PSLF/TNLA: P…
+$ assoc_actor_1      &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ inter1             &lt;chr&gt; "Political militia", "Rebel group", "Rebel group", …
+$ actor2             &lt;chr&gt; "Civilians (Myanmar)", "RCSS/SSA-S: Restoration Cou…
+$ assoc_actor_2      &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, "Go…
+$ inter2             &lt;chr&gt; "Civilians", "Rebel group", "Rebel group", "Rebel g…
+$ interaction        &lt;chr&gt; "Political militia-Civilians", "Rebel group-Rebel g…
+$ civilian_targeting &lt;chr&gt; "Civilian targeting", NA, NA, NA, NA, NA, NA, NA, "…
+$ iso                &lt;dbl&gt; 104, 104, 104, 104, 104, 104, 104, 104, 104, 104, 1…
+$ region             &lt;chr&gt; "Southeast Asia", "Southeast Asia", "Southeast Asia…
+$ country            &lt;chr&gt; "Myanmar", "Myanmar", "Myanmar", "Myanmar", "Myanma…
+$ admin1             &lt;chr&gt; "Shan-North", "Shan-North", "Shan-North", "Shan-Nor…
+$ admin2             &lt;chr&gt; "Muse", "Kyaukme", "Kyaukme", "Kyaukme", "Sittwe", …
+$ admin3             &lt;chr&gt; "Muse", "Kyaukme", "Hsipaw", "Namtu", "Sittwe", "Na…
+$ location           &lt;chr&gt; "Muse", "Kyaukme", "Hsipaw", "Namtu", "Sittwe", "Pa…
+$ latitude           &lt;dbl&gt; 23.9933, 22.5392, 22.6166, 23.0766, 20.1462, 22.960…
+$ longitude          &lt;dbl&gt; 97.9103, 97.0343, 97.3003, 97.4033, 92.8984, 97.511…
+$ geo_precision      &lt;dbl&gt; 2, 2, 2, 2, 2, 1, 2, 1, 1, 2, 2, 2, 2, 1, 2, 2, 2, …
+$ source             &lt;chr&gt; "Mizzima; Shan Herald Agency for News; Shwe Phee My…
+$ source_scale       &lt;chr&gt; "Subnational-National", "Subnational", "Other", "Ot…
+$ notes              &lt;chr&gt; "On 1 January 2021, in Hko Wein village or Muse tow…
+$ fatalities         &lt;dbl&gt; 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 1, 0, 0, 0, 0, …
+$ tags               &lt;chr&gt; "Terrorist activity", "Insurgency", "Insurgency", "…
+$ timestamp          &lt;dbl&gt; 1754410549, 1753971383, 1753971383, 1753971383, 178…</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="data-wrangling" class="level2">
+<h2 class="anchored" data-anchor-id="data-wrangling">4. Data Wrangling</h2>
+<section id="crs-transformation" class="level3">
+<h3 class="anchored" data-anchor-id="crs-transformation">4.1 CRS Transformation</h3>
+<p>Myanmar spans roughly 92°E–101°E and straddles UTM zones 46N and 47N, so no single UTM zone covers it without distortion. WGS 84 / UTM zone 47N (EPSG:32647) is used, which contains most townships.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>mmr_ts <span class="ot">&lt;-</span> mmr_ts_raw <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(ST, DT, TS, TS_PCODE) <span class="sc">%&gt;%</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="dv">32647</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="fixing-townships-and-centroids" class="level3">
+<h3 class="anchored" data-anchor-id="fixing-townships-and-centroids">4.2 Fixing townships and centroids</h3>
+<section id="multi-part-townships" class="level4">
+<h4 class="anchored" data-anchor-id="multi-part-townships">4.2.1 Multi-part townships</h4>
+<p>A township may be made of several separate pieces of land, which may lead to two problems:</p>
+<ul>
+<li><strong>The same township stored as several rows.</strong> Every township must be exactly one row, so that it is one location in the space-time cube. We therefore merge rows by <code>TS_PCODE</code>. If each P-code already has one row, this changes nothing.</li>
+<li><strong>One row holding many polygon parts.</strong> We keep all parts for mapping and for assigning events, so events on islands are still counted. But the centroid of a multi-part township can land on a small island or in the sea, which matters for distance-based analysis.</li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>AI Use Disclosure
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>AI tools were used to draft the R code for reducing the dataframe such that there is only one row for every unique combination of <code>ST</code>, <code>DT</code>, <code>TS</code> and <code>TS_PCODE</code> before performing a spatial union using <em>summarise()</em>, and to find townships with more than one part <code>n_parts</code>. The output was reviewed and run by the author to verify correctness against the study data.</p>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>mmr_ts <span class="sc">%&gt;%</span> <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span> <span class="fu">count</span>(TS_PCODE) <span class="sc">%&gt;%</span> <span class="fu">filter</span>(n <span class="sc">&gt;</span> <span class="dv">1</span>) <span class="co">#check for rows that share the same TS_PCODE</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TS_PCODE n       
+&lt;0 rows&gt; (or 0-length row.names)</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>mmr_ts <span class="ot">&lt;-</span> mmr_ts <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(ST, DT, TS, TS_PCODE) <span class="sc">%&gt;%</span> </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_cast</span>(<span class="st">"MULTIPOLYGON"</span>) </span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(mmr_ts)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 330</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>ts_parts <span class="ot">&lt;-</span> mmr_ts <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_cast</span>(<span class="st">"POLYGON"</span>, <span class="at">warn =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">part_km2 =</span> <span class="fu">as.numeric</span>(<span class="fu">st_area</span>(geometry)) <span class="sc">/</span> <span class="fl">1e6</span>) <span class="co">#find the largest piece in kilometres square</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>ts_parts <span class="sc">%&gt;%</span> <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(TS_PCODE, <span class="at">name =</span> <span class="st">"n_parts"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">townships =</span> <span class="fu">n</span>(),</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">multipart_townships =</span> <span class="fu">sum</span>(n_parts <span class="sc">&gt;</span> <span class="dv">1</span>),</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">total_parts =</span> <span class="fu">sum</span>(n_parts),</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">max_parts =</span> <span class="fu">max</span>(n_parts))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 4
+  townships multipart_townships total_parts max_parts
+      &lt;int&gt;               &lt;int&gt;       &lt;int&gt;     &lt;int&gt;
+1       330                  41         906       159</code></pre>
+</div>
+</div>
+<p>Based on the results, there are 41 multi-part townships with 906 pieces in total. The most fragmented township has 159 pieces.</p>
+</section>
+<section id="centroids-that-fall-outside-boundary" class="level4">
+<h4 class="anchored" data-anchor-id="centroids-that-fall-outside-boundary">4.2.2 Centroids that fall outside boundary</h4>
+<p><em>st_centroid</em> is used to compute the geometric center. <em>st_intersects()</em> is used to build a table using <code>ts_centroid</code> and <code>mmr_ts</code> to test TRUE/FALSE for each centroid against the township using <em>sparse = FALSE</em>, while <em>diag()</em> was used to ensure that the comparison is made for each centroid with its own township by comparing the values diagonally down the table.</p>
+<p><em>filter(!centroid_inside)</em> returns a list of centroid that does not fall within the township.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>ts_centroid <span class="ot">&lt;-</span> <span class="fu">st_centroid</span>(<span class="fu">st_geometry</span>(mmr_ts))</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>centroid_inside <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="fu">st_intersects</span>(ts_centroid, mmr_ts, <span class="at">sparse =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>mmr_ts <span class="sc">%&gt;%</span> <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>centroid_inside) <span class="sc">%&gt;%</span> <span class="fu">select</span>(ST, DT, TS)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 8 × 3
+  ST         DT             TS        
+  &lt;chr&gt;      &lt;chr&gt;          &lt;chr&gt;     
+1 Ayeyarwady Labutta        Labutta   
+2 Ayeyarwady Pyapon         Pyapon    
+3 Kayah      Loikaw         Demoso    
+4 Mandalay   Kyaukse        Kyaukse   
+5 Rakhine    Kyaukpyu       Kyaukpyu  
+6 Rakhine    Sittwe         Rathedaung
+7 Sagaing    Kawlin         Kawlin    
+8 Yangon     Yangon (South) Cocokyun  </code></pre>
+</div>
+</div>
+<p>These eight townships indicated under <code>TS</code> have a centroid outside their own boundary, such as in a water body or in another township. This would impact any distance-based neighbour analysis.</p>
+<p>Hence, for each township we take its largest land part and use <code>st_point_on_surface()</code> on that part. The result, which we call the anchor point, will then lie on land inside the township’s main body.</p>
+<p>Geometric centroids can fall outside their parent polygon, whereas point-on-surface operations guarantee a point inside it (Lovelace, et al., 2026). For multi-part areal units, Pebesma and Bivand (2023) represent each unit by its largest polygon. This approach combines the two ideas by using a point on the surface of each township’s largest land part.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>AI Use Disclosure
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A### AI Use Disclosure</p>
+<p>AI tools were used to draft the R code that reorders the anchor points to match the township layer using <em>match()</em> on <code>TS_PCODE</code> and the <em>stopifnot()</em> checks that confirm the township codes are in identical order and that every anchor point falls inside the township boundaries. The output was reviewed and run by the author to verify correctness against the study data.</p>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>ts_anchor <span class="ot">&lt;-</span> ts_parts <span class="sc">%&gt;%</span> <span class="co">#build anchor points </span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(TS_PCODE) <span class="sc">%&gt;%</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_max</span>(part_km2, <span class="at">n =</span> <span class="dv">1</span>, <span class="at">with_ties =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span> <span class="co">#keep only the largest piece in each township</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_point_on_surface</span>() <span class="sc">%&gt;%</span> <span class="co">#compute point guaranteed to be inside polygon</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(TS_PCODE)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>ts_anchor <span class="ot">&lt;-</span> ts_anchor[<span class="fu">match</span>(mmr_ts<span class="sc">$</span>TS_PCODE, ts_anchor<span class="sc">$</span>TS_PCODE), ]</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">identical</span>(ts_anchor<span class="sc">$</span>TS_PCODE, mmr_ts<span class="sc">$</span>TS_PCODE),</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>          <span class="fu">all</span>(<span class="fu">lengths</span>(<span class="fu">st_intersects</span>(ts_anchor, mmr_ts)) <span class="sc">&gt;</span> <span class="dv">0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The following plot is used to show the shifting of the original centroid (red) to the anchor point (blue).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>off_centroid <span class="ot">&lt;-</span> <span class="fu">which</span>(<span class="sc">!</span>centroid_inside)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>anchor_maps <span class="ot">&lt;-</span> <span class="fu">lapply</span>(off_centroid, <span class="cf">function</span>(i) {</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(mmr_ts[i, ]) <span class="sc">+</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_polygons</span>(<span class="at">fill =</span> <span class="st">"grey90"</span>, <span class="at">col =</span> <span class="st">"grey40"</span>) <span class="sc">+</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_shape</span>(<span class="fu">st_sf</span>(<span class="at">geometry =</span> ts_centroid[i])) <span class="sc">+</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_dots</span>(<span class="at">fill =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_shape</span>(ts_anchor[i, ]) <span class="sc">+</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_dots</span>(<span class="at">fill =</span> <span class="st">"blue"</span>, <span class="at">size =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_title</span>(mmr_ts<span class="sc">$</span>TS[i], <span class="at">size =</span> <span class="fl">0.9</span>) <span class="sc">+</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_layout</span>(<span class="at">frame =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(anchor_maps, <span class="fu">list</span>(<span class="at">ncol =</span> <span class="dv">4</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_Ex02_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="1152"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The study boundary is then plotted for checking.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>When the map was first written with older tmap arguments (<code>style = "cat"</code> and <code>palette = "brewer.set3"</code>), tmap 4 converted them automatically. The conversion added a <strong>“Missing”</strong> category to the legend, even though every township has a state/region value.</p>
+<p>The code was therefore rewritten in native tmap 4 syntax: <code>fill.scale = tm_scale_categorical()</code> and <code>fill.legend = tm_legend()</code>. This removes the false “Missing” entry. In addition, the 12-colour Brewer <em>Set3</em> palette was stretched with <code>colorRampPalette()</code> to give one distinct colour for each of the 18 states/regions. Otherwise colours would repeat and some neighbouring states would share a colour.</p>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>mmr_st <span class="ot">&lt;-</span> mmr_ts <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(ST) <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>n_st   <span class="ot">&lt;-</span> <span class="fu">n_distinct</span>(mmr_ts<span class="sc">$</span>ST)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>st_cols <span class="ot">&lt;-</span> <span class="fu">colorRampPalette</span>(RColorBrewer<span class="sc">::</span><span class="fu">brewer.pal</span>(<span class="dv">12</span>, <span class="st">"Set3"</span>))(n_st)</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mmr_ts) <span class="sc">+</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">fill =</span> <span class="st">"ST"</span>,</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill.scale =</span> <span class="fu">tm_scale_categorical</span>(<span class="at">values =</span> st_cols),</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill.legend =</span> <span class="fu">tm_legend</span>(<span class="at">title =</span> <span class="st">"State / Region"</span>)) <span class="sc">+</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">fill_alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(mmr_st) <span class="sc">+</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">col =</span> <span class="st">"grey20"</span>, <span class="at">lwd =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_title</span>(<span class="st">"Myanmar townships by State / Region (n = 330)"</span>) <span class="sc">+</span></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_compass</span>(<span class="at">position =</span> <span class="fu">c</span>(<span class="st">"right"</span>, <span class="st">"top"</span>)) <span class="sc">+</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_scalebar</span>(<span class="at">position =</span> <span class="fu">c</span>(<span class="st">"right"</span>, <span class="st">"bottom"</span>)) <span class="sc">+</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">legend.outside =</span> <span class="cn">TRUE</span>, <span class="at">legend.outside.position =</span> <span class="st">"right"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_Ex02_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="acled-events" class="level3">
+<h3 class="anchored" data-anchor-id="acled-events">4.2 ACLED Events</h3>
+<p>ACLED distinguishes three <code>disorder_type</code>s: <strong>Political violence</strong>, <strong>Demonstrations</strong> and <strong>Strategic developments</strong>. <em>count()</em> is used to compute the occurrence of the ACLED events and <em>kable()</em> is used to generate a table to visualise the variables for further analysis.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>acled_raw <span class="sc">%&gt;%</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(disorder_type, event_type, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"ACLED events by disorder and event type"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">full_width =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="table caption-top table-sm table-striped small">
+<caption>ACLED events by disorder and event type</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">disorder_type</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">event_type</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">n</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Political violence</td>
+<td style="text-align: left;">Explosions/Remote violence</td>
+<td style="text-align: right;">22925</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Political violence</td>
+<td style="text-align: left;">Battles</td>
+<td style="text-align: right;">21121</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Strategic developments</td>
+<td style="text-align: left;">Strategic developments</td>
+<td style="text-align: right;">17833</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Demonstrations</td>
+<td style="text-align: left;">Protests</td>
+<td style="text-align: right;">14942</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Political violence</td>
+<td style="text-align: left;">Violence against civilians</td>
+<td style="text-align: right;">9958</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Political violence; Demonstrations</td>
+<td style="text-align: left;">Protests</td>
+<td style="text-align: right;">261</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Demonstrations</td>
+<td style="text-align: left;">Riots</td>
+<td style="text-align: right;">45</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Political violence</td>
+<td style="text-align: left;">Riots</td>
+<td style="text-align: right;">24</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>After reviewing the data, it was decided that events whose <code>disorder_type</code> <strong>contains “Political violence”</strong> would be retained for analysis. This covers:</p>
+<ul>
+<li><strong>Battles</strong> (armed clashes, territorial changes)</li>
+<li><strong>Explosions/Remote violence</strong> (air/drone strikes, shelling, IEDs)</li>
+<li><strong>Violence against civilians</strong></li>
+<li>Violent riots, and the 261 protests coded as “Political violence; Demonstrations” (i.e., protests met with lethal force)</li>
+</ul>
+<p>The following two categories were excluded:</p>
+<ul>
+<li><strong>Strategic developments</strong> (arrests, looting, base establishment). These are not violent clashes in themselves and are recorded far less consistently.</li>
+<li><strong>Peaceful protests.</strong> These measure civil resistance, not armed conflict.</li>
+</ul>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Role in this study</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>disorder_type</code></td>
+<td><strong>Violence variable</strong>: used to select political violence</td>
+</tr>
+<tr class="even">
+<td><code>event_type</code></td>
+<td><strong>Armed-conflict variable</strong>: Battles, Explosions/Remote violence, Violence against civilians</td>
+</tr>
+<tr class="odd">
+<td><code>sub_event_type</code></td>
+<td>Finer breakdown of <code>event_type</code> (e.g.&nbsp;Armed clash, Air/drone strike), used in the value-added analysis</td>
+</tr>
+<tr class="even">
+<td><code>admin1</code> / <code>admin2</code> / <code>admin3</code></td>
+<td>State / district / township (used only to cross-check the spatial join)</td>
+</tr>
+<tr class="odd">
+<td><code>latitude</code> / <code>longitude</code></td>
+<td>Village-level location, used for plotting and for assigning events to townships</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<p>Lovelace, R., Nowosad, J., &amp; Muenchow, J. (2026). <em>Geocomputation with R</em>. https://r.geocompx.org/geometry-operations.html</p>
+<p>Pebesma, E., &amp; Bivand, R. (2023). <em>Spatial Data Science: With Applications in R</em>, ch.&nbsp;14 Proximity and Areal Data. https://r-spatial.org/book/14-Areal.html</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

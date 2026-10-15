@@ -11,3 +11,4 @@ data
 .RDataTmp2
 *.RDataTmp*
 .RDataTmp3
+data/rds/

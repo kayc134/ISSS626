@@ -754,5 +754,68 @@
     "title": "02: Geospatial Analytics for Peace",
     "section": "References",
     "text": "References\nLovelace, R., Nowosad, J., & Muenchow, J. (2026). Geocomputation with R. https://r.geocompx.org/geometry-operations.html\nPebesma, E., & Bivand, R. (2023). Spatial Data Science: With Applications in R, ch. 14 Proximity and Areal Data. https://r-spatial.org/book/14-Areal.html"
+  },
+  {
+    "objectID": "In-Class_Ex/In-Class_Ex07/data/geospatial/hexagons.html",
+    "href": "In-Class_Ex/In-Class_Ex07/data/geospatial/hexagons.html",
+    "title": "Kay's GeoHub",
+    "section": "",
+    "text": "&lt;!DOCTYPE qgis PUBLIC ‘http://mrcc.com/qgis.dtd’ ‘SYSTEM’&gt;     dataset\n\n\n                 0 0     false"
+  },
+  {
+    "objectID": "In-Class_Ex/In-Class_Ex07/data/geospatial/ELDERCARE.html",
+    "href": "In-Class_Ex/In-Class_Ex07/data/geospatial/ELDERCARE.html",
+    "title": "Kay's GeoHub",
+    "section": "",
+    "text": "&lt;!DOCTYPE qgis PUBLIC ‘http://mrcc.com/qgis.dtd’ ‘SYSTEM’&gt;  ELDERCARE  ENG dataset\n\nELDERCARE\n\n                 0 0     false"
+  },
+  {
+    "objectID": "In-Class_Ex/In-Class_Ex07/In-Class_Ex07.html",
+    "href": "In-Class_Ex/In-Class_Ex07/In-Class_Ex07.html",
+    "title": "07: Modelling Geographic of Accessibility",
+    "section": "",
+    "text": "remotes::install_github('uva-bi-sdad/catchment')\n\n\npacman::p_load(sf, tidyverse, tmap, accessibility, catchment)"
+  },
+  {
+    "objectID": "In-Class_Ex/In-Class_Ex07/In-Class_Ex07.html#installing-r-packages",
+    "href": "In-Class_Ex/In-Class_Ex07/In-Class_Ex07.html#installing-r-packages",
+    "title": "07: Modelling Geographic of Accessibility",
+    "section": "",
+    "text": "remotes::install_github('uva-bi-sdad/catchment')\n\n\npacman::p_load(sf, tidyverse, tmap, accessibility, catchment)"
+  },
+  {
+    "objectID": "In-Class_Ex/In-Class_Ex07/In-Class_Ex07.html#dataset",
+    "href": "In-Class_Ex/In-Class_Ex07/In-Class_Ex07.html#dataset",
+    "title": "07: Modelling Geographic of Accessibility",
+    "section": "2. Dataset",
+    "text": "2. Dataset\n\n2.1 Importing Dataset\n\nmpsz &lt;- st_read(dsn = \"data/geospatial\", layer = \"MP14_SUBZONE_NO_SEA_PL\")%&gt;%\n  st_transform(crs = 3414)\n\nReading layer `MP14_SUBZONE_NO_SEA_PL' from data source \n  `C:\\kayc134\\ISSS626_kayc\\In-Class_Ex\\In-Class_Ex07\\data\\geospatial' \n  using driver `ESRI Shapefile'\nSimple feature collection with 323 features and 15 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 2667.538 ymin: 15748.72 xmax: 56396.44 ymax: 50256.33\nProjected CRS: SVY21\n\n\n\nhexagons &lt;- st_read(dsn = \"data/geospatial\", layer = \"hexagons\")%&gt;%\n  st_transform(crs = 3414)\n\nReading layer `hexagons' from data source \n  `C:\\kayc134\\ISSS626_kayc\\In-Class_Ex\\In-Class_Ex07\\data\\geospatial' \n  using driver `ESRI Shapefile'\nSimple feature collection with 3125 features and 6 fields\nGeometry type: POLYGON\nDimension:     XY\nBounding box:  xmin: 2667.538 ymin: 21506.33 xmax: 50010.26 ymax: 50256.33\nProjected CRS: SVY21 / Singapore TM\n\n\n\neldercare &lt;- st_read(dsn = \"data/geospatial\", layer = \"ELDERCARE\")%&gt;%\n  st_transform(crs = 3414)\n\nReading layer `ELDERCARE' from data source \n  `C:\\kayc134\\ISSS626_kayc\\In-Class_Ex\\In-Class_Ex07\\data\\geospatial' \n  using driver `ESRI Shapefile'\nSimple feature collection with 120 features and 19 fields\nGeometry type: POINT\nDimension:     XY\nBounding box:  xmin: 14481.92 ymin: 28218.43 xmax: 41665.14 ymax: 46804.9\nProjected CRS: SVY21 / Singapore TM\n\n\n\nODMatrix &lt;- read_csv(\"data/aspatial/OD_Matrix.csv\", skip = 0)\n\n\n\n2.2 Transforming Dataset\n\neldercare &lt;- eldercare %&gt;%\n  select(fid, ADDRESSPOS) %&gt;%\n  mutate(capacity = 100)\n\n\nhexagons &lt;- hexagons %&gt;%\n  select(fid) %&gt;%\n  mutate(demand = 100)\n\n\nODMatrix_tidied &lt;- ODMatrix %&gt;%\n  select(origin_id, destination_id, total_cost) %&gt;%\n  rename(from_id = origin_id,\n         to_id = destination_id,\n         dist = total_cost)\n\n\ndistmat &lt;- ODMatrix %&gt;%\n  select(origin_id, destination_id, total_cost) %&gt;%\n  pivot_wider(names_from = destination_id, values_from = total_cost) %&gt;%\n  select(-origin_id)\n\ndistmat_km &lt;- as.matrix(distmat/1000)"
+  },
+  {
+    "objectID": "In-Class_Ex/In-Class_Ex07/In-Class_Ex07.html#two-step-floating-catchment-area",
+    "href": "In-Class_Ex/In-Class_Ex07/In-Class_Ex07.html#two-step-floating-catchment-area",
+    "title": "07: Modelling Geographic of Accessibility",
+    "section": "3. Two-Step Floating Catchment Area",
+    "text": "3. Two-Step Floating Catchment Area\n\n3.1 Creating dataframe\n\ndf_2sfca &lt;- catchment_ratio(\n  consumers = hexagons$demand,\n  providers = eldercare$capacity,\n  cost = distmat_km,\n  max_cost = 5) %&gt;%\n  as.data.frame() %&gt;% #transform list to dataframe\n  rename(\"2SFCA\" = \".\") #change column name\n\n\n\n3.1 Mapping 2SFCA\n\nmapex &lt;- st_bbox(hexagons)\n\n\nhexagon_2sfca &lt;- bind_cols(hexagons, df_2sfca) #join() does not work without unique ID\ntm_shape(hexagon_2sfca,\n         bbox = mapex) + #bbox ensure that the map is fully extended, ensuring consistency\n  tm_polygons(fill = \"2SFCA\", \n              fill.scale = tm_scale_intervals(\n                style = \"quantile\",\n                n = 10,\n                values = \"-brewer.blues\")) + #use of - inverses the colour scheme\ntm_shape(eldercare) +\n  tm_dots(size = 0.3,\n          fill = \"red\",\n          col = \"black\") +\n  tm_title(\"2SFCA Accessibility Measures\") +\n  tm_layout(frame = TRUE) +\n  tm_compass(type=\"8star\", size = 2) +\n  tm_scalebar() +\n  tm_grid(alpha = 0.2)"
+  },
+  {
+    "objectID": "In-Class_Ex/In-Class_Ex07/In-Class_Ex07.html#enhanced-two-step-floating-catchment-area",
+    "href": "In-Class_Ex/In-Class_Ex07/In-Class_Ex07.html#enhanced-two-step-floating-catchment-area",
+    "title": "07: Modelling Geographic of Accessibility",
+    "section": "4. Enhanced Two-Step Floating Catchment Area",
+    "text": "4. Enhanced Two-Step Floating Catchment Area\nThis introduces weight for distance, thus reducing extreme values.\n\nstep_weights &lt;- list(c(5, .01), c(4, .05), c(3, .1),  c(2, .4), c(1, 1)) #providing weight to the distance, i.e., 1 for 1km, .4 for 2km, .01 for more than 5, where there is higher weight for closer proximity\ndf_e2sfca &lt;- catchment_ratio(\n  consumers = hexagons$demand,\n  providers = eldercare$capacity,\n  cost = distmat_km, #note the cost is different from df_2sfca\n  max_cost = distmat_km,\n  weight = step_weights) %&gt;%\n  as.data.frame() %&gt;% #transform list to dataframe\n  rename(\"e2SFCA\" = \".\") #change column name\n\n\nhexagon_e2sfca &lt;- bind_cols(hexagons, df_e2sfca) #join() does not work without unique ID\ntm_shape(hexagon_e2sfca,\n         bbox = mapex) + #bbox ensure that the map is fully extended, ensuring consistency\n  tm_polygons(fill = \"e2SFCA\", \n              fill.scale = tm_scale_intervals(\n                style = \"quantile\",\n                n = 10,\n                values = \"-brewer.blues\")) + #use of - inverses the colour scheme\ntm_shape(eldercare) +\n  tm_dots(size = 0.3,\n          fill = \"red\",\n          col = \"black\") +\n  tm_title(\"Enhanced 2SFCA Accessibility Measures\") +\n  tm_layout(frame = TRUE) +\n  tm_compass(type=\"8star\", size = 2) +\n  tm_scalebar() +\n  tm_grid(alpha = 0.2)"
+  },
+  {
+    "objectID": "In-Class_Ex/In-Class_Ex07/In-Class_Ex07.html#kernel-density-gaussian-2sfca",
+    "href": "In-Class_Ex/In-Class_Ex07/In-Class_Ex07.html#kernel-density-gaussian-2sfca",
+    "title": "07: Modelling Geographic of Accessibility",
+    "section": "5. Kernel Density (Gaussian) 2SFCA",
+    "text": "5. Kernel Density (Gaussian) 2SFCA\nThis provides a smoother range.\n\ndf_kd2sfca &lt;- catchment_ratio(\n  consumers = hexagons$demand,\n  providers = eldercare$capacity,\n  cost = distmat_km,\n  weight = \"gaussian\") %&gt;% #able to control unlike ac() \n  as.data.frame() %&gt;% \n  rename(\"KD2SFCA\" = \".\") \n\n\nhexagon_kd2sfca &lt;- bind_cols(hexagons, df_kd2sfca) \ntm_shape(hexagon_kd2sfca,\n         bbox = mapex) + \n  tm_polygons(fill = \"KD2SFCA\", \n              fill.scale = tm_scale_intervals(\n                style = \"quantile\",\n                n = 10,\n                values = \"-brewer.blues\")) + \ntm_shape(eldercare) +\n  tm_dots(size = 0.3,\n          fill = \"red\",\n          col = \"black\") +\n  tm_title(\"Kernel Density 2SFCA Accessibility Measures\") +\n  tm_layout(frame = TRUE) +\n  tm_compass(type=\"8star\", size = 2) +\n  tm_scalebar() +\n  tm_grid(alpha = 0.2)"
+  },
+  {
+    "objectID": "In-Class_Ex/In-Class_Ex07/In-Class_Ex07.html#step-floating-catchment-area",
+    "href": "In-Class_Ex/In-Class_Ex07/In-Class_Ex07.html#step-floating-catchment-area",
+    "title": "07: Modelling Geographic of Accessibility",
+    "section": "6. 3-Step Floating Catchment Area",
+    "text": "6. 3-Step Floating Catchment Area\nThis method allows for the normalisation of weight, taking into account differing capacities of services.\n\ndf_3sfca &lt;- catchment_ratio(\n  consumers = hexagons$demand,\n  providers = eldercare$capacity,\n  cost = distmat_km,\n  step_weights,\n  normalize_weight = TRUE) %&gt;% #to normalise the weight \n  as.data.frame() %&gt;% \n  rename(\"3SFCA\" = \".\") \n\n\nhexagon_3sfca &lt;- bind_cols(hexagons, df_3sfca) \ntm_shape(hexagon_3sfca,\n         bbox = mapex) + \n  tm_polygons(fill = \"3SFCA\", \n              fill.scale = tm_scale_intervals(\n                style = \"quantile\",\n                n = 10,\n                values = \"-brewer.blues\")) + \ntm_shape(eldercare) +\n  tm_dots(size = 0.3,\n          fill = \"red\",\n          col = \"black\") +\n  tm_title(\"3SFCA Accessibility Measures\") +\n  tm_layout(frame = TRUE) +\n  tm_compass(type=\"8star\", size = 2) +\n  tm_scalebar() +\n  tm_grid(alpha = 0.2)"
   }
 ]

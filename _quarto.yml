@@ -41,6 +41,8 @@ website:
           href: "In-Class_Ex/In-Class_Ex05/In-Class_Ex05.html"
         - text: "06: Emerging Hot Spot Analysis"
           href: "In-Class_Ex/In-Class_Ex06/In-Class_Ex06.html"
+        - text: "07: Modelling Geographic of Accessibility"
+          href: "In-Class_Ex/In-Class_Ex07/In-Class_Ex07.html"
       - text: "Take-Home Exercise"
         menu:
         - text: "01: Study on Road Accidents in Bangkok Greater Metropolitan Area"

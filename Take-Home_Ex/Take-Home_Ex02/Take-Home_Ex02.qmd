@@ -17,37 +17,46 @@ editor: visual
 
 Myanmar has experienced ongoing armed conflict since 1948, following its independence from the United Kingdom. Dominated primarily by ethnic-based struggles for self-determination between various Ethnic Armed Organisations (EAOs) and the national armed forces (the Tatmadaw), the situation entered a critical new phase following the February 2021 military coup. The overthrow of the democratically elected government led by the National League for Democracy triggered widespread civil unrest, which rapidly escalated into nationwide armed resistance.
 
-Today, Myanmar represents one of the world's most complex and prolonged civil conflicts, characterised by fragmented territorial control, massive civilian displacement and persistent political violence. Understanding the spatial and temporal evolution of these conflict events is vital not only for academic inquiry but also for informing broader peace-building and humanitarian initiatives.
+Today, Myanmar represents one of the world's most complex and prolonged civil conflicts, characterised by fragmented territorial control, massive civilian displacement and persistent political violence. Conflict is neither spatially random nor static. Peace-building and humanitarian actors need to know where violence clusters, which townships behave unusually relative to their neighbours, and whether clusters are emerging, intensifying or fading.
 
 ## 2. Research Objectives and Questions
 
 ### 2.1 Research Objectives
 
-While general trends of the civil war are widely recognised, traditional aspatial reporting often fails to capture how violence clusters geographically or how conflict intensity shifts over time across different administrative boundaries. This study utilises an Exploratory Spatial Data Analysis (ESDA) framework in R to examine conflict dynamics at the township level from 1 January 2021 to 30 September 2025.
+This exercise uses the Armed Conflict Location & Event Data (ACLED) Project's records for Myanmar and the MIMU township boundaries to:
 
-The objectives of this exercise are:
-
-- Geospatial Data Wrangling & Exploration: To aggregate and structure Armed Conflict Location & Event Data Project (ACLED) event data with Myanmar Township Boundaries (MIMU v9.4) to construct a robust space-time cube.
-- Local Measures of Spatial Association (LMSA): To compute spatial autocorrelation statistics and identify exact geographic hotspots, cold spots, and spatial outliers where political violence clusters significantly.
-- Emerging Hot Spot Analysis (EHSA): To apply space-time pattern mining (including the Mann-Kendall test on local Gi\* values) to evaluate how conflict trends evolve across both space and time.
-- Bivariate LISA: Test whether the shift towards aerial warfare has produced a geography of emerging hot spots different from that of ground battles, and whether the two are spatially coupled.
+- Aggregate political-violence events to townships and build a township × quarter space-time cube.
+- Use **Local Measures of Spatial Association (LMSA)**, specifically Local Indicators of Spatial Association (LISA), to identify spatial clusters (High-High, Low-Low) and outliers (High-Low, Low-High), and Getis-Ord Gi\* to identify hot spots and cold spots.
+- Use **Emerging Hot Spot Analysis (EHSA)**, which combines time-series Gi\* with the Mann-Kendall trend test, to reveal where, how fast and in what pattern armed conflict is evolving.
+- Identify where civilians are most exposed to **military air strikes**, whether that exposure is tied to front lines, and where the relatively safer areas are, combining the results into a protection map.
 
 ### 2.2 Research Questions
 
-- **RQ1:** Where is political violence concentrated, and is that concentration statistically significant once spatial dependence is accounted for?
+- **RQ1:** Where are the statistically significant hot spots and cold spots of armed conflict, and do they differ by type?
 - **RQ2:** Which townships are spatial outliers, e.g., a violent township surrounded by calm ones?
-- **RQ3:** How have hot spots evolved between Q1 2021 and Q3 2025?
-- **RQ4:** Do air/drone strikes form emerging hot spots in places different from armed clashes, and are air strikes clustered around townships with heavy ground fighting?
+- **RQ3:** Where, how fast and in what pattern has armed conflict evolved between Q1 2021 and Q3 2025?
+- **RQ4:** Where are civilians most exposed to military air strikes, is that exposure tied to front lines, and where are the relatively safer areas?
+
+### 2.3 Variables
+
+The analysis uses event counts of armed conflict as the primary variable, measuring how often armed conflict occurs in each township and quarter. Fatalities are introduced only in the value-added analysis, where the objective is civilian protection. There, the number of deaths per event identifies which forms of attack are most lethal to civilians, and this determines the variable analysed in the rest of that section. Fatalities are not used in the LMSA and EHSA because they are highly concentrated in a small number of mass-casualty events, which would let single incidents dominate a township's results.
+
+| Section | Analysis | Variables | Objective |
+|------------------|-------------------|------------------|------------------|
+| Data wrangling | Point map, choropleths, space-time cube | `conflict_events`, `battles`, `remote`, `vac` | Map the geographic distribution of conflict |
+| LMSA | Local Indicators of Spatial Association | `conflict_events`, `battles`, `remote`, `vac` | Hot spots, cold spots and spatial outliers |
+| EHSA | Emerging hot spot analysis with Mann-Kendall trend | `conflict_events`, `battles`, `remote`, `vac` | Where, how fast and in what pattern violence is evolving |
+| Value-added | Lethality check; EHSA; bivariate LISA; protection map | `fatalities`, `mil_air`, `clash` | Civilian protection and peace-building |
 
 ## 3. Getting Started
 
 ### 3.1 Installing R Packages
 
 | Package | Purpose in this exercise |
-|------------------------------------|------------------------------------|
+|--------------------------|----------------------------------------------|
 | **sf** | Read the shapefile, convert ACLED points, reprojection, point-in-polygon join |
 | **tidyverse / lubridate** | Cleaning, deriving quarters, aggregation, zero-filling |
-| **sfdep / spdep** | Contiguity, weights, global and local Moran's I, Gi\*, spacetime cube, EHSA |
+| **sfdep / spdep** | Contiguity, weights, local Moran's I, Gi\*, spacetime cube, EHSA |
 | **Kendall** | Mann-Kendall monotonic trend test used inside EHSA |
 | **tmap, ggstatsplot** | Choropleths and significance maps |
 | **patchwork, knitr, kableExtra** | Layout of charts and tables |
@@ -61,21 +70,21 @@ pacman::p_load(sf, tidyverse, lubridate, sfdep,
 ### 3.2 Dataset
 
 | Dataset | Source | Format |
-|-------------------------------|---------------|------------------------|
+|------------------------------|------------------|------------------------|
 | ACLED Myanmar, 1 Jan 2021 – 30 Sep 2025 | [ACLED](https://acleddata.com/) | CSV, 87,109 events × 31 fields |
 | Myanmar township boundaries (adm3), MIMU v9.4 | [MIMU GeoNode](https://geonode.themimu.info/) | ESRI shapefile, 330 townships |
 
 ### 3.3 Importing Dataset
 
-The geospatial data for Myanmar township boundaries is imported as `mmr_ts_raw` and transformed. *names()* is used to check for the columns in the dataset. 
+The geospatial data for Myanmar township boundaries is imported as `mmr_ts_raw` and transformed. *names()* is used to check for the columns in the dataset.
 
 ```{r}
-mmr_ts_raw <- st_read("data/geospatial/mmr_polbnda_adm3_250k_mimu_1.shp")
+mmr_ts_raw <- st_read(dsn = "data/geospatial", layer = "mmr_polbnda_adm3_250k_mimu_1")
 
 names(mmr_ts_raw)
 ```
 
-The apatial data of ACLED events is imported as `acled_raw` and its columns and values are viewed using *glimpse()*
+The apatial data of ACLED events is imported as `acled_raw` and its columns and values are viewed using *glimpse()*.
 
 ```{r}
 acled_raw <- read_csv("data/aspatial/ACLED_Data_Myanmar_Jan2021-Sep2025.csv",
@@ -88,6 +97,8 @@ glimpse(acled_raw)
 ### 4.1 CRS Transformation
 
 Myanmar spans roughly 92°E–101°E and straddles UTM zones 46N and 47N, so no single UTM zone covers it without distortion. WGS 84 / UTM zone 47N (EPSG:32647) is used, which contains most townships.
+
+The analysis relies on the fields `ST` (state/region), `DT` (district), `TS` (township name) and `TS_PCODE` (unique township P-code).
 
 ```{r}
 mmr_ts <- mmr_ts_raw %>%
@@ -133,9 +144,14 @@ ts_parts %>% st_drop_geometry() %>%
 
 Based on the results, there are 41 multi-part townships with 906 pieces in total. The most fragmented township has 159 pieces.
 
+What has been addressed:
+
+- One row per township: the duplicate check returns no rows, and the merge keeps 330 townships, one row per TS_PCODE. Each township is therefore a single location in the space-time cube.
+- All pieces kept: the merged townships remain multi-polygons, so every island and detached piece is used for mapping and for assigning ACLED events. No events are lost.
+
 #### 4.2.2 Centroids that fall outside boundary
 
-*st_centroid* is used to compute the geometric center. *st_intersects()* is used to build a table using `ts_centroid` and `mmr_ts` to test TRUE/FALSE for each centroid against the township using *sparse = FALSE*, while *diag()* was used to ensure that the comparison is made for each centroid with its own township by comparing the values diagonally down the table. 
+*st_centroid* is used to compute the geometric center. *st_intersects()* is used to build a table using `ts_centroid` and `mmr_ts` to test TRUE/FALSE for each centroid against the township using *sparse = FALSE*, while *diag()* was used to ensure that the comparison is made for each centroid with its own township by comparing the values diagonally down the table.
 
 *filter(!centroid_inside)* returns a list of centroid that does not fall within the township.
 
@@ -196,9 +212,28 @@ tmap_arrange(anchor_maps, list(ncol = 4))
 
 The study boundary is then plotted for checking.
 
+```{r}
+#| fig-width: 7
+#| fig-height: 9
+tm_shape(mmr_ts) +
+  tm_borders(col = "grey60", lwd = 0.3) +
+  tm_shape(ts_anchor) +
+  tm_dots(fill = "blue", size = 0.1) +
+  tm_title("Anchor points of Myanmar townships",
+           position = tm_pos_out("center", "top")) +
+  tm_layout(frame = FALSE)
+```
+
+Anchor points appear clustered at certain areas, where townships are much smaller. The densely packed anchor points would be taken into consideration when selecting spatial weighing in ection 6.1.
+
+#### 4.2.3 Study Area
+
+After cleaning up the multi-part town and centroid issues, the study area is plotted for visual check.
+
 ::: callout-note
 ### Note
-When the map was first written with older tmap arguments (`style = "cat"` and `palette = "brewer.set3"`), tmap 4 converted them automatically. The conversion added a **"Missing"** category to the legend, even though every township has a state/region value. 
+
+When the map was first written with older tmap arguments (`style = "cat"` and `palette = "brewer.set3"`), tmap 4 converted them automatically. The conversion added a **"Missing"** category to the legend, even though every township has a state/region value.
 
 The code was therefore rewritten in native tmap 4 syntax: `fill.scale = tm_scale_categorical()` and `fill.legend = tm_legend()`. This removes the false "Missing" entry. In addition, the 12-colour Brewer *Set3* palette was stretched with `colorRampPalette()` to give one distinct colour for each of the 18 states/regions. Otherwise colours would repeat and some neighbouring states would share a colour.
 :::
@@ -224,9 +259,9 @@ tm_shape(mmr_ts) +
   tm_layout(legend.outside = TRUE, legend.outside.position = "right")
 ```
 
-### 4.2 ACLED Events
+### 4.3 ACLED Events
 
-ACLED distinguishes three `disorder_type`s: **Political violence**, **Demonstrations** and **Strategic developments**. *count()* is used to compute the occurrence of the ACLED events and *kable()* is used to generate a table to visualise the variables for further analysis.
+ACLED distinguishes three `disorder_type`s, i.e., **Political violence**, **Demonstrations** and **Strategic developments**. *count()* is used to compute the occurrence of the ACLED events and *kable()* is used to generate a table to visualise the variables for further analysis.
 
 ```{r}
 acled_raw %>%
@@ -235,30 +270,455 @@ acled_raw %>%
   kable_styling(full_width = FALSE)
 ```
 
-After reviewing the data, it was decided that events whose `disorder_type` **contains "Political violence"** would be retained for analysis. This covers:
+After reviewing the data, events whose `disorder_type` contains **"Political violence"** were retained for analysis:
 
-- **Battles** (armed clashes, territorial changes)
-- **Explosions/Remote violence** (air/drone strikes, shelling, IEDs)
-- **Violence against civilians**
-- Violent riots, and the 261 protests coded as "Political violence; Demonstrations" (i.e., protests met with lethal force)
+- **Battles** (armed clashes, territorial changes);
+- **Explosions/Remote violence** (air/drone strikes, shelling, IEDs);
+- **Violence against civilians (**attacks, abductions and sexual violence targeting unarmed people).
 
-The following two categories were excluded:
+The following three categories were excluded:
 
-- **Strategic developments** (arrests, looting, base establishment). These are not violent clashes in themselves and are recorded far less consistently.
-- **Peaceful protests.** These measure civil resistance, not armed conflict.
+- **Riots coded as political violence** (24 events), and the 261 protests coded as **"Political violence; Demonstrations"** (i.e., protests met with lethal force), which reflect civil unrest rather than armed conflict.
+- **Strategic developments** (17,833 events), such as arrests, looting and base establishment. These are not violent clashes in themselves and are recorded far less consistently.
+- **Demonstrations** (14,987 events), comprising protests and riots not coded as political violence. These measure civil resistance rather than armed conflict.
 
 | Field | Role in this study |
-|---|---|
+|-------------------------|-----------------------------------------------|
 | `disorder_type` | **Violence variable**: used to select political violence |
 | `event_type` | **Armed-conflict variable**: Battles, Explosions/Remote violence, Violence against civilians |
 | `sub_event_type` | Finer breakdown of `event_type` (e.g. Armed clash, Air/drone strike), used in the value-added analysis |
 | `admin1` / `admin2` / `admin3` | State / district / township (used only to cross-check the spatial join) |
 | `latitude` / `longitude` | Village-level location, used for plotting and for assigning events to townships |
 
+### 4.4 Data Quality Check
 
+`acled_raw` contains two data-quality fields, `geo_precision` and `time_precision`, each coded 1 to 3, where 1 is the most precise. The two fields are independent, where an event can have an exact date but only an approximate location. The interpretation is based on `notes`.
+
+- **`geo_precision`**: 1 = the exact town or village is known; 2 = only an approximate location is known (e.g. "near" a town, or within a township/district), so the event is placed at the nearest named location; 3 = only the state/region is known, so the event is placed at a point representing that state/region.
+- **`time_precision`**: 1 = the exact date is known; 2 = only the week is known; 3 = only the month is known.
+
+```{r}
+acled_raw %>% count(time_precision) %>%
+  mutate(pct = round(100 * n / sum(n), 1))
+```
+
+```{r}
+acled_raw %>% count(geo_precision) %>%
+  mutate(pct = round(100 * n / sum(n), 1))
+```
+
+Events with `geo_precision = 3` (about 0.4%) are dropped. Their coordinates mark a state/region rather than the actual location, so assigning them to whichever township contains that point would create artificial hot spots. Events with code 2 are kept, as they are usually located in or next to the correct township. All `time_precision` codes are kept as the time unit used in subsequent analysis is the quarter of the year.
+
+### 4.5 Data Filtering
+
+Only conflict events mentioned in Section 4.3 are retained, and events located only to the state/region (`geo_precision = 3`) are excluded. 
+
+This leaves **54,190 events** from the original 87,109. Two columns are also added:
+
+- `qtr`, the quarter in which each event occurred, used to construct the space-time cube; and
+- `modality`, which distinguishes air/drone strikes and armed clashes from other forms of violence for the trend charts.
+
+```{r}
+conflict_types <- c("Battles", "Explosions/Remote violence", "Violence against civilians")
+
+acled_ac <- acled_raw %>%
+  filter(event_type %in% conflict_types,
+         geo_precision < 3) %>%
+  mutate(
+    qtr      = floor_date(event_date, unit = "quarter"),
+    modality = case_when(
+      sub_event_type == "Air/drone strike"       ~ "Air/drone strike",
+      sub_event_type == "Armed clash"            ~ "Armed clash",
+      event_type == "Explosions/Remote violence" ~ "Other remote violence",
+      event_type == "Violence against civilians" ~ "Violence against civilians",
+      TRUE ~ "Other"
+    )
+  )
+
+c(raw = nrow(acled_raw), kept = nrow(acled_ac))
+```
+
+### 4.6 Convert to sf object
+
+The `latitude` and `longitude` values from the ACLED dataset are used rather than the ACLED's `admin3` text. The township names in `admin3` have different spellings, e.g., *Hpa-An / Hpaan*, which would result in events being accidentally dropped if identified by township names.
+
+```{r}
+acled_sf <- acled_ac %>%
+  st_as_sf(coords = c("longitude", "latitude"), crs = 4326, remove = FALSE) %>%
+  st_transform(32647)
+```
+
+### 4.7 Event locations
+
+ACLED records each event at the most precise location available, named in the `location` field. Where the exact place is known, this may be a village, which sits below the township in Myanmar's administrative hierarchy. Where only the township is known, the event is placed at the township's main town. Among events with `geo_precision = 1`, there are those with `location` different from their township in `admin3`, i.e., they are recorded more precisely than the township level (ADM3) on which this study is based. The events are therefore first plotted as points, to show their distribution, before being aggregated to townships for the analysis.
+
+The selected events, except for political violence: riots which makes up just 24 events, are plotted for viewing.
+
+```{r}
+#| fig-width: 12
+#| fig-height: 8
+tm_shape(mmr_ts) +
+  tm_polygons(fill = "grey97", col = "grey75", lwd = 0.2) +
+  tm_shape(mmr_st) +
+  tm_borders(col = "grey40", lwd = 0.6) +
+  tm_shape(acled_sf %>% filter(event_type %in% c("Battles", "Explosions/Remote violence",
+                                                  "Violence against civilians"))) +
+  tm_dots(fill = "event_type",
+          fill.scale = tm_scale_categorical(values = c("#1b9e77", "#d95f02", "#7570b3")),
+          fill.legend = tm_legend(show = FALSE),
+          fill_alpha = 0.25, size = 0.05) +
+  tm_facets(by = "event_type", nrow = 1, free.coords = FALSE) +
+  tm_layout(frame = FALSE, panel.label.bg.color = "white")
+```
+
+### 4.8 Point-in-polygon join
+
+Events are assigned to townships using *st_join* to check which township polygon each point falls inside, and attaches that township’s TS_PCODE, TS and ST to the event. *left = TRUE* keeps events that fall in no township, with empty (NA) township fields, so they can be counted in the next line.
+
+```{r}
+acled_ts <- st_join(acled_sf, mmr_ts %>% select(TS_PCODE, TS, ST),
+                    join = st_intersects, left = TRUE)
+
+unmatched <- acled_ts %>% filter(is.na(TS_PCODE))
+nrow(unmatched)
+```
+
+Using *nrow(unmatched)*, 12 points were found to fall outside the township polygons. ACLED's `admin3` field, which records the township ACLED attributes each event to, is used to assign these points instead:
+
+- Events with an `admin3` value are matched to values in `TS`. There were eight of such events.
+- Events with no `admin3` value or values that do not match `TS` values are dropped. There were four of such events.
+
+This leaves **54,190 events**.
+
+```{r}
+reassigned <- unmatched %>%
+  select(-TS_PCODE, -TS, -ST) %>%
+  inner_join(mmr_ts %>% st_drop_geometry() %>% select(TS_PCODE, TS, ST),
+             by = c("admin3" = "TS"), keep = TRUE)
+
+acled_ts <- bind_rows(acled_ts %>% filter(!is.na(TS_PCODE)), reassigned) %>%
+  distinct(event_id_cnty, .keep_all = TRUE)
+
+nrow(reassigned)
+```
+
+### 4.9 Township-level aggregates
+
+The conflict variables are derived for each township:
+
+| Variable | Definition |
+|----------------|----------------------------------------------|
+| `conflict_events` | All political-violence events |
+| `battles` | ACLED event type *Battles* |
+| `remote` | *Explosions/Remote violence* |
+| `vac` | *Violence against civilians* |
+| `clash` | Sub-event *Armed clash* (used in the value-added analysis) |
+
+```{r}
+acled_df <- acled_ts %>% st_drop_geometry()
+
+agg_vars <- function(d) {
+  d %>% summarise(
+    conflict_events  = n(),
+    battles    = sum(event_type == "Battles"),
+    remote     = sum(event_type == "Explosions/Remote violence"),
+    vac        = sum(event_type == "Violence against civilians"),
+    clash      = sum(modality == "Armed clash"),
+    .groups = "drop")
+}
+
+ts_total <- acled_df %>% group_by(TS_PCODE) %>% agg_vars()
+
+# left-join to ALL 330 townships so that zero-event townships are kept
+conflict_ts <- mmr_ts %>%
+  left_join(ts_total, by = "TS_PCODE") %>%
+  mutate(across(conflict_events:clash, ~ replace_na(.x, 0)))
+
+summary(st_drop_geometry(conflict_ts)[, c("conflict_events", "battles", "remote", "vac")])
+```
+
+### 4.10 Space-time cube
+
+### 4.10.1 Choosing the time bin
+
+The time bin has to suit the process being studied. Armed conflict changes slowly, through offensives, territorial control and campaigns.
+
+As the EHSA applies the Mann-Kendall trend test to each township's series of Gi\* values, one per time slice. At least 8 to 10 measurements are recommended to avoid missing a trend. Quarterly bins would give 19 slices, which is above this minimum.
+
+### 4.10.2 Building the space-time cube
+
+ACLED records one row per event, so the events are first counted for each township and quarter using *agg_vars()*. Townships with no events in a quarter would otherwise have no row for that quarter, so *complete()* adds every missing township–quarter combination and fills its counts with 0. This gives one row for each of the 330 townships in each of the 19 quarters (6,270 rows).
+
+```{r}
+conflict_panel <- acled_df %>%
+  group_by(TS_PCODE, qtr) %>% agg_vars() %>%
+  complete(TS_PCODE = mmr_ts$TS_PCODE, qtr,
+           fill = list(conflict_events = 0, battles = 0, remote = 0, vac = 0, clash = 0))
+
+c(rows = nrow(conflict_panel), expected = nrow(mmr_ts) * length(quarters))
+```
+
+The space-time cube is built with *spacetime()*, linking the quarterly counts to the township boundaries through `TS_PCODE` (location) and `qtr` (time). *is_spacetime_cube()* confirms that the cube is complete, with every township present in every quarter.
+
+```{r}
+conflict_spt <- spacetime(conflict_panel, mmr_ts,
+                          .loc_col = "TS_PCODE", .time_col = "qtr")
+is_spacetime_cube(conflict_spt)
+```
+
+## 5. Exploratory Geovisualisation
+
+### 5.1 Event distribution across townships
+
+```{r}
+#| fig-width: 8
+#| fig-height: 3.5
+ggplot(st_drop_geometry(conflict_ts), aes(conflict_events)) +
+  geom_histogram(bins = 40, fill = "#3182bd", colour = "white") +
+  labs(x = "Events per township", y = "Townships") +
+  theme_minimal()
+```
+
+The distribution is **strongly right-skewed**. A few townships record hundreds of events while others record almost none. This matters for the choice of spatial weights in subsequent analysis.
+
+### 5.2 Choropleth maps
+
+To keep the choropleth maps consistent and avoid repeating code, a helper function, *map_choro()*, is defined once and reused for each map. It classes townships into six quantile groups, as event counts are highly skewed, and overlays state/region boundaries for reference. Only the variable, legend title and colour palette change between maps.
+
+```{r}
+map_choro <- function(sf_obj, var, title, palette = "brewer.reds", n = 6) {
+  tm_shape(sf_obj) +
+    tm_polygons(fill = var,
+                fill.scale = tm_scale_intervals(style = "quantile", n = n,
+                                                values = palette),
+                fill.legend = tm_legend(title = title, frame = FALSE),
+                col = "grey70", lwd = 0.2) +
+    tm_shape(mmr_st) + tm_borders(col = "grey25", lwd = 0.6) +
+    tm_layout(legend.outside = TRUE, legend.outside.position = "right")
+}
+```
+
+```{r}
+map_choro(conflict_ts, "conflict_events", "Events") + tm_title("Political-violence events")
+```
+
+::: callout-note
+### Analysis
+
+Political violence is widespread but highly uneven, ranging from fewer than 15 events in the lightest townships to over 1,000 in the most affected. The heaviest concentration is in the central zone, across Sagaing, Magway and Mandalay, heartland of numerous independently operating resistance forces (Myanmar Outlook: Fighting Is Set to Intensify in the Center of the Country \| ACLED, 2026). A second belt of high counts runs down the south-east, through Tanintharyi. Another hot area is observed in Rakhine, where a contested strategic route lies (Myanmar Outlook: Fighting Is Set to Intensify in the Center of the Country \| ACLED, 2026). The pattern suggests that violence clusters in contested regions rather than being randomly spread, which will be covered in LISA tests in Section 6.
+:::
+
+```{r}
+#| fig-width: 12
+#| fig-height: 7
+tmap_arrange(
+  map_choro(conflict_ts, "battles", "Battles", "brewer.greens") + tm_title("Battles"),
+  map_choro(conflict_ts, "remote", "Explosions/Remote", "brewer.oranges") + tm_title("Explosions / remote violence"),
+  map_choro(conflict_ts, "vac", "VAC", "brewer.purples") + tm_title("Violence against civilians"),
+  ncol = 3)
+```
+
+::: callout-note
+### Analysis
+
+The three event types show a concentrate at the central zone, but differ elsewhere. Battles are the most widespread and is noted to have a slightly less concentrated stripe i nthe central zone. Explosions and remote violence, follow a similar pattern but are especially concentrated in the central zone, the south-east and coastal Rakhine. Violence against civilians is the most concentrated, mainly at the central zone with a secondary cluster in the south-east. As each map uses its own quantile classes, colours indicate a township's rank within that event type and should not be compared directly across maps.
+:::
+
+```{r}
+#| fig-width: 12
+#| fig-height: 6
+conflict_year <- acled_df %>%
+  mutate(year = year(qtr)) %>%
+  count(TS_PCODE, year, name = "events") %>%
+  complete(TS_PCODE = mmr_ts$TS_PCODE, year = 2021:2025, fill = list(events = 0))
+
+mmr_ts %>% left_join(conflict_year, by = "TS_PCODE") %>%
+  tm_shape() +
+  tm_polygons(fill = "events",
+              fill.scale = tm_scale_intervals(breaks = c(0, 1, 10, 25, 50, 100, 200, Inf),
+                                              values = "brewer.yl_or_rd"),
+              fill.legend = tm_legend(title = "Events"),
+              col = "grey80", lwd = 0.1) +
+  tm_facets(by = "year", nrow = 1) +
+  tm_layout(frame = FALSE, panel.label.bg.color = "white")
+```
+
+::: callout-note
+### Analysis
+
+Using the same event bins for every year shows how the geography of violence has shifted. In 2021, events were relatively dispersed. From 2022, events intensified and concentrated in the central zone, which remains a core area throughout. In 2023, northern Shan near the Chinese border becomes more prominent, consistent with the launch of Operation 1027 in October 2023. With the collapse of regime forces in northern Shan, other ethnic armed organisations launched syncrhonised attacks across the country (Michaels, 2023). In 2024, events escalates in Rakhine on the west coast and along the south-east through Kayin and Tanintharyi. In 2025, the map appears lighter overall, although this partly reflects the shorter period covered (January to September only). Overall, the conflict has expanded from the central heartland towards the border states rather than receding, which will be covered in EHSA analysis in Section 7.
+:::
+
+## 6. Local Measures of Spatial Association (LMSA)
+
+### 6.1 Spatial weights
+
+Comparing the four methods for spatial weights, i.e., polygon contiguity, fixed distance, inverse distance and k-nearest neighbours (KNN), KNN is effective when wanting to ensure a minimum number of neighbours based on geographic proximity and in handling skewed values (as shown in Section 5.1). It is also not sensitive to polygons differing in size, where Myanmar's township ranges greatly, as with polygon contiguity. The use of KNN ensures that every township has neighbours, including the island townships which are located far from the mainland townships and do not share boundaries. Anchor points are dense in Yangon, Mandalay and Nay Pyi Taw, where urban townships are very small (median about 9 km² in Yangon versus about 1,519 km² nationally). A fixed distance band would give these townships dozens of neighbours and leave large rural townships with very few. The k-nearest-neighbour approach gives every township exactly eight neighbours, regardless of township size.
+
+Four approaches to defining neighbours were considered, i.e., polygon contiguity, fixed distance, inverse distance and k-nearest neighbours (KNN). KNN was chosen for the reasons below:
+
+- Township sizes vary widely. Contiguity works best when polygons are of similar size, and a fixed distance band would give urban townships dozens of neighbours and rural townships very few. KNN gives every township exactly k neighbours, regardless of size.
+- Every township needs neighbours. Island townships share no boundary with the mainland and would be left without neighbours under contiguity. KNN always finds the k closest townships, so no township is excluded from the analysis.
+- The conflict counts are highly skewed (Section 5.1).
+
+Considering the skewed data, the variables should be evaluated in the context of at least eight neighbours (Modeling Spatial relationships—ArcGIS Pro \| Documentation, n.d.). k = 8 will therefore be used for the weight matrix analysis.
+
+```{r}
+nb_knn <- st_knn(ts_anchor, k = 8)
+```
+
+```{r}
+#| fig-width: 7
+#| fig-height: 9
+nb_lines <- spdep::nb2lines(nb_knn, coords = st_coordinates(ts_anchor),
+                            proj4string = st_crs(mmr_ts)$wkt) %>%
+  st_as_sf()
+
+tm_shape(mmr_ts) + tm_borders(col = "grey75", lwd = 0.4) +
+  tm_shape(nb_lines) + tm_lines(col = "steelblue", lwd = 0.4) +
+  tm_shape(ts_anchor) + tm_dots(fill = "grey20", size = 0.05) +
+  tm_layout(frame = FALSE)
+```
+
+The plot shows the linking of eight neighbours to each township, including the island township that does not share a boundary with any other township.
+
+### 6.2 Weight Schemes
+
+The same k = 8 nearest-neighbour list is used for the weight matrix analysis, with row-standardised weights. Local Moran’s I uses it as is, so each township’s spatial lag is the average of its eight neighbours. Gi\* (in the Gi\* map and in EHSA) requires each township to be part of its own neighbourhood, so *include_self()* is added.
+
+| Analysis | Neighbours | Weights | Rationale |
+|------------------|------------------|------------------|------------------|
+| Local Indicators of Spatial Association (LISA) | k = 8 nearest neighbours | Row-standardised (`W`) | Spatial lag = average of the eight neighbours |
+| EHSA (Gi\* per quarter) | k = 8 nearest neighbours **including self** | Row-standardised (`W`) | Gi\* includes the focal township (location i) in its own neighbourhood |
+
+```{r}
+conflict_w <- conflict_ts %>%
+  mutate(nb = nb_knn,
+         wt = st_weights(nb, style = "W"),
+         .before = 1)
+```
+
+### 6.3 Local Indicators of Spatial Association (LISA)
+
+LISA measures, for each township, how similar its value is to those of its neighbours. It identifies clusters, where a township and its neighbours have similar values, and spatial outliers, where a township differs sharply from its neighbours. This is done by computing the local Moran’s I with *local_moran()*.
+
+Based on the local Moran's I value, outliers and clusters can be identified:
+
+- Outlier: Negative if focal township (location i) is associated with relatively low values in surrounding location (location j).
+- Cluster: Positive if focal township (location i) is associated with relatively high values in the surrounding locations (location j).
+
+In either case, the p-value must be small enough for the cluster or outlier to be considered statistically significant. This report uses α = 0.05, as required by the assignment brief. 
+
+#### 6.3.1 Local Moran's I
+
+*lisa* is first created as a function to calculate local Moran's I value with nsim = 99. This will be used for all armed conflicts and the three event types, i.e., battles, explosions / remote violence, and violence against civilians. 
+
+```{r}
+lisa <- function(d, var, nsim = 99) {
+  d %>%
+    mutate(local_moran = local_moran(.data[[var]], nb, wt, nsim = nsim),
+           .before = 1) %>%
+    unnest(local_moran)
+}
+```
+
+Local Moran’s I is first computed using `conflict_events`, which looks at total number of armed conflict events per township.
+
+```{r}
+lisa_ce <- lisa(conflict_w, "conflict_events")
+```
+
+*classify_lisa* is a function created to sieve out townships where results are statistically insignificant, i.e., *p_ii_sim \< 0.05*. This ensures that townships are assigned into a quadrant of High-High, Low-Low, Low-High or High-Low, only if the results are statistically significant, where p value is < 0.05.
+
+Each township is assigned its quadrant if , and “Not significant” otherwise.
+
+```{r}
+lisa_colours <- c("High-High" = "#d7191c", "Low-Low" = "#2c7bb6",
+                  "Low-High"  = "#abd9e9", "High-Low" = "#fdae61",
+                  "Not significant" = "grey92")
+
+classify_lisa <- function(l) {
+  l %>% mutate(
+    lisa_class = if_else(p_ii_sim < 0.05, as.character(mean), "Not significant"),
+    lisa_class = factor(lisa_class, levels = names(lisa_colours)))
+}
+lisa_ce <- classify_lisa(lisa_ce)
+
+lisa_ce %>% st_drop_geometry() %>%
+  summarise(sig_p05   = sum(p_ii_sim < 0.05))
+```
+
+There are 105 townships that has a statistically significant local Moran's I value.
+
+The function *map_lisa()* draws the significant classes in colour and greys out non-significant townships, so that only significant results are displayed. State/region boundaries are added for reference.
+
+```{r}
+map_lisa <- function(l, title) {
+  tm_shape(l) +
+    tm_polygons(fill = "lisa_class",
+                fill.scale = tm_scale_categorical(values = lisa_colours, levels.drop = FALSE),
+                fill.legend = tm_legend(title = "LISA (p < 0.05)"),
+                col = "grey60", lwd = 0.2) +
+    tm_shape(mmr_st) + tm_borders(col = "grey25", lwd = 0.6) +
+    tm_title(title) +
+    tm_layout(legend.outside = TRUE, legend.outside.position = "right")
+}
+```
+
+```{r}
+#| fig-width: 7
+#| fig-height: 9
+map_lisa(lisa_ce, "LISA clusters & outliers: political violence")
+```
+
+### 6.3.2
+
+LISA by armed-conflict type
+
+::: panel-tabset
+##### Battles
+
+```{r}
+#| label: fig-lisa-battles
+#| fig-cap: "Significant LISA clusters and outliers of battles (p < 0.05)"
+map_lisa(lisa_types$battles, "LISA: Battles")
+```
+
+\[Conclusion, ≤200 words\]
+
+##### Explosions / remote violence
+
+```{r}
+#| label: fig-lisa-remote
+#| fig-cap: "Significant LISA clusters and outliers of explosions/remote violence (p < 0.05)"
+map_lisa(lisa_types$remote, "LISA: Explosions / remote violence")
+```
+
+\[Conclusion, ≤200 words\]
+
+##### Violence against civilians
+
+```{r}
+#| label: fig-lisa-vac
+#| fig-cap: "Significant LISA clusters and outliers of violence against civilians (p < 0.05)"
+map_lisa(lisa_types$vac, "LISA: Violence against civilians")
+```
+:::
 
 ## References
 
+ACLED. (2024). *Fatalities* \[Methodology, last updated 7 May 2024\]. Armed Conflict Location & Event Data Project. https://acleddata.com/methodology/fatalities
+
+Modeling spatial relationships—ArcGIS Pro \| Documentation. (n.d.). https://pro.arcgis.com/en/pro-app/3.4/tool-reference/spatial-statistics/modeling-spatial-relationships.htm
+
+KAM, Tin Seong and ZHI, Vincent. Is there space for violence?: A data-driven approach to the exploration of spatial-temporal dimensions of conflict. (2018). Proceedings of the 2nd ACM SIGSPATIAL Workshop on Geospatial Humanities, Seattle, WA, USA, 2018 November 06. 1-10.
+
 Lovelace, R., Nowosad, J., & Muenchow, J. (2026). *Geocomputation with R*. https://r.geocompx.org/geometry-operations.html
 
+Michaels, M. (2023, November). Operation 1027 reshapes Myanmar’s post-coup war. International Institute for Strategic Studies. https://myanmar.iiss.org/analysis/2023-11
+
+Myanmar outlook: Fighting is set to intensify in the center of the country \| ACLED. (2026, July 27). ACLED. https://acleddata.com/report/myanmar-outlook-fighting-set-intensify-center-country
+
 Pebesma, E., & Bivand, R. (2023). *Spatial Data Science: With Applications in R*, ch. 14 Proximity and Areal Data. https://r-spatial.org/book/14-Areal.html
+
+Voice of America. (2025, February 24). *Report: In record year of internet shutdowns, Myanmar leads*. voanews.com/a/report-in-record-year-of-internet-shutdowns-myanmar-leads/7985585.html

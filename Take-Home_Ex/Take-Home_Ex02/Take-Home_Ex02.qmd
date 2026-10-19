@@ -609,7 +609,7 @@ Based on the local Moran's I value, outliers and clusters can be identified:
 
 In either case, the p-value must be small enough for the cluster or outlier to be considered statistically significant. This report uses α = 0.05, as required by the assignment brief. 
 
-#### 6.3.1 Local Moran's I
+#### 6.3.1 Calculating Local Moran's I
 
 *lisa* is first created as a function to calculate local Moran's I value with nsim = 99. This will be used for all armed conflicts and the three event types, i.e., battles, explosions / remote violence, and violence against civilians. 
 
@@ -630,7 +630,8 @@ lisa_ce <- lisa(conflict_w, "conflict_events")
 
 *classify_lisa* is a function created to sieve out townships where results are statistically insignificant, i.e., *p_ii_sim \< 0.05*. This ensures that townships are assigned into a quadrant of High-High, Low-Low, Low-High or High-Low, only if the results are statistically significant, where p value is < 0.05.
 
-Each township is assigned its quadrant if , and “Not significant” otherwise.
+A Moran scatterplot is plotted to show how the LISA classes arise. Each point is a township, where the x-axis is its standardised number of armed-conflict events, and the y-axis is the spatial lag, the average standardised value of its eight nearest neighbours. 
+The slope of the fitted line equals the global Moran’s I, so an upward slope indicates positive spatial autocorrelation. Townships significant at p < 0.05 are coloured by their LISA class while the rest are shown in grey. The scatterplot complements the LISA mapby showing how strongly each township and its neighbours depart from the mean.
 
 ```{r}
 lisa_colours <- c("High-High" = "#d7191c", "Low-Low" = "#2c7bb6",
@@ -642,13 +643,40 @@ classify_lisa <- function(l) {
     lisa_class = if_else(p_ii_sim < 0.05, as.character(mean), "Not significant"),
     lisa_class = factor(lisa_class, levels = names(lisa_colours)))
 }
-lisa_ce <- classify_lisa(lisa_ce)
 
+lisa_ce <- classify_lisa(lisa_ce)
+```
+
+```{r}
+lisa_ce <- lisa_ce %>%
+  mutate(z_events     = as.vector(scale(conflict_events)),
+         z_lag_events = st_lag(z_events, nb, wt),
+         .before = 1)
+
+ggplot(data = lisa_ce,
+       aes(x = z_events, y = z_lag_events, color = lisa_class)) +
+  geom_point(size = 2) +
+  geom_smooth(method = "lm", se = FALSE, color = "black") +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_vline(xintercept = 0, lty = 2) +
+  scale_color_manual(values = lisa_colours) +
+  labs(x = "Standardised armed-conflict events",
+       y = "Spatial lag of standardised events",
+       color = "LISA (p < 0.05)",
+       title = "Moran scatterplot: armed-conflict events") +
+  theme_minimal()
+```
+
+The fitted line slopes upward, confirming that armed conflict is positively spatially autocorrelated as townships tend to resemble their neighbours.
+
+```{r}
 lisa_ce %>% st_drop_geometry() %>%
   summarise(sig_p05   = sum(p_ii_sim < 0.05))
 ```
 
 There are 105 townships that has a statistically significant local Moran's I value.
+
+### 6.3.2 LISA Map for Armed Conflict Events 
 
 The function *map_lisa()* draws the significant classes in colour and greys out non-significant townships, so that only significant results are displayed. State/region boundaries are added for reference.
 
@@ -671,9 +699,42 @@ map_lisa <- function(l, title) {
 map_lisa(lisa_ce, "LISA clusters & outliers: political violence")
 ```
 
-### 6.3.2
+::: callout-note
+### Analysis
+
+The LISA map reveals a strongly polarised conflict geography. The largest High-High cluster forms a block across the central zone. A smaller High-High cluster lies in south. These are townships with high event counts surrounded by similarly affected neighbours, indicating sustained, area-wide conflict rather than isolated incidents.
+
+Low-Low clusters cover the far north, and eastern and southern townships. These are relatively calm townships surrounded by calm neighbours.
+
+Low-High outliers sit on the edges of the conflict zones. They have few events but violent neighbours, making them at risk of spill-over. Only one High-Low outlier appears, confirming that high conflict in Myanmar is rarely isolated. With [n] of 330 townships significant at p < 0.05, the clustering is far beyond what chance alone would produce (about 16 townships).
+
+:::
+
+
 
 LISA by armed-conflict type
+
+The same steps are repeated for each armed-conflict type.
+
+```{r}
+lisa_types <- list(
+  battles = classify_lisa(lisa(conflict_w, "battles")),
+  remote  = classify_lisa(lisa(conflict_w, "remote")),
+  vac     = classify_lisa(lisa(conflict_w, "vac")))
+```
+
+The table below summarises the number of townships in each significant class, for all armed-conflict events and for each type.
+
+```{r}
+#| label: tbl-lisa-summary
+list(`All armed-conflict events` = lisa_ce,
+     Battles = lisa_types$battles,
+     `Explosions / remote violence` = lisa_types$remote,
+     `Violence against civilians` = lisa_types$vac) %>%
+  map_dfr(~ st_drop_geometry(.x) %>% count(lisa_class), .id = "variable") %>%
+  pivot_wider(names_from = lisa_class, values_from = n, values_fill = 0) %>%
+  kable(caption = "Number of townships in each LISA class (p < 0.05)")
+```
 
 ::: panel-tabset
 ##### Battles

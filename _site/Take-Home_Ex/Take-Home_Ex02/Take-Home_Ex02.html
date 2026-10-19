@@ -257,6 +257,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#research-objectives" id="toc-research-objectives" class="nav-link" data-scroll-target="#research-objectives">2.1 Research Objectives</a></li>
   <li><a href="#research-questions" id="toc-research-questions" class="nav-link" data-scroll-target="#research-questions">2.2 Research Questions</a></li>
+  <li><a href="#variables" id="toc-variables" class="nav-link" data-scroll-target="#variables">2.3 Variables</a></li>
   </ul></li>
   <li><a href="#getting-started" id="toc-getting-started" class="nav-link" data-scroll-target="#getting-started">3. Getting Started</a>
   <ul class="collapse">
@@ -268,7 +269,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#crs-transformation" id="toc-crs-transformation" class="nav-link" data-scroll-target="#crs-transformation">4.1 CRS Transformation</a></li>
   <li><a href="#fixing-townships-and-centroids" id="toc-fixing-townships-and-centroids" class="nav-link" data-scroll-target="#fixing-townships-and-centroids">4.2 Fixing townships and centroids</a></li>
-  <li><a href="#acled-events" id="toc-acled-events" class="nav-link" data-scroll-target="#acled-events">4.2 ACLED Events</a></li>
+  <li><a href="#acled-events" id="toc-acled-events" class="nav-link" data-scroll-target="#acled-events">4.3 ACLED Events</a></li>
+  <li><a href="#data-quality-check" id="toc-data-quality-check" class="nav-link" data-scroll-target="#data-quality-check">4.4 Data Quality Check</a></li>
+  <li><a href="#data-filtering" id="toc-data-filtering" class="nav-link" data-scroll-target="#data-filtering">4.5 Data Filtering</a></li>
+  <li><a href="#convert-to-sf-object" id="toc-convert-to-sf-object" class="nav-link" data-scroll-target="#convert-to-sf-object">4.6 Convert to sf object</a></li>
+  <li><a href="#event-locations" id="toc-event-locations" class="nav-link" data-scroll-target="#event-locations">4.7 Event locations</a></li>
+  <li><a href="#point-in-polygon-join" id="toc-point-in-polygon-join" class="nav-link" data-scroll-target="#point-in-polygon-join">4.8 Point-in-polygon join</a></li>
+  <li><a href="#township-level-aggregates" id="toc-township-level-aggregates" class="nav-link" data-scroll-target="#township-level-aggregates">4.9 Township-level aggregates</a></li>
+  <li><a href="#space-time-cube" id="toc-space-time-cube" class="nav-link" data-scroll-target="#space-time-cube">4.10 Space-time cube</a></li>
+  <li><a href="#choosing-the-time-bin" id="toc-choosing-the-time-bin" class="nav-link" data-scroll-target="#choosing-the-time-bin">4.10.1 Choosing the time bin</a></li>
+  <li><a href="#building-the-space-time-cube" id="toc-building-the-space-time-cube" class="nav-link" data-scroll-target="#building-the-space-time-cube">4.10.2 Building the space-time cube</a></li>
+  </ul></li>
+  <li><a href="#exploratory-geovisualisation" id="toc-exploratory-geovisualisation" class="nav-link" data-scroll-target="#exploratory-geovisualisation">5. Exploratory Geovisualisation</a>
+  <ul class="collapse">
+  <li><a href="#event-distribution-across-townships" id="toc-event-distribution-across-townships" class="nav-link" data-scroll-target="#event-distribution-across-townships">5.1 Event distribution across townships</a></li>
+  <li><a href="#choropleth-maps" id="toc-choropleth-maps" class="nav-link" data-scroll-target="#choropleth-maps">5.2 Choropleth maps</a></li>
+  </ul></li>
+  <li><a href="#local-measures-of-spatial-association-lmsa" id="toc-local-measures-of-spatial-association-lmsa" class="nav-link" data-scroll-target="#local-measures-of-spatial-association-lmsa">6. Local Measures of Spatial Association (LMSA)</a>
+  <ul class="collapse">
+  <li><a href="#spatial-weights" id="toc-spatial-weights" class="nav-link" data-scroll-target="#spatial-weights">6.1 Spatial weights</a></li>
+  <li><a href="#weight-schemes" id="toc-weight-schemes" class="nav-link" data-scroll-target="#weight-schemes">6.2 Weight Schemes</a></li>
+  <li><a href="#local-indicators-of-spatial-association-lisa" id="toc-local-indicators-of-spatial-association-lisa" class="nav-link" data-scroll-target="#local-indicators-of-spatial-association-lisa">6.3 Local Indicators of Spatial Association (LISA)</a></li>
+  <li><a href="#lisa-map-for-armed-conflict-events" id="toc-lisa-map-for-armed-conflict-events" class="nav-link" data-scroll-target="#lisa-map-for-armed-conflict-events">6.3.2 LISA Map for Armed Conflict Events</a></li>
   </ul></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
@@ -303,7 +325,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">October 17, 2026</p>
+      <p class="date-modified">October 19, 2026</p>
     </div>
   </div>
     
@@ -317,29 +339,74 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="introduction-and-study-context" class="level2">
 <h2 class="anchored" data-anchor-id="introduction-and-study-context">1. Introduction and Study Context</h2>
 <p>Myanmar has experienced ongoing armed conflict since 1948, following its independence from the United Kingdom. Dominated primarily by ethnic-based struggles for self-determination between various Ethnic Armed Organisations (EAOs) and the national armed forces (the Tatmadaw), the situation entered a critical new phase following the February 2021 military coup. The overthrow of the democratically elected government led by the National League for Democracy triggered widespread civil unrest, which rapidly escalated into nationwide armed resistance.</p>
-<p>Today, Myanmar represents one of the world’s most complex and prolonged civil conflicts, characterised by fragmented territorial control, massive civilian displacement and persistent political violence. Understanding the spatial and temporal evolution of these conflict events is vital not only for academic inquiry but also for informing broader peace-building and humanitarian initiatives.</p>
+<p>Today, Myanmar represents one of the world’s most complex and prolonged civil conflicts, characterised by fragmented territorial control, massive civilian displacement and persistent political violence. Conflict is neither spatially random nor static. Peace-building and humanitarian actors need to know where violence clusters, which townships behave unusually relative to their neighbours, and whether clusters are emerging, intensifying or fading.</p>
 </section>
 <section id="research-objectives-and-questions" class="level2">
 <h2 class="anchored" data-anchor-id="research-objectives-and-questions">2. Research Objectives and Questions</h2>
 <section id="research-objectives" class="level3">
 <h3 class="anchored" data-anchor-id="research-objectives">2.1 Research Objectives</h3>
-<p>While general trends of the civil war are widely recognised, traditional aspatial reporting often fails to capture how violence clusters geographically or how conflict intensity shifts over time across different administrative boundaries. This study utilises an Exploratory Spatial Data Analysis (ESDA) framework in R to examine conflict dynamics at the township level from 1 January 2021 to 30 September 2025.</p>
-<p>The objectives of this exercise are:</p>
+<p>This exercise uses the Armed Conflict Location &amp; Event Data (ACLED) Project’s records for Myanmar and the MIMU township boundaries to:</p>
 <ul>
-<li>Geospatial Data Wrangling &amp; Exploration: To aggregate and structure Armed Conflict Location &amp; Event Data Project (ACLED) event data with Myanmar Township Boundaries (MIMU v9.4) to construct a robust space-time cube.</li>
-<li>Local Measures of Spatial Association (LMSA): To compute spatial autocorrelation statistics and identify exact geographic hotspots, cold spots, and spatial outliers where political violence clusters significantly.</li>
-<li>Emerging Hot Spot Analysis (EHSA): To apply space-time pattern mining (including the Mann-Kendall test on local Gi* values) to evaluate how conflict trends evolve across both space and time.</li>
-<li>Bivariate LISA: Test whether the shift towards aerial warfare has produced a geography of emerging hot spots different from that of ground battles, and whether the two are spatially coupled.</li>
+<li>Aggregate political-violence events to townships and build a township × quarter space-time cube.</li>
+<li>Use <strong>Local Measures of Spatial Association (LMSA)</strong>, specifically Local Indicators of Spatial Association (LISA), to identify spatial clusters (High-High, Low-Low) and outliers (High-Low, Low-High), and Getis-Ord Gi* to identify hot spots and cold spots.</li>
+<li>Use <strong>Emerging Hot Spot Analysis (EHSA)</strong>, which combines time-series Gi* with the Mann-Kendall trend test, to reveal where, how fast and in what pattern armed conflict is evolving.</li>
+<li>Identify where civilians are most exposed to <strong>military air strikes</strong>, whether that exposure is tied to front lines, and where the relatively safer areas are, combining the results into a protection map.</li>
 </ul>
 </section>
 <section id="research-questions" class="level3">
 <h3 class="anchored" data-anchor-id="research-questions">2.2 Research Questions</h3>
 <ul>
-<li><strong>RQ1:</strong> Where is political violence concentrated, and is that concentration statistically significant once spatial dependence is accounted for?</li>
+<li><strong>RQ1:</strong> Where are the statistically significant hot spots and cold spots of armed conflict, and do they differ by type?</li>
 <li><strong>RQ2:</strong> Which townships are spatial outliers, e.g., a violent township surrounded by calm ones?</li>
-<li><strong>RQ3:</strong> How have hot spots evolved between Q1 2021 and Q3 2025?</li>
-<li><strong>RQ4:</strong> Do air/drone strikes form emerging hot spots in places different from armed clashes, and are air strikes clustered around townships with heavy ground fighting?</li>
+<li><strong>RQ3:</strong> Where, how fast and in what pattern has armed conflict evolved between Q1 2021 and Q3 2025?</li>
+<li><strong>RQ4:</strong> Where are civilians most exposed to military air strikes, is that exposure tied to front lines, and where are the relatively safer areas?</li>
 </ul>
+</section>
+<section id="variables" class="level3">
+<h3 class="anchored" data-anchor-id="variables">2.3 Variables</h3>
+<p>The analysis uses event counts of armed conflict as the primary variable, measuring how often armed conflict occurs in each township and quarter. Fatalities are introduced only in the value-added analysis, where the objective is civilian protection. There, the number of deaths per event identifies which forms of attack are most lethal to civilians, and this determines the variable analysed in the rest of that section. Fatalities are not used in the LMSA and EHSA because they are highly concentrated in a small number of mass-casualty events, which would let single incidents dominate a township’s results.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 26%">
+<col style="width: 24%">
+<col style="width: 24%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Section</th>
+<th>Analysis</th>
+<th>Variables</th>
+<th>Objective</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Data wrangling</td>
+<td>Point map, choropleths, space-time cube</td>
+<td><code>conflict_events</code>, <code>battles</code>, <code>remote</code>, <code>vac</code></td>
+<td>Map the geographic distribution of conflict</td>
+</tr>
+<tr class="even">
+<td>LMSA</td>
+<td>Local Indicators of Spatial Association</td>
+<td><code>conflict_events</code>, <code>battles</code>, <code>remote</code>, <code>vac</code></td>
+<td>Hot spots, cold spots and spatial outliers</td>
+</tr>
+<tr class="odd">
+<td>EHSA</td>
+<td>Emerging hot spot analysis with Mann-Kendall trend</td>
+<td><code>conflict_events</code>, <code>battles</code>, <code>remote</code>, <code>vac</code></td>
+<td>Where, how fast and in what pattern violence is evolving</td>
+</tr>
+<tr class="even">
+<td>Value-added</td>
+<td>Lethality check; EHSA; bivariate LISA; protection map</td>
+<td><code>fatalities</code>, <code>mil_air</code>, <code>clash</code></td>
+<td>Civilian protection and peace-building</td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 <section id="getting-started" class="level2">
@@ -348,8 +415,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="installing-r-packages">3.1 Installing R Packages</h3>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
+<col style="width: 36%">
+<col style="width: 63%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -368,7 +435,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td><strong>sfdep / spdep</strong></td>
-<td>Contiguity, weights, global and local Moran’s I, Gi*, spacetime cube, EHSA</td>
+<td>Contiguity, weights, local Moran’s I, Gi*, spacetime cube, EHSA</td>
 </tr>
 <tr class="even">
 <td><strong>Kendall</strong></td>
@@ -418,10 +485,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="importing-dataset">3.3 Importing Dataset</h3>
 <p>The geospatial data for Myanmar township boundaries is imported as <code>mmr_ts_raw</code> and transformed. <em>names()</em> is used to check for the columns in the dataset.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>mmr_ts_raw <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"data/geospatial/mmr_polbnda_adm3_250k_mimu_1.shp"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>mmr_ts_raw <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/geospatial"</span>, <span class="at">layer =</span> <span class="st">"mmr_polbnda_adm3_250k_mimu_1"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Reading layer `mmr_polbnda_adm3_250k_mimu_1' from data source 
-  `C:\kayc134\ISSS626_kayc\Take-Home_Ex\Take-Home_Ex02\data\geospatial\mmr_polbnda_adm3_250k_mimu_1.shp' 
+  `C:\kayc134\ISSS626_kayc\Take-Home_Ex\Take-Home_Ex02\data\geospatial' 
   using driver `ESRI Shapefile'
 Simple feature collection with 330 features and 8 fields
 Geometry type: MULTIPOLYGON
@@ -435,7 +502,7 @@ Geodetic CRS:  WGS 84</code></pre>
 [8] "PCode_V"  "geometry"</code></pre>
 </div>
 </div>
-<p>The apatial data of ACLED events is imported as <code>acled_raw</code> and its columns and values are viewed using <em>glimpse()</em></p>
+<p>The apatial data of ACLED events is imported as <code>acled_raw</code> and its columns and values are viewed using <em>glimpse()</em>.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>acled_raw <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/aspatial/ACLED_Data_Myanmar_Jan2021-Sep2025.csv"</span>,</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
@@ -483,6 +550,7 @@ $ timestamp          &lt;dbl&gt; 1754410549, 1753971383, 1753971383, 1753971383,
 <section id="crs-transformation" class="level3">
 <h3 class="anchored" data-anchor-id="crs-transformation">4.1 CRS Transformation</h3>
 <p>Myanmar spans roughly 92°E–101°E and straddles UTM zones 46N and 47N, so no single UTM zone covers it without distortion. WGS 84 / UTM zone 47N (EPSG:32647) is used, which contains most townships.</p>
+<p>The analysis relies on the fields <code>ST</code> (state/region), <code>DT</code> (district), <code>TS</code> (township name) and <code>TS_PCODE</code> (unique township P-code).</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>mmr_ts <span class="ot">&lt;-</span> mmr_ts_raw <span class="sc">%&gt;%</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(ST, DT, TS, TS_PCODE) <span class="sc">%&gt;%</span></span>
@@ -495,8 +563,8 @@ $ timestamp          &lt;dbl&gt; 1754410549, 1753971383, 1753971383, 1753971383,
 <h4 class="anchored" data-anchor-id="multi-part-townships">4.2.1 Multi-part townships</h4>
 <p>A township may be made of several separate pieces of land, which may lead to two problems:</p>
 <ul>
-<li><strong>The same township stored as several rows.</strong> Every township must be exactly one row, so that it is one location in the space-time cube. We therefore merge rows by <code>TS_PCODE</code>. If each P-code already has one row, this changes nothing.</li>
-<li><strong>One row holding many polygon parts.</strong> We keep all parts for mapping and for assigning events, so events on islands are still counted. But the centroid of a multi-part township can land on a small island or in the sea, which matters for distance-based analysis.</li>
+<li><strong>The same township stored as several rows.</strong> Every township must be exactly one row, so that it is one location in the space-time cube. We therefore merge rows by <code>TS_PCODE</code>. If each <code>TS_PCODE</code> only has one row, this changes nothing.</li>
+<li><strong>One row holding many polygon parts.</strong> All parts for mapping and assigning events were kept, so events on islands are still counted. But the centroid of a multi-part township can land in a water body or outside the township, which matters for distance-based analysis.</li>
 </ul>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -543,6 +611,11 @@ $ timestamp          &lt;dbl&gt; 1754410549, 1753971383, 1753971383, 1753971383,
 </div>
 </div>
 <p>Based on the results, there are 41 multi-part townships with 906 pieces in total. The most fragmented township has 159 pieces.</p>
+<p>What has been addressed:</p>
+<ul>
+<li>One row per township: the duplicate check returns no rows, and the merge keeps 330 townships, one row per TS_PCODE. Each township is therefore a single location in the space-time cube.</li>
+<li>All pieces kept: the merged townships remain multi-polygons, so every island and detached piece is used for mapping and for assigning ACLED events. No events are lost.</li>
+</ul>
 </section>
 <section id="centroids-that-fall-outside-boundary" class="level4">
 <h4 class="anchored" data-anchor-id="centroids-that-fall-outside-boundary">4.2.2 Centroids that fall outside boundary</h4>
@@ -621,6 +694,27 @@ $ timestamp          &lt;dbl&gt; 1754410549, 1753971383, 1753971383, 1753971383,
 </div>
 </div>
 <p>The study boundary is then plotted for checking.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mmr_ts) <span class="sc">+</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">col =</span> <span class="st">"grey60"</span>, <span class="at">lwd =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(ts_anchor) <span class="sc">+</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_dots</span>(<span class="at">fill =</span> <span class="st">"blue"</span>, <span class="at">size =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_title</span>(<span class="st">"Anchor points of Myanmar townships"</span>,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">position =</span> <span class="fu">tm_pos_out</span>(<span class="st">"center"</span>, <span class="st">"top"</span>)) <span class="sc">+</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">frame =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_Ex02_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Anchor points appear clustered at certain areas, where townships are much smaller. The densely packed anchor points would be taken into consideration when selecting spatial weighing in ection 6.1.</p>
+</section>
+<section id="study-area" class="level4">
+<h4 class="anchored" data-anchor-id="study-area">4.2.3 Study Area</h4>
+<p>After cleaning up the multi-part town and centroid issues, the study area is plotted for visual check.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -636,26 +730,26 @@ $ timestamp          &lt;dbl&gt; 1754410549, 1753971383, 1753971383, 1753971383,
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>mmr_st <span class="ot">&lt;-</span> mmr_ts <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(ST) <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>n_st   <span class="ot">&lt;-</span> <span class="fu">n_distinct</span>(mmr_ts<span class="sc">$</span>ST)</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>st_cols <span class="ot">&lt;-</span> <span class="fu">colorRampPalette</span>(RColorBrewer<span class="sc">::</span><span class="fu">brewer.pal</span>(<span class="dv">12</span>, <span class="st">"Set3"</span>))(n_st)</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mmr_ts) <span class="sc">+</span></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">fill =</span> <span class="st">"ST"</span>,</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill.scale =</span> <span class="fu">tm_scale_categorical</span>(<span class="at">values =</span> st_cols),</span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill.legend =</span> <span class="fu">tm_legend</span>(<span class="at">title =</span> <span class="st">"State / Region"</span>)) <span class="sc">+</span></span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">fill_alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(mmr_st) <span class="sc">+</span></span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">col =</span> <span class="st">"grey20"</span>, <span class="at">lwd =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_title</span>(<span class="st">"Myanmar townships by State / Region (n = 330)"</span>) <span class="sc">+</span></span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_compass</span>(<span class="at">position =</span> <span class="fu">c</span>(<span class="st">"right"</span>, <span class="st">"top"</span>)) <span class="sc">+</span></span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_scalebar</span>(<span class="at">position =</span> <span class="fu">c</span>(<span class="st">"right"</span>, <span class="st">"bottom"</span>)) <span class="sc">+</span></span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">legend.outside =</span> <span class="cn">TRUE</span>, <span class="at">legend.outside.position =</span> <span class="st">"right"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>mmr_st <span class="ot">&lt;-</span> mmr_ts <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(ST) <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>n_st   <span class="ot">&lt;-</span> <span class="fu">n_distinct</span>(mmr_ts<span class="sc">$</span>ST)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>st_cols <span class="ot">&lt;-</span> <span class="fu">colorRampPalette</span>(RColorBrewer<span class="sc">::</span><span class="fu">brewer.pal</span>(<span class="dv">12</span>, <span class="st">"Set3"</span>))(n_st)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mmr_ts) <span class="sc">+</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">fill =</span> <span class="st">"ST"</span>,</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill.scale =</span> <span class="fu">tm_scale_categorical</span>(<span class="at">values =</span> st_cols),</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill.legend =</span> <span class="fu">tm_legend</span>(<span class="at">title =</span> <span class="st">"State / Region"</span>)) <span class="sc">+</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">fill_alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(mmr_st) <span class="sc">+</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">col =</span> <span class="st">"grey20"</span>, <span class="at">lwd =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_title</span>(<span class="st">"Myanmar townships by State / Region (n = 330)"</span>) <span class="sc">+</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_compass</span>(<span class="at">position =</span> <span class="fu">c</span>(<span class="st">"right"</span>, <span class="st">"top"</span>)) <span class="sc">+</span></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_scalebar</span>(<span class="at">position =</span> <span class="fu">c</span>(<span class="st">"right"</span>, <span class="st">"bottom"</span>)) <span class="sc">+</span></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">legend.outside =</span> <span class="cn">TRUE</span>, <span class="at">legend.outside.position =</span> <span class="st">"right"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Take-Home_Ex02_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="768"></p>
+<p><img src="Take-Home_Ex02_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="768"></p>
 </figure>
 </div>
 </div>
@@ -663,13 +757,13 @@ $ timestamp          &lt;dbl&gt; 1754410549, 1753971383, 1753971383, 1753971383,
 </section>
 </section>
 <section id="acled-events" class="level3">
-<h3 class="anchored" data-anchor-id="acled-events">4.2 ACLED Events</h3>
-<p>ACLED distinguishes three <code>disorder_type</code>s: <strong>Political violence</strong>, <strong>Demonstrations</strong> and <strong>Strategic developments</strong>. <em>count()</em> is used to compute the occurrence of the ACLED events and <em>kable()</em> is used to generate a table to visualise the variables for further analysis.</p>
+<h3 class="anchored" data-anchor-id="acled-events">4.3 ACLED Events</h3>
+<p>ACLED distinguishes three <code>disorder_type</code>s, i.e., <strong>Political violence</strong>, <strong>Demonstrations</strong> and <strong>Strategic developments</strong>. <em>count()</em> is used to compute the occurrence of the ACLED events and <em>kable()</em> is used to generate a table to visualise the variables for further analysis.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>acled_raw <span class="sc">%&gt;%</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(disorder_type, event_type, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"ACLED events by disorder and event type"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">full_width =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>acled_raw <span class="sc">%&gt;%</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(disorder_type, event_type, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"ACLED events by disorder and event type"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>(<span class="at">full_width =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="table caption-top table-sm table-striped small">
 <caption>ACLED events by disorder and event type</caption>
@@ -725,22 +819,22 @@ $ timestamp          &lt;dbl&gt; 1754410549, 1753971383, 1753971383, 1753971383,
 </table>
 </div>
 </div>
-<p>After reviewing the data, it was decided that events whose <code>disorder_type</code> <strong>contains “Political violence”</strong> would be retained for analysis. This covers:</p>
+<p>After reviewing the data, events whose <code>disorder_type</code> contains <strong>“Political violence”</strong> were retained for analysis:</p>
 <ul>
-<li><strong>Battles</strong> (armed clashes, territorial changes)</li>
-<li><strong>Explosions/Remote violence</strong> (air/drone strikes, shelling, IEDs)</li>
-<li><strong>Violence against civilians</strong></li>
-<li>Violent riots, and the 261 protests coded as “Political violence; Demonstrations” (i.e., protests met with lethal force)</li>
+<li><strong>Battles</strong> (armed clashes, territorial changes);</li>
+<li><strong>Explosions/Remote violence</strong> (air/drone strikes, shelling, IEDs);</li>
+<li><strong>Violence against civilians (</strong>attacks, abductions and sexual violence targeting unarmed people).</li>
 </ul>
-<p>The following two categories were excluded:</p>
+<p>The following three categories were excluded:</p>
 <ul>
-<li><strong>Strategic developments</strong> (arrests, looting, base establishment). These are not violent clashes in themselves and are recorded far less consistently.</li>
-<li><strong>Peaceful protests.</strong> These measure civil resistance, not armed conflict.</li>
+<li><strong>Riots coded as political violence</strong> (24 events), and the 261 protests coded as <strong>“Political violence; Demonstrations”</strong> (i.e., protests met with lethal force), which reflect civil unrest rather than armed conflict.</li>
+<li><strong>Strategic developments</strong> (17,833 events), such as arrests, looting and base establishment. These are not violent clashes in themselves and are recorded far less consistently.</li>
+<li><strong>Demonstrations</strong> (14,987 events), comprising protests and riots not coded as political violence. These measure civil resistance rather than armed conflict.</li>
 </ul>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 50%">
-<col style="width: 50%">
+<col style="width: 34%">
+<col style="width: 65%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -772,11 +866,707 @@ $ timestamp          &lt;dbl&gt; 1754410549, 1753971383, 1753971383, 1753971383,
 </tbody>
 </table>
 </section>
+<section id="data-quality-check" class="level3">
+<h3 class="anchored" data-anchor-id="data-quality-check">4.4 Data Quality Check</h3>
+<p><code>acled_raw</code> contains two data-quality fields, <code>geo_precision</code> and <code>time_precision</code>, each coded 1 to 3, where 1 is the most precise. The two fields are independent, where an event can have an exact date but only an approximate location. The interpretation is based on <code>notes</code>.</p>
+<ul>
+<li><strong><code>geo_precision</code></strong>: 1 = the exact town or village is known; 2 = only an approximate location is known (e.g.&nbsp;“near” a town, or within a township/district), so the event is placed at the nearest named location; 3 = only the state/region is known, so the event is placed at a point representing that state/region.</li>
+<li><strong><code>time_precision</code></strong>: 1 = the exact date is known; 2 = only the week is known; 3 = only the month is known.</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>acled_raw <span class="sc">%&gt;%</span> <span class="fu">count</span>(time_precision) <span class="sc">%&gt;%</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pct =</span> <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> n <span class="sc">/</span> <span class="fu">sum</span>(n), <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+  time_precision     n   pct
+           &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;
+1              1 82691  94.9
+2              2  4212   4.8
+3              3   206   0.2</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>acled_raw <span class="sc">%&gt;%</span> <span class="fu">count</span>(geo_precision) <span class="sc">%&gt;%</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pct =</span> <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> n <span class="sc">/</span> <span class="fu">sum</span>(n), <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+  geo_precision     n   pct
+          &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt;
+1             1 49261  56.6
+2             2 37464  43  
+3             3   384   0.4</code></pre>
+</div>
+</div>
+<p>Events with <code>geo_precision = 3</code> (about 0.4%) are dropped. Their coordinates mark a state/region rather than the actual location, so assigning them to whichever township contains that point would create artificial hot spots. Events with code 2 are kept, as they are usually located in or next to the correct township. All <code>time_precision</code> codes are kept as the time unit used in subsequent analysis is the quarter of the year.</p>
+</section>
+<section id="data-filtering" class="level3">
+<h3 class="anchored" data-anchor-id="data-filtering">4.5 Data Filtering</h3>
+<p>Only conflict events mentioned in Section 4.3 are retained, and events located only to the state/region (<code>geo_precision = 3</code>) are excluded.</p>
+<p>This leaves <strong>54,190 events</strong> from the original 87,109. Two columns are also added:</p>
+<ul>
+<li><code>qtr</code>, the quarter in which each event occurred, used to construct the space-time cube; and</li>
+<li><code>modality</code>, which distinguishes air/drone strikes and armed clashes from other forms of violence for the trend charts.</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>conflict_types <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Battles"</span>, <span class="st">"Explosions/Remote violence"</span>, <span class="st">"Violence against civilians"</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>acled_ac <span class="ot">&lt;-</span> acled_raw <span class="sc">%&gt;%</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(event_type <span class="sc">%in%</span> conflict_types,</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>         geo_precision <span class="sc">&lt;</span> <span class="dv">3</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">qtr      =</span> <span class="fu">floor_date</span>(event_date, <span class="at">unit =</span> <span class="st">"quarter"</span>),</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">modality =</span> <span class="fu">case_when</span>(</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>      sub_event_type <span class="sc">==</span> <span class="st">"Air/drone strike"</span>       <span class="sc">~</span> <span class="st">"Air/drone strike"</span>,</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>      sub_event_type <span class="sc">==</span> <span class="st">"Armed clash"</span>            <span class="sc">~</span> <span class="st">"Armed clash"</span>,</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>      event_type <span class="sc">==</span> <span class="st">"Explosions/Remote violence"</span> <span class="sc">~</span> <span class="st">"Other remote violence"</span>,</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>      event_type <span class="sc">==</span> <span class="st">"Violence against civilians"</span> <span class="sc">~</span> <span class="st">"Violence against civilians"</span>,</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"Other"</span></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">raw =</span> <span class="fu">nrow</span>(acled_raw), <span class="at">kept =</span> <span class="fu">nrow</span>(acled_ac))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  raw  kept 
+87109 53910 </code></pre>
+</div>
+</div>
+</section>
+<section id="convert-to-sf-object" class="level3">
+<h3 class="anchored" data-anchor-id="convert-to-sf-object">4.6 Convert to sf object</h3>
+<p>The <code>latitude</code> and <code>longitude</code> values from the ACLED dataset are used rather than the ACLED’s <code>admin3</code> text. The township names in <code>admin3</code> have different spellings, e.g., <em>Hpa-An / Hpaan</em>, which would result in events being accidentally dropped if identified by township names.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>acled_sf <span class="ot">&lt;-</span> acled_ac <span class="sc">%&gt;%</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>(<span class="at">coords =</span> <span class="fu">c</span>(<span class="st">"longitude"</span>, <span class="st">"latitude"</span>), <span class="at">crs =</span> <span class="dv">4326</span>, <span class="at">remove =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="dv">32647</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="event-locations" class="level3">
+<h3 class="anchored" data-anchor-id="event-locations">4.7 Event locations</h3>
+<p>ACLED records each event at the most precise location available, named in the <code>location</code> field. Where the exact place is known, this may be a village, which sits below the township in Myanmar’s administrative hierarchy. Where only the township is known, the event is placed at the township’s main town. Among events with <code>geo_precision = 1</code>, there are those with <code>location</code> different from their township in <code>admin3</code>, i.e., they are recorded more precisely than the township level (ADM3) on which this study is based. The events are therefore first plotted as points, to show their distribution, before being aggregated to townships for the analysis.</p>
+<p>The selected events, except for political violence: riots which makes up just 24 events, are plotted for viewing.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mmr_ts) <span class="sc">+</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">fill =</span> <span class="st">"grey97"</span>, <span class="at">col =</span> <span class="st">"grey75"</span>, <span class="at">lwd =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(mmr_st) <span class="sc">+</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">col =</span> <span class="st">"grey40"</span>, <span class="at">lwd =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(acled_sf <span class="sc">%&gt;%</span> <span class="fu">filter</span>(event_type <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Battles"</span>, <span class="st">"Explosions/Remote violence"</span>,</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>                                                  <span class="st">"Violence against civilians"</span>))) <span class="sc">+</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_dots</span>(<span class="at">fill =</span> <span class="st">"event_type"</span>,</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>          <span class="at">fill.scale =</span> <span class="fu">tm_scale_categorical</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"#1b9e77"</span>, <span class="st">"#d95f02"</span>, <span class="st">"#7570b3"</span>)),</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>          <span class="at">fill.legend =</span> <span class="fu">tm_legend</span>(<span class="at">show =</span> <span class="cn">FALSE</span>),</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>          <span class="at">fill_alpha =</span> <span class="fl">0.25</span>, <span class="at">size =</span> <span class="fl">0.05</span>) <span class="sc">+</span></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_facets</span>(<span class="at">by =</span> <span class="st">"event_type"</span>, <span class="at">nrow =</span> <span class="dv">1</span>, <span class="at">free.coords =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">frame =</span> <span class="cn">FALSE</span>, <span class="at">panel.label.bg.color =</span> <span class="st">"white"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_Ex02_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="1152"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="point-in-polygon-join" class="level3">
+<h3 class="anchored" data-anchor-id="point-in-polygon-join">4.8 Point-in-polygon join</h3>
+<p>Events are assigned to townships using <em>st_join</em> to check which township polygon each point falls inside, and attaches that township’s TS_PCODE, TS and ST to the event. <em>left = TRUE</em> keeps events that fall in no township, with empty (NA) township fields, so they can be counted in the next line.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>acled_ts <span class="ot">&lt;-</span> <span class="fu">st_join</span>(acled_sf, mmr_ts <span class="sc">%&gt;%</span> <span class="fu">select</span>(TS_PCODE, TS, ST),</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">join =</span> st_intersects, <span class="at">left =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>unmatched <span class="ot">&lt;-</span> acled_ts <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">is.na</span>(TS_PCODE))</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(unmatched)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 11</code></pre>
+</div>
+</div>
+<p>Using <em>nrow(unmatched)</em>, 12 points were found to fall outside the township polygons. ACLED’s <code>admin3</code> field, which records the township ACLED attributes each event to, is used to assign these points instead:</p>
+<ul>
+<li>Events with an <code>admin3</code> value are matched to values in <code>TS</code>. There were eight of such events.</li>
+<li>Events with no <code>admin3</code> value or values that do not match <code>TS</code> values are dropped. There were four of such events.</li>
+</ul>
+<p>This leaves <strong>54,190 events</strong>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>reassigned <span class="ot">&lt;-</span> unmatched <span class="sc">%&gt;%</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>TS_PCODE, <span class="sc">-</span>TS, <span class="sc">-</span>ST) <span class="sc">%&gt;%</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(mmr_ts <span class="sc">%&gt;%</span> <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span> <span class="fu">select</span>(TS_PCODE, TS, ST),</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"admin3"</span> <span class="ot">=</span> <span class="st">"TS"</span>), <span class="at">keep =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>acled_ts <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(acled_ts <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(TS_PCODE)), reassigned) <span class="sc">%&gt;%</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(event_id_cnty, <span class="at">.keep_all =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(reassigned)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 8</code></pre>
+</div>
+</div>
+</section>
+<section id="township-level-aggregates" class="level3">
+<h3 class="anchored" data-anchor-id="township-level-aggregates">4.9 Township-level aggregates</h3>
+<p>The conflict variables are derived for each township:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Definition</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>conflict_events</code></td>
+<td>All political-violence events</td>
+</tr>
+<tr class="even">
+<td><code>battles</code></td>
+<td>ACLED event type <em>Battles</em></td>
+</tr>
+<tr class="odd">
+<td><code>remote</code></td>
+<td><em>Explosions/Remote violence</em></td>
+</tr>
+<tr class="even">
+<td><code>vac</code></td>
+<td><em>Violence against civilians</em></td>
+</tr>
+<tr class="odd">
+<td><code>clash</code></td>
+<td>Sub-event <em>Armed clash</em> (used in the value-added analysis)</td>
+</tr>
+</tbody>
+</table>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>acled_df <span class="ot">&lt;-</span> acled_ts <span class="sc">%&gt;%</span> <span class="fu">st_drop_geometry</span>()</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>agg_vars <span class="ot">&lt;-</span> <span class="cf">function</span>(d) {</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  d <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">conflict_events  =</span> <span class="fu">n</span>(),</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">battles    =</span> <span class="fu">sum</span>(event_type <span class="sc">==</span> <span class="st">"Battles"</span>),</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">remote     =</span> <span class="fu">sum</span>(event_type <span class="sc">==</span> <span class="st">"Explosions/Remote violence"</span>),</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">vac        =</span> <span class="fu">sum</span>(event_type <span class="sc">==</span> <span class="st">"Violence against civilians"</span>),</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">clash      =</span> <span class="fu">sum</span>(modality <span class="sc">==</span> <span class="st">"Armed clash"</span>),</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>ts_total <span class="ot">&lt;-</span> acled_df <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(TS_PCODE) <span class="sc">%&gt;%</span> <span class="fu">agg_vars</span>()</span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a><span class="co"># left-join to ALL 330 townships so that zero-event townships are kept</span></span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a>conflict_ts <span class="ot">&lt;-</span> mmr_ts <span class="sc">%&gt;%</span></span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(ts_total, <span class="at">by =</span> <span class="st">"TS_PCODE"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(conflict_events<span class="sc">:</span>clash, <span class="sc">~</span> <span class="fu">replace_na</span>(.x, <span class="dv">0</span>)))</span>
+<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">st_drop_geometry</span>(conflict_ts)[, <span class="fu">c</span>(<span class="st">"conflict_events"</span>, <span class="st">"battles"</span>, <span class="st">"remote"</span>, <span class="st">"vac"</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> conflict_events     battles           remote            vac        
+ Min.   :   0.0   Min.   :  0.00   Min.   :  0.00   Min.   :  0.00  
+ 1st Qu.:  24.0   1st Qu.:  4.00   1st Qu.:  9.00   1st Qu.:  7.00  
+ Median :  79.0   Median : 20.00   Median : 29.50   Median : 18.00  
+ Mean   : 163.4   Mean   : 63.85   Mean   : 69.39   Mean   : 30.12  
+ 3rd Qu.: 214.0   3rd Qu.: 93.50   3rd Qu.: 92.75   3rd Qu.: 40.00  
+ Max.   :1039.0   Max.   :447.00   Max.   :601.00   Max.   :213.00  </code></pre>
+</div>
+</div>
+</section>
+<section id="space-time-cube" class="level3">
+<h3 class="anchored" data-anchor-id="space-time-cube">4.10 Space-time cube</h3>
+</section>
+<section id="choosing-the-time-bin" class="level3">
+<h3 class="anchored" data-anchor-id="choosing-the-time-bin">4.10.1 Choosing the time bin</h3>
+<p>The time bin has to suit the process being studied. Armed conflict changes slowly, through offensives, territorial control and campaigns.</p>
+<p>As the EHSA applies the Mann-Kendall trend test to each township’s series of Gi* values, one per time slice. At least 8 to 10 measurements are recommended to avoid missing a trend. Quarterly bins would give 19 slices, which is above this minimum.</p>
+</section>
+<section id="building-the-space-time-cube" class="level3">
+<h3 class="anchored" data-anchor-id="building-the-space-time-cube">4.10.2 Building the space-time cube</h3>
+<p>ACLED records one row per event, so the events are first counted for each township and quarter using <em>agg_vars()</em>. Townships with no events in a quarter would otherwise have no row for that quarter, so <em>complete()</em> adds every missing township–quarter combination and fills its counts with 0. This gives one row for each of the 330 townships in each of the 19 quarters (6,270 rows).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>conflict_panel <span class="ot">&lt;-</span> acled_df <span class="sc">%&gt;%</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(TS_PCODE, qtr) <span class="sc">%&gt;%</span> <span class="fu">agg_vars</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">complete</span>(<span class="at">TS_PCODE =</span> mmr_ts<span class="sc">$</span>TS_PCODE, qtr,</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">fill =</span> <span class="fu">list</span>(<span class="at">conflict_events =</span> <span class="dv">0</span>, <span class="at">battles =</span> <span class="dv">0</span>, <span class="at">remote =</span> <span class="dv">0</span>, <span class="at">vac =</span> <span class="dv">0</span>, <span class="at">clash =</span> <span class="dv">0</span>))</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">rows =</span> <span class="fu">nrow</span>(conflict_panel), <span class="at">expected =</span> <span class="fu">nrow</span>(mmr_ts) <span class="sc">*</span> <span class="fu">length</span>(quarters))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    rows expected 
+    6270      330 </code></pre>
+</div>
+</div>
+<p>The space-time cube is built with <em>spacetime()</em>, linking the quarterly counts to the township boundaries through <code>TS_PCODE</code> (location) and <code>qtr</code> (time). <em>is_spacetime_cube()</em> confirms that the cube is complete, with every township present in every quarter.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>conflict_spt <span class="ot">&lt;-</span> <span class="fu">spacetime</span>(conflict_panel, mmr_ts,</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>                          <span class="at">.loc_col =</span> <span class="st">"TS_PCODE"</span>, <span class="at">.time_col =</span> <span class="st">"qtr"</span>)</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="fu">is_spacetime_cube</span>(conflict_spt)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="exploratory-geovisualisation" class="level2">
+<h2 class="anchored" data-anchor-id="exploratory-geovisualisation">5. Exploratory Geovisualisation</h2>
+<section id="event-distribution-across-townships" class="level3">
+<h3 class="anchored" data-anchor-id="event-distribution-across-townships">5.1 Event distribution across townships</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">st_drop_geometry</span>(conflict_ts), <span class="fu">aes</span>(conflict_events)) <span class="sc">+</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">40</span>, <span class="at">fill =</span> <span class="st">"#3182bd"</span>, <span class="at">colour =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Events per township"</span>, <span class="at">y =</span> <span class="st">"Townships"</span>) <span class="sc">+</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_Ex02_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The distribution is <strong>strongly right-skewed</strong>. A few townships record hundreds of events while others record almost none. This matters for the choice of spatial weights in subsequent analysis.</p>
+</section>
+<section id="choropleth-maps" class="level3">
+<h3 class="anchored" data-anchor-id="choropleth-maps">5.2 Choropleth maps</h3>
+<p>To keep the choropleth maps consistent and avoid repeating code, a helper function, <em>map_choro()</em>, is defined once and reused for each map. It classes townships into six quantile groups, as event counts are highly skewed, and overlays state/region boundaries for reference. Only the variable, legend title and colour palette change between maps.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>map_choro <span class="ot">&lt;-</span> <span class="cf">function</span>(sf_obj, var, title, <span class="at">palette =</span> <span class="st">"brewer.reds"</span>, <span class="at">n =</span> <span class="dv">6</span>) {</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(sf_obj) <span class="sc">+</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_polygons</span>(<span class="at">fill =</span> var,</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">fill.scale =</span> <span class="fu">tm_scale_intervals</span>(<span class="at">style =</span> <span class="st">"quantile"</span>, <span class="at">n =</span> n,</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>                                                <span class="at">values =</span> palette),</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">fill.legend =</span> <span class="fu">tm_legend</span>(<span class="at">title =</span> title, <span class="at">frame =</span> <span class="cn">FALSE</span>),</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">col =</span> <span class="st">"grey70"</span>, <span class="at">lwd =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_shape</span>(mmr_st) <span class="sc">+</span> <span class="fu">tm_borders</span>(<span class="at">col =</span> <span class="st">"grey25"</span>, <span class="at">lwd =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_layout</span>(<span class="at">legend.outside =</span> <span class="cn">TRUE</span>, <span class="at">legend.outside.position =</span> <span class="st">"right"</span>)</span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">map_choro</span>(conflict_ts, <span class="st">"conflict_events"</span>, <span class="st">"Events"</span>) <span class="sc">+</span> <span class="fu">tm_title</span>(<span class="st">"Political-violence events"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_Ex02_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Analysis
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Political violence is widespread but highly uneven, ranging from fewer than 15 events in the lightest townships to over 1,000 in the most affected. The heaviest concentration is in the central zone, across Sagaing, Magway and Mandalay, heartland of numerous independently operating resistance forces (Myanmar Outlook: Fighting Is Set to Intensify in the Center of the Country | ACLED, 2026). A second belt of high counts runs down the south-east, through Tanintharyi. Another hot area is observed in Rakhine, where a contested strategic route lies (Myanmar Outlook: Fighting Is Set to Intensify in the Center of the Country | ACLED, 2026). The pattern suggests that violence clusters in contested regions rather than being randomly spread, which will be covered in LISA tests in Section 6.</p>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_choro</span>(conflict_ts, <span class="st">"battles"</span>, <span class="st">"Battles"</span>, <span class="st">"brewer.greens"</span>) <span class="sc">+</span> <span class="fu">tm_title</span>(<span class="st">"Battles"</span>),</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_choro</span>(conflict_ts, <span class="st">"remote"</span>, <span class="st">"Explosions/Remote"</span>, <span class="st">"brewer.oranges"</span>) <span class="sc">+</span> <span class="fu">tm_title</span>(<span class="st">"Explosions / remote violence"</span>),</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_choro</span>(conflict_ts, <span class="st">"vac"</span>, <span class="st">"VAC"</span>, <span class="st">"brewer.purples"</span>) <span class="sc">+</span> <span class="fu">tm_title</span>(<span class="st">"Violence against civilians"</span>),</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">ncol =</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_Ex02_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="1152"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Analysis
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The three event types show a concentrate at the central zone, but differ elsewhere. Battles are the most widespread and is noted to have a slightly less concentrated stripe i nthe central zone. Explosions and remote violence, follow a similar pattern but are especially concentrated in the central zone, the south-east and coastal Rakhine. Violence against civilians is the most concentrated, mainly at the central zone with a secondary cluster in the south-east. As each map uses its own quantile classes, colours indicate a township’s rank within that event type and should not be compared directly across maps.</p>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>conflict_year <span class="ot">&lt;-</span> acled_df <span class="sc">%&gt;%</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">year =</span> <span class="fu">year</span>(qtr)) <span class="sc">%&gt;%</span></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(TS_PCODE, year, <span class="at">name =</span> <span class="st">"events"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">complete</span>(<span class="at">TS_PCODE =</span> mmr_ts<span class="sc">$</span>TS_PCODE, <span class="at">year =</span> <span class="dv">2021</span><span class="sc">:</span><span class="dv">2025</span>, <span class="at">fill =</span> <span class="fu">list</span>(<span class="at">events =</span> <span class="dv">0</span>))</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>mmr_ts <span class="sc">%&gt;%</span> <span class="fu">left_join</span>(conflict_year, <span class="at">by =</span> <span class="st">"TS_PCODE"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>() <span class="sc">+</span></span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">fill =</span> <span class="st">"events"</span>,</span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill.scale =</span> <span class="fu">tm_scale_intervals</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">10</span>, <span class="dv">25</span>, <span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">200</span>, <span class="cn">Inf</span>),</span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a>                                              <span class="at">values =</span> <span class="st">"brewer.yl_or_rd"</span>),</span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill.legend =</span> <span class="fu">tm_legend</span>(<span class="at">title =</span> <span class="st">"Events"</span>),</span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a>              <span class="at">col =</span> <span class="st">"grey80"</span>, <span class="at">lwd =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
+<span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_facets</span>(<span class="at">by =</span> <span class="st">"year"</span>, <span class="at">nrow =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb44-14"><a href="#cb44-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">frame =</span> <span class="cn">FALSE</span>, <span class="at">panel.label.bg.color =</span> <span class="st">"white"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_Ex02_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid figure-img" width="1152"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Analysis
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Using the same event bins for every year shows how the geography of violence has shifted. In 2021, events were relatively dispersed. From 2022, events intensified and concentrated in the central zone, which remains a core area throughout. In 2023, northern Shan near the Chinese border becomes more prominent, consistent with the launch of Operation 1027 in October 2023. With the collapse of regime forces in northern Shan, other ethnic armed organisations launched syncrhonised attacks across the country (Michaels, 2023). In 2024, events escalates in Rakhine on the west coast and along the south-east through Kayin and Tanintharyi. In 2025, the map appears lighter overall, although this partly reflects the shorter period covered (January to September only). Overall, the conflict has expanded from the central heartland towards the border states rather than receding, which will be covered in EHSA analysis in Section 7.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="local-measures-of-spatial-association-lmsa" class="level2">
+<h2 class="anchored" data-anchor-id="local-measures-of-spatial-association-lmsa">6. Local Measures of Spatial Association (LMSA)</h2>
+<section id="spatial-weights" class="level3">
+<h3 class="anchored" data-anchor-id="spatial-weights">6.1 Spatial weights</h3>
+<p>Comparing the four methods for spatial weights, i.e., polygon contiguity, fixed distance, inverse distance and k-nearest neighbours (KNN), KNN is effective when wanting to ensure a minimum number of neighbours based on geographic proximity and in handling skewed values (as shown in Section 5.1). It is also not sensitive to polygons differing in size, where Myanmar’s township ranges greatly, as with polygon contiguity. The use of KNN ensures that every township has neighbours, including the island townships which are located far from the mainland townships and do not share boundaries. Anchor points are dense in Yangon, Mandalay and Nay Pyi Taw, where urban townships are very small (median about 9 km² in Yangon versus about 1,519 km² nationally). A fixed distance band would give these townships dozens of neighbours and leave large rural townships with very few. The k-nearest-neighbour approach gives every township exactly eight neighbours, regardless of township size.</p>
+<p>Four approaches to defining neighbours were considered, i.e., polygon contiguity, fixed distance, inverse distance and k-nearest neighbours (KNN). KNN was chosen for the reasons below:</p>
+<ul>
+<li>Township sizes vary widely. Contiguity works best when polygons are of similar size, and a fixed distance band would give urban townships dozens of neighbours and rural townships very few. KNN gives every township exactly k neighbours, regardless of size.</li>
+<li>Every township needs neighbours. Island townships share no boundary with the mainland and would be left without neighbours under contiguity. KNN always finds the k closest townships, so no township is excluded from the analysis.</li>
+<li>The conflict counts are highly skewed (Section 5.1).</li>
+</ul>
+<p>Considering the skewed data, the variables should be evaluated in the context of at least eight neighbours (Modeling Spatial relationships—ArcGIS Pro | Documentation, n.d.). k = 8 will therefore be used for the weight matrix analysis.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>nb_knn <span class="ot">&lt;-</span> <span class="fu">st_knn</span>(ts_anchor, <span class="at">k =</span> <span class="dv">8</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>nb_lines <span class="ot">&lt;-</span> spdep<span class="sc">::</span><span class="fu">nb2lines</span>(nb_knn, <span class="at">coords =</span> <span class="fu">st_coordinates</span>(ts_anchor),</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">proj4string =</span> <span class="fu">st_crs</span>(mmr_ts)<span class="sc">$</span>wkt) <span class="sc">%&gt;%</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>()</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mmr_ts) <span class="sc">+</span> <span class="fu">tm_borders</span>(<span class="at">col =</span> <span class="st">"grey75"</span>, <span class="at">lwd =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(nb_lines) <span class="sc">+</span> <span class="fu">tm_lines</span>(<span class="at">col =</span> <span class="st">"steelblue"</span>, <span class="at">lwd =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(ts_anchor) <span class="sc">+</span> <span class="fu">tm_dots</span>(<span class="at">fill =</span> <span class="st">"grey20"</span>, <span class="at">size =</span> <span class="fl">0.05</span>) <span class="sc">+</span></span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">frame =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_Ex02_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The plot shows the linking of eight neighbours to each township, including the island township that does not share a boundary with any other township.</p>
+</section>
+<section id="weight-schemes" class="level3">
+<h3 class="anchored" data-anchor-id="weight-schemes">6.2 Weight Schemes</h3>
+<p>The same k = 8 nearest-neighbour list is used for the weight matrix analysis, with row-standardised weights. Local Moran’s I uses it as is, so each township’s spatial lag is the average of its eight neighbours. Gi* (in the Gi* map and in EHSA) requires each township to be part of its own neighbourhood, so <em>include_self()</em> is added.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Analysis</th>
+<th>Neighbours</th>
+<th>Weights</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Local Indicators of Spatial Association (LISA)</td>
+<td>k = 8 nearest neighbours</td>
+<td>Row-standardised (<code>W</code>)</td>
+<td>Spatial lag = average of the eight neighbours</td>
+</tr>
+<tr class="even">
+<td>EHSA (Gi* per quarter)</td>
+<td>k = 8 nearest neighbours <strong>including self</strong></td>
+<td>Row-standardised (<code>W</code>)</td>
+<td>Gi* includes the focal township (location i) in its own neighbourhood</td>
+</tr>
+</tbody>
+</table>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>conflict_w <span class="ot">&lt;-</span> conflict_ts <span class="sc">%&gt;%</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">nb =</span> nb_knn,</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">wt =</span> <span class="fu">st_weights</span>(nb, <span class="at">style =</span> <span class="st">"W"</span>),</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">.before =</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="local-indicators-of-spatial-association-lisa" class="level3">
+<h3 class="anchored" data-anchor-id="local-indicators-of-spatial-association-lisa">6.3 Local Indicators of Spatial Association (LISA)</h3>
+<p>LISA measures, for each township, how similar its value is to those of its neighbours. It identifies clusters, where a township and its neighbours have similar values, and spatial outliers, where a township differs sharply from its neighbours. This is done by computing the local Moran’s I with <em>local_moran()</em>.</p>
+<p>Based on the local Moran’s I value, outliers and clusters can be identified:</p>
+<ul>
+<li>Outlier: Negative if focal township (location i) is associated with relatively low values in surrounding location (location j).</li>
+<li>Cluster: Positive if focal township (location i) is associated with relatively high values in the surrounding locations (location j).</li>
+</ul>
+<p>In either case, the p-value must be small enough for the cluster or outlier to be considered statistically significant. This report uses α = 0.05, as required by the assignment brief.</p>
+<section id="calculating-local-morans-i" class="level4">
+<h4 class="anchored" data-anchor-id="calculating-local-morans-i">6.3.1 Calculating Local Moran’s I</h4>
+<p><em>lisa</em> is first created as a function to calculate local Moran’s I value with nsim = 99. This will be used for all armed conflicts and the three event types, i.e., battles, explosions / remote violence, and violence against civilians.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>lisa <span class="ot">&lt;-</span> <span class="cf">function</span>(d, var, <span class="at">nsim =</span> <span class="dv">99</span>) {</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  d <span class="sc">%&gt;%</span></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">local_moran =</span> <span class="fu">local_moran</span>(.data[[var]], nb, wt, <span class="at">nsim =</span> nsim),</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">.before =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unnest</span>(local_moran)</span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Local Moran’s I is first computed using <code>conflict_events</code>, which looks at total number of armed conflict events per township.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>lisa_ce <span class="ot">&lt;-</span> <span class="fu">lisa</span>(conflict_w, <span class="st">"conflict_events"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><em>classify_lisa</em> is a function created to sieve out townships where results are statistically insignificant, i.e., <em>p_ii_sim &lt; 0.05</em>. This ensures that townships are assigned into a quadrant of High-High, Low-Low, Low-High or High-Low, only if the results are statistically significant, where p value is &lt; 0.05.</p>
+<p>A Moran scatterplot is plotted to show how the LISA classes arise. Each point is a township, where the x-axis is its standardised number of armed-conflict events, and the y-axis is the spatial lag, the average standardised value of its eight nearest neighbours. The slope of the fitted line equals the global Moran’s I, so an upward slope indicates positive spatial autocorrelation. Townships significant at p &lt; 0.05 are coloured by their LISA class while the rest are shown in grey. The scatterplot complements the LISA mapby showing how strongly each township and its neighbours depart from the mean.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>lisa_colours <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"High-High"</span> <span class="ot">=</span> <span class="st">"#d7191c"</span>, <span class="st">"Low-Low"</span> <span class="ot">=</span> <span class="st">"#2c7bb6"</span>,</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"Low-High"</span>  <span class="ot">=</span> <span class="st">"#abd9e9"</span>, <span class="st">"High-Low"</span> <span class="ot">=</span> <span class="st">"#fdae61"</span>,</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"Not significant"</span> <span class="ot">=</span> <span class="st">"grey92"</span>)</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>classify_lisa <span class="ot">&lt;-</span> <span class="cf">function</span>(l) {</span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>  l <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(</span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">lisa_class =</span> <span class="fu">if_else</span>(p_ii_sim <span class="sc">&lt;</span> <span class="fl">0.05</span>, <span class="fu">as.character</span>(mean), <span class="st">"Not significant"</span>),</span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">lisa_class =</span> <span class="fu">factor</span>(lisa_class, <span class="at">levels =</span> <span class="fu">names</span>(lisa_colours)))</span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a>lisa_ce <span class="ot">&lt;-</span> <span class="fu">classify_lisa</span>(lisa_ce)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>lisa_ce <span class="ot">&lt;-</span> lisa_ce <span class="sc">%&gt;%</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">z_events     =</span> <span class="fu">as.vector</span>(<span class="fu">scale</span>(conflict_events)),</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">z_lag_events =</span> <span class="fu">st_lag</span>(z_events, nb, wt),</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">.before =</span> <span class="dv">1</span>)</span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> lisa_ce,</span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> z_events, <span class="at">y =</span> z_lag_events, <span class="at">color =</span> lisa_class)) <span class="sc">+</span></span>
+<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">lty =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">lty =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb51-12"><a href="#cb51-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> lisa_colours) <span class="sc">+</span></span>
+<span id="cb51-13"><a href="#cb51-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Standardised armed-conflict events"</span>,</span>
+<span id="cb51-14"><a href="#cb51-14" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Spatial lag of standardised events"</span>,</span>
+<span id="cb51-15"><a href="#cb51-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">color =</span> <span class="st">"LISA (p &lt; 0.05)"</span>,</span>
+<span id="cb51-16"><a href="#cb51-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Moran scatterplot: armed-conflict events"</span>) <span class="sc">+</span></span>
+<span id="cb51-17"><a href="#cb51-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_Ex02_files/figure-html/unnamed-chunk-33-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The fitted line slopes upward, confirming that armed conflict is positively spatially autocorrelated as townships tend to resemble their neighbours.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>lisa_ce <span class="sc">%&gt;%</span> <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">sig_p05   =</span> <span class="fu">sum</span>(p_ii_sim <span class="sc">&lt;</span> <span class="fl">0.05</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 1
+  sig_p05
+    &lt;int&gt;
+1     108</code></pre>
+</div>
+</div>
+<p>There are 105 townships that has a statistically significant local Moran’s I value.</p>
+</section>
+</section>
+<section id="lisa-map-for-armed-conflict-events" class="level3">
+<h3 class="anchored" data-anchor-id="lisa-map-for-armed-conflict-events">6.3.2 LISA Map for Armed Conflict Events</h3>
+<p>The function <em>map_lisa()</em> draws the significant classes in colour and greys out non-significant townships, so that only significant results are displayed. State/region boundaries are added for reference.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>map_lisa <span class="ot">&lt;-</span> <span class="cf">function</span>(l, title) {</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(l) <span class="sc">+</span></span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_polygons</span>(<span class="at">fill =</span> <span class="st">"lisa_class"</span>,</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">fill.scale =</span> <span class="fu">tm_scale_categorical</span>(<span class="at">values =</span> lisa_colours, <span class="at">levels.drop =</span> <span class="cn">FALSE</span>),</span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">fill.legend =</span> <span class="fu">tm_legend</span>(<span class="at">title =</span> <span class="st">"LISA (p &lt; 0.05)"</span>),</span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">col =</span> <span class="st">"grey60"</span>, <span class="at">lwd =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_shape</span>(mmr_st) <span class="sc">+</span> <span class="fu">tm_borders</span>(<span class="at">col =</span> <span class="st">"grey25"</span>, <span class="at">lwd =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_title</span>(title) <span class="sc">+</span></span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_layout</span>(<span class="at">legend.outside =</span> <span class="cn">TRUE</span>, <span class="at">legend.outside.position =</span> <span class="st">"right"</span>)</span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">map_lisa</span>(lisa_ce, <span class="st">"LISA clusters &amp; outliers: political violence"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_Ex02_files/figure-html/unnamed-chunk-36-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Analysis
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The LISA map reveals a strongly polarised conflict geography. The largest High-High cluster forms a block across the central zone. A smaller High-High cluster lies in south. These are townships with high event counts surrounded by similarly affected neighbours, indicating sustained, area-wide conflict rather than isolated incidents.</p>
+<p>Low-Low clusters cover the far north, and eastern and southern townships. These are relatively calm townships surrounded by calm neighbours.</p>
+<p>Low-High outliers sit on the edges of the conflict zones. They have few events but violent neighbours, making them at risk of spill-over. Only one High-Low outlier appears, confirming that high conflict in Myanmar is rarely isolated. With [n] of 330 townships significant at p &lt; 0.05, the clustering is far beyond what chance alone would produce (about 16 townships).</p>
+</div>
+</div>
+<p>LISA by armed-conflict type</p>
+<p>The same steps are repeated for each armed-conflict type.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>lisa_types <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">battles =</span> <span class="fu">classify_lisa</span>(<span class="fu">lisa</span>(conflict_w, <span class="st">"battles"</span>)),</span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">remote  =</span> <span class="fu">classify_lisa</span>(<span class="fu">lisa</span>(conflict_w, <span class="st">"remote"</span>)),</span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">vac     =</span> <span class="fu">classify_lisa</span>(<span class="fu">lisa</span>(conflict_w, <span class="st">"vac"</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The table below summarises the number of townships in each significant class, for all armed-conflict events and for each type.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(<span class="st">`</span><span class="at">All armed-conflict events</span><span class="st">`</span> <span class="ot">=</span> lisa_ce,</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">Battles =</span> lisa_types<span class="sc">$</span>battles,</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>     <span class="st">`</span><span class="at">Explosions / remote violence</span><span class="st">`</span> <span class="ot">=</span> lisa_types<span class="sc">$</span>remote,</span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>     <span class="st">`</span><span class="at">Violence against civilians</span><span class="st">`</span> <span class="ot">=</span> lisa_types<span class="sc">$</span>vac) <span class="sc">%&gt;%</span></span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dfr</span>(<span class="sc">~</span> <span class="fu">st_drop_geometry</span>(.x) <span class="sc">%&gt;%</span> <span class="fu">count</span>(lisa_class), <span class="at">.id =</span> <span class="st">"variable"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> lisa_class, <span class="at">values_from =</span> n, <span class="at">values_fill =</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Number of townships in each LISA class (p &lt; 0.05)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="tbl-lisa-summary" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-lisa-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Number of townships in each LISA class (p &lt; 0.05)
+</figcaption>
+<div aria-describedby="tbl-lisa-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="cell caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 35%">
+<col style="width: 12%">
+<col style="width: 9%">
+<col style="width: 11%">
+<col style="width: 19%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">variable</th>
+<th style="text-align: right;">High-High</th>
+<th style="text-align: right;">Low-Low</th>
+<th style="text-align: right;">Low-High</th>
+<th style="text-align: right;">Not significant</th>
+<th style="text-align: right;">High-Low</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">All armed-conflict events</td>
+<td style="text-align: right;">34</td>
+<td style="text-align: right;">69</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">222</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Battles</td>
+<td style="text-align: right;">39</td>
+<td style="text-align: right;">86</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">198</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Explosions / remote violence</td>
+<td style="text-align: right;">29</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">235</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Violence against civilians</td>
+<td style="text-align: right;">32</td>
+<td style="text-align: right;">58</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">232</td>
+<td style="text-align: right;">3</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Battles</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Explosions / remote violence</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Violence against civilians</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">map_lisa</span>(lisa_types<span class="sc">$</span>battles, <span class="st">"LISA: Battles"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-lisa-battles" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-lisa-battles-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="Take-Home_Ex02_files/figure-html/fig-lisa-battles-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-lisa-battles-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Significant LISA clusters and outliers of battles (p &lt; 0.05)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>[Conclusion, ≤200 words]</p>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">map_lisa</span>(lisa_types<span class="sc">$</span>remote, <span class="st">"LISA: Explosions / remote violence"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-lisa-remote" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-lisa-remote-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="Take-Home_Ex02_files/figure-html/fig-lisa-remote-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-lisa-remote-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Significant LISA clusters and outliers of explosions/remote violence (p &lt; 0.05)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>[Conclusion, ≤200 words]</p>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">map_lisa</span>(lisa_types<span class="sc">$</span>vac, <span class="st">"LISA: Violence against civilians"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div id="fig-lisa-vac" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-lisa-vac-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="Take-Home_Ex02_files/figure-html/fig-lisa-vac-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-lisa-vac-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Significant LISA clusters and outliers of violence against civilians (p &lt; 0.05)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
 </section>
 <section id="references" class="level2">
 <h2 class="anchored" data-anchor-id="references">References</h2>
+<p>ACLED. (2024). <em>Fatalities</em> [Methodology, last updated 7 May 2024]. Armed Conflict Location &amp; Event Data Project. https://acleddata.com/methodology/fatalities</p>
+<p>Modeling spatial relationships—ArcGIS Pro | Documentation. (n.d.). https://pro.arcgis.com/en/pro-app/3.4/tool-reference/spatial-statistics/modeling-spatial-relationships.htm</p>
+<p>KAM, Tin Seong and ZHI, Vincent. Is there space for violence?: A data-driven approach to the exploration of spatial-temporal dimensions of conflict. (2018). Proceedings of the 2nd ACM SIGSPATIAL Workshop on Geospatial Humanities, Seattle, WA, USA, 2018 November 06. 1-10.</p>
 <p>Lovelace, R., Nowosad, J., &amp; Muenchow, J. (2026). <em>Geocomputation with R</em>. https://r.geocompx.org/geometry-operations.html</p>
+<p>Michaels, M. (2023, November). Operation 1027 reshapes Myanmar’s post-coup war. International Institute for Strategic Studies. https://myanmar.iiss.org/analysis/2023-11</p>
+<p>Myanmar outlook: Fighting is set to intensify in the center of the country | ACLED. (2026, July 27). ACLED. https://acleddata.com/report/myanmar-outlook-fighting-set-intensify-center-country</p>
 <p>Pebesma, E., &amp; Bivand, R. (2023). <em>Spatial Data Science: With Applications in R</em>, ch.&nbsp;14 Proximity and Areal Data. https://r-spatial.org/book/14-Areal.html</p>
+<p>Voice of America. (2025, February 24). <em>Report: In record year of internet shutdowns, Myanmar leads</em>. voanews.com/a/report-in-record-year-of-internet-shutdowns-myanmar-leads/7985585.html</p>
 
 
 </section>

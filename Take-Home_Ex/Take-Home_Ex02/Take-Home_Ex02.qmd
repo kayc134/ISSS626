@@ -172,8 +172,6 @@ Geometric centroids can fall outside their parent polygon, whereas point-on-surf
 ::: callout-note
 ### AI Use Disclosure
 
-A### AI Use Disclosure
-
 AI tools were used to draft the R code that reorders the anchor points to match the township layer using *match()* on `TS_PCODE` and the *stopifnot()* checks that confirm the township codes are in identical order and that every anchor point falls inside the township boundaries. The output was reviewed and run by the author to verify correctness against the study data.
 :::
 
@@ -313,7 +311,7 @@ Events with `geo_precision = 3` (about 0.4%) are dropped. Their coordinates mark
 
 Only conflict events mentioned in Section 4.3 are retained, and events located only to the state/region (`geo_precision = 3`) are excluded. 
 
-This leaves **54,190 events** from the original 87,109. Two columns are also added:
+This leaves **53,910 events** from the original 87,109. Two columns are also added:
 
 - `qtr`, the quarter in which each event occurred, used to construct the space-time cube; and
 - `modality`, which distinguishes air/drone strikes and armed clashes from other forms of violence for the trend charts.
@@ -383,12 +381,16 @@ unmatched <- acled_ts %>% filter(is.na(TS_PCODE))
 nrow(unmatched)
 ```
 
-Using *nrow(unmatched)*, 12 points were found to fall outside the township polygons. ACLED's `admin3` field, which records the township ACLED attributes each event to, is used to assign these points instead:
+Using *nrow(unmatched)*, 11 points were found to fall outside the township polygons. ACLED's `admin3` field, which records the township ACLED attributes each event to, is used to assign these points instead:
 
 - Events with an `admin3` value are matched to values in `TS`. There were eight of such events.
-- Events with no `admin3` value or values that do not match `TS` values are dropped. There were four of such events.
+- Events with no `admin3` value or values that do not match `TS` values are dropped. There were three of such events.
 
-This leaves **54,190 events**.
+```{r}
+nrow(acled_ts)
+```
+
+This leaves **53,907 events**.
 
 ```{r}
 reassigned <- unmatched %>%
@@ -609,7 +611,7 @@ Based on the local Moran's I value, outliers and clusters can be identified:
 
 In either case, the p-value must be small enough for the cluster or outlier to be considered statistically significant. This report uses α = 0.05, as required by the assignment brief. 
 
-#### 6.3.1 Calculating Local Moran's I
+### 6.4 Calculating Local Moran's I
 
 *lisa* is first created as a function to calculate local Moran's I value with nsim = 99. This will be used for all armed conflicts and the three event types, i.e., battles, explosions / remote violence, and violence against civilians. 
 
@@ -674,9 +676,9 @@ lisa_ce %>% st_drop_geometry() %>%
   summarise(sig_p05   = sum(p_ii_sim < 0.05))
 ```
 
-There are 105 townships that has a statistically significant local Moran's I value.
+There are 108 townships that has a statistically significant local Moran's I value.
 
-### 6.3.2 LISA Map for Armed Conflict Events 
+### 6.5 LISA Map for Armed Conflict Events 
 
 The function *map_lisa()* draws the significant classes in colour and greys out non-significant townships, so that only significant results are displayed. State/region boundaries are added for reference.
 
@@ -710,9 +712,7 @@ Low-High outliers sit on the edges of the conflict zones. They have few events b
 
 :::
 
-
-
-LISA by armed-conflict type
+## 6.6 LISA by Armed-Conflict Type
 
 The same steps are repeated for each armed-conflict type.
 
@@ -745,7 +745,11 @@ list(`All armed-conflict events` = lisa_ce,
 map_lisa(lisa_types$battles, "LISA: Battles")
 ```
 
-\[Conclusion, ≤200 words\]
+Battles show the most dispersed High-High pattern of the three event types. Besides the central zone, significant High-High clusters appear in northern Tanintharyi (Dawei, Palaw, Launglon), in parts of Kachin State, and as smaller pockets in Chin, Kayah and Kayin States. Ground fighting therefore spans the central lowlands and several border regions where ethnic armed organisations and resistance forces are active.
+
+Low-Low clusters ([n] townships, the most of any type) dominate the Yangon region and Ayeyarwady delta, with further clusters in eastern and southern Shan State. These areas record few armed clashes, consistent with firm control by one side.
+
+Low-High outliers ([n]) appear mostly in the south-east, for example Myeik and Kawthoung in Tanintharyi and Hlaingbwe in Kayin State: townships with relatively few battles next to active front lines. No significant High-Low outliers are found. The wider spread of High-High clusters suggests that battles map the extent of the front lines, while the other event types concentrate where the conflict is most intense.
 
 ##### Explosions / remote violence
 
@@ -755,7 +759,11 @@ map_lisa(lisa_types$battles, "LISA: Battles")
 map_lisa(lisa_types$remote, "LISA: Explosions / remote violence")
 ```
 
-\[Conclusion, ≤200 words\]
+Explosions and remote violence, which include air/drone strikes and shelling, cluster most strongly in the central dry zone ([n] High-High townships across Sagaing, Magway and Mandalay). A second High-High cluster lies in eastern Bago and adjacent Kayin State (e.g. Kyaukkyi). Unlike battles, there is no significant High-High cluster in Tanintharyi, so remote attacks there do not cluster in the way ground fighting does.
+
+Low-Low clusters ([n]) again cover the Ayeyarwady delta, Yangon, eastern and southern Shan State and northern Kachin State.
+
+Low-High outliers ([n]), such as Kalewa, Mingin and Nyaung-U, border the dry-zone cluster. These townships record few strikes despite heavily bombed neighbours and could be exposed if the bombing area widens. No significant High-Low outliers are found. The concentration of remote violence in the dry zone, an area of strong armed resistance, suggests that air and artillery attacks are concentrated on resistance strongholds rather than spread along all front lines.
 
 ##### Violence against civilians
 
@@ -764,7 +772,41 @@ map_lisa(lisa_types$remote, "LISA: Explosions / remote violence")
 #| fig-cap: "Significant LISA clusters and outliers of violence against civilians (p < 0.05)"
 map_lisa(lisa_types$vac, "LISA: Violence against civilians")
 ```
+
+Violence against civilians forms two pronounced High-High clusters. The first ([n] townships) covers the central dry zone in Sagaing and Mandalay (e.g. Monywa, Khin-U, Shwebo and Wetlet). The second extends along most of Tanintharyi (Launglon, Dawei, Yebyu and Palaw), making it the type in which Tanintharyi stands out most.
+
+Low-Low clusters ([n]) appear in Yangon, the Ayeyarwady delta, eastern and southern Shan State, Nay Pyi Taw and northern Kachin State.
+
+Low-High outliers ([n]), such as Tilin and Kalewa beside the dry zone and Bokpyin in southern Tanintharyi, lie next to the clusters. A single High-Low outlier in the Ayeyarwady delta is a township with high violence against civilians among calm neighbours. It may reflect localised targeting, such as arrests or killings in an urban centre, rather than wider conflict.
+
+Where violence against civilians clusters closely matches where battles and remote violence cluster in the dry zone, suggesting that civilians bear the brunt of the conflict in contested areas.
+
 :::
+
+::: callout-note
+### Analysis
+
+The central dry zone (Sagaing, Magway, Mandalay) is a significant High-High cluster for all three event types, confirming it as the core of Myanmar’s armed conflict. The event types differ elsewhere: battles extend to border regions such as Kachin, Chin and Kayah, remote violence extends to eastern Bago and Kayin, and violence against civilians is especially concentrated in Tanintharyi. The Low-Low clusters are consistent across types, covering the Yangon and Ayeyarwady delta and eastern Shan State, which appear to have remained relatively insulated from the conflict.
+
+:::
+
+## 7. Emerging Hot Spot Analysis
+
+### 7.1 Setting up the space-time cube with custom weights
+
+The k-nearest-neighbour weights, including each township itself, are attached to the cube's geometry so that EHSA uses them instead of its default queen contiguity.
+
+```{r}
+#| label: spt-nb
+conflict_spt_nb <- conflict_spt %>%
+  activate("geometry") %>%
+  mutate(nb = include_self(nb_knn),
+         wt = st_weights(nb, style = "W"),
+         .before = 1) %>%
+  set_nbs("nb") %>%
+  set_wts("wt")
+```
+
 
 ## References
 

@@ -30,7 +30,8 @@ website:
           href: "Hands-on_Ex/Hands-on_Ex06/Hands-On_Ex06.html"
         - text: "07: Modelling Geographical Accessibility"
           href: "Hands-on_Ex/Hands-on_Ex07/Hands-On_Ex07.html"
-        - text: "Hands-On Exercise 08"
+        - text: "08: Market Area Analysis for Retail and Service Locations using Huff Model"
+          href: "Hands-on_Ex/Hands-on_Ex08/Hands-On_Ex08.html"
         - text: "Hands-On Exercise 09"
         - text: "Hands-On Exercise 10"
       - text: "In-Class Exercise"
@@ -48,6 +49,7 @@ website:
         - text: "01: Study on Road Accidents in Bangkok Greater Metropolitan Area"
           href: "Take-Home_Ex/Take-Home_Ex01/Take-Home_Ex01.html"
         - text: "02: Geospatial Analytics for Peace"
+          href: "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02.html"
           
     right:
       - href: index.qmd

@@ -488,11 +488,16 @@ The distribution is **strongly right-skewed**. A few townships record hundreds o
 To keep the choropleth maps consistent and avoid repeating code, a helper function, *map_choro()*, is defined once and reused for each map. It classes townships into six quantile groups, as event counts are highly skewed, and overlays state/region boundaries for reference. Only the variable, legend title and colour palette change between maps.
 
 ```{r}
-map_choro <- function(sf_obj, var, title, palette = "brewer.reds", n = 6) {
+map_choro <- function(sf_obj, var, title, palette = "brewer.reds", n = 6,
+                      breaks = NULL, labels = NULL) {
+  scale <- if (is.null(breaks)) {
+    tm_scale_intervals(style = "quantile", n = n, values = palette)
+  } else {
+    tm_scale_intervals(breaks = breaks, labels = labels, values = palette)
+  }
   tm_shape(sf_obj) +
     tm_polygons(fill = var,
-                fill.scale = tm_scale_intervals(style = "quantile", n = n,
-                                                values = palette),
+                fill.scale = scale,
                 fill.legend = tm_legend(title = title, frame = FALSE),
                 col = "grey70", lwd = 0.2) +
     tm_shape(mmr_st) + tm_borders(col = "grey25", lwd = 0.6) +
@@ -501,22 +506,30 @@ map_choro <- function(sf_obj, var, title, palette = "brewer.reds", n = 6) {
 ```
 
 ```{r}
-map_choro(conflict_ts, "conflict_events", "Events") + tm_title("Political-violence events")
+map_choro(conflict_ts, "conflict_events", "Events") + tm_title("Armed Conflict Events")
 ```
 
 ::: callout-note
 ### Analysis
 
-Political violence is widespread but highly uneven, ranging from fewer than 15 events in the lightest townships to over 1,000 in the most affected. The heaviest concentration is in the central zone, across Sagaing, Magway and Mandalay, heartland of numerous independently operating resistance forces (Myanmar Outlook: Fighting Is Set to Intensify in the Center of the Country \| ACLED, 2026). A second belt of high counts runs down the south-east, through Tanintharyi. Another hot area is observed in Rakhine, where a contested strategic route lies (Myanmar Outlook: Fighting Is Set to Intensify in the Center of the Country \| ACLED, 2026). The pattern suggests that violence clusters in contested regions rather than being randomly spread, which will be covered in LISA tests in Section 6.
+Armed-conflict events are widespread but highly uneven, ranging from fewer than 15 events in the lightest townships to over 1,000 in the most affected. The heaviest concentration is in the central zone, across Sagaing, Magway and Mandalay, heartland of numerous independently operating resistance forces (Myanmar Outlook: Fighting Is Set to Intensify in the Center of the Country \| ACLED, 2026). A second belt of high counts runs down the south-east, through Tanintharyi. Another hot area is observed in Rakhine, where a contested strategic route lies (Myanmar Outlook: Fighting Is Set to Intensify in the Center of the Country \| ACLED, 2026). The pattern suggests that violence clusters in contested regions rather than being randomly spread, which will be covered in LISA tests in Section 6.
 :::
+
+The three event-type maps share the same fixed class breaks (0, 1–9, 10–24, 25–49, 50–99, 100–199, 200+) and colour palette, so that a colour represents the same number of events on every map and the maps can be compared directly. The breaks are narrower at the low end, where most townships lie, to accommodate the skewed counts.
 
 ```{r}
 #| fig-width: 12
 #| fig-height: 7
+type_breaks <- c(0, 1, 10, 25, 50, 100, 200, Inf)
+type_labels <- c("0", "1–9", "10–24", "25–49", "50–99", "100–199", "200+")
+
 tmap_arrange(
-  map_choro(conflict_ts, "battles", "Battles", "brewer.greens") + tm_title("Battles"),
-  map_choro(conflict_ts, "remote", "Explosions/Remote", "brewer.oranges") + tm_title("Explosions / remote violence"),
-  map_choro(conflict_ts, "vac", "VAC", "brewer.purples") + tm_title("Violence against civilians"),
+  map_choro(conflict_ts, "battles", "Events", "brewer.yl_or_rd",
+            breaks = type_breaks, labels = type_labels) + tm_title("Battles"),
+  map_choro(conflict_ts, "remote", "Events", "brewer.yl_or_rd",
+            breaks = type_breaks, labels = type_labels) + tm_title("Explosions / remote violence"),
+  map_choro(conflict_ts, "vac", "Events", "brewer.yl_or_rd",
+            breaks = type_breaks, labels = type_labels) + tm_title("Violence against civilians"),
   ncol = 3)
 ```
 
@@ -826,6 +839,19 @@ mk_tbl %>% arrange(sl, desc(abs(tau))) %>%
   kable_styling(full_width = FALSE)
 ```
 
+The table lists the ten townships with the most significant Mann-Kendall trends in their quarterly Gi* values. All ten have positive tau values (0.67 to 0.74), meaning their Gi\* values rose consistently over the 19 quarters. The p-values (sl) display as 0 as p-value < 0.001.
+
+Seven of the ten townships are in Bago (West), in the south-central area, with the remainder in Magway and Mandalay at the southern edge of the central zone. These are not the townships with the most conflict. They are townships where conflict has grown most consistently relative to their surroundings, suggesting that the conflict has been spreading southwards from the central zone into the lowlands. Tau measures how consistent a trend is, not how large it is, so a township can rank highly here while remaining moderately affected.
+
+
+```{r}
+alpha  <- 0.05
+z_crit <- qnorm(1 - alpha / 2)
+z_crit
+```
+
+The critical value for a two-tailed test at α = 0.05 is calculated with *qnorm()*, giving ±1.96. Gi\* values beyond this range would be significant hot spots (above +1.96) or cold spots (below −1.96) at the 95% confidence level.
+
 ```{r}
 #| fig-width: 10
 #| fig-height: 4
@@ -839,13 +865,22 @@ gi_stars %>%
   geom_line(linewidth = 0.9) +
   labs(x = NULL, y = "Gi*", colour = "Township") + theme_minimal()
 ```
+
+The chart plots quarterly Gi\* values for the townships with the strongest upward and downward trends. The dotted lines at ±1.96 mark the thresholds for a significant hot spot (above) or cold spot (below) at the 95% level.
+
+**Upward trends:** The five Bago (West) townships move together. They start near or below the cold-spot threshold in 2021 (Gi* about −1.5 to −1.9) and rise steadily to about +1 to +2 by 2025. Only Okpho briefly crosses the hot-spot threshold, in early 2025. These townships have moved from relatively calm to around or above average conflict levels, but are not yet consistent hot spots. This makes them early-warning areas, where conflict could become entrenched if the trend continues.
+
+**Downward trends:** Muse was a significant hot spot through most of 2021, then declined. It spiked sharply to a Gi\* of about 9 in late 2023, coinciding with Operation 1027 in northern Shan State (Michaels, 2023), before falling below zero from 2024. Its downward tau reflects a decline after an intense but short-lived peak, not a steady de-escalation. Thanlyin declines gradually from slightly above zero to near the cold-spot threshold, consistent with its classification as a consecutive cold spot in the EHSA.
+
+As the Mann-Kendall test assumes serial independence, which quarterly conflict data are unlikely to meet, these trends should be read as indicative.
+
 ### 7.4 Plotting the EHSA
 
 *emerging_hotspot_analysis()* combines the per-quarter Gi\* significance pattern with the Mann-Kendall trend to assign each township to one of ESRI's 17 categories. The settings are:
 
-- *threshold = 0.05*, to match the assignment's significance level (the sfdep default is 0.01)
-- *k = 1* time-lag neighbour
-- *nsim = 99* permutations per time slice
+- *threshold = 0.05*, to set the significance level.
+- *k = 1* time-lag neighbour.
+- *nsim = 99* permutations per time slice.
 
 ```{r}
 set.seed(267)
@@ -934,6 +969,16 @@ ehsa_ce_sf %>% st_drop_geometry() %>%
   kable_styling(full_width = FALSE)
 ```
 
+**Hot spots:** Six townships are consecutive hot spots, in two groups: one in the north-central area east of the central plains, and one inland in the south-east. Both became significant hot spots only in the final run of quarters and have stayed hot since, marking areas where sustained conflict is new. The north-central group is consistent with the escalation that followed Operation 1027 in late 2023 (Michaels, 2023).
+
+**Sporadic hot spots:** 25 townships form blocks in the western uplands and the far north, with smaller pockets in the south-east: conflict that flares up repeatedly without becoming continuous.
+
+**Oscillating hot spots:** 28 townships cover almost the entire south-eastern coastal strip and parts of the western coast. These townships were cold spots earlier in the period but are hot spots in the final quarter, showing conflict spreading into areas that were previously calm.
+
+**Cold spots:** Intensifying (10) and consecutive (3) cold spots are concentrated around the southern delta’s main urban area, where calm has become more entrenched over time. Sporadic cold spots (44) extend across the southern lowlands, and oscillating cold spots (22), formerly hot but now cold, appear mainly in the south and north-east.
+
+**Comparison with LISA:** The central High-High cluster in LISA appears mostly as “no pattern detected”. Its conflict has been intense throughout, without a significant trend. EHSA instead highlights the edges of the conflict, where hot spots are newly forming or spreading.
+
 ### 7.5 EHSA by Armed-Conflict Events
 
 ```{r}
@@ -964,11 +1009,11 @@ list(`All armed-conflict events` = ehsa_ce,
 map_ehsa(prep_ehsa(ehsa_types$battles), "EHSA: Battles")
 ```
 
-Hot spots. Battles show only one consecutive hot spot, in the north-central area: a newly sustained front. Sporadic hot spots (19 townships) form a block in the western uplands and smaller pockets in the north and east-centre, pointing to recurring rather than continuous fighting. Oscillating hot spots (22) appear along the southern part of the south-eastern coastal strip, along parts of the western coast and in the far north: areas that were calm earlier but have become active battlegrounds.
+**Hot spots:** Battles show only one consecutive hot spot, in the north-central area: a newly sustained front. Sporadic hot spots (19 townships) form a block in the western uplands and smaller pockets in the north and east-centre, pointing to recurring rather than continuous fighting. Oscillating hot spots (22) appear along the southern part of the south-eastern coastal strip, along parts of the western coast and in the far north: areas that were calm earlier but have become active battlegrounds.
 
-Cold spots. Four intensifying cold spots lie around the southern delta’s main urban area, where ground fighting has become ever less likely. Sporadic cold spots (26) cover much of the south-central lowlands, and oscillating cold spots (10) in the north-east have seen battles decline after earlier fighting.
+**Cold spots:** Four intensifying cold spots lie around the southern delta’s main urban area, where ground fighting has become ever less likely. Sporadic cold spots (26) cover much of the south-central lowlands, and oscillating cold spots (10) in the north-east have seen battles decline after earlier fighting.
 
-Pattern. Ground fighting is shifting outwards. Its newly emerging hot spots lie at the periphery, in the western uplands, the far north and the southern coastal strip, rather than in the central plains, where LISA shows fighting is concentrated overall.
+**Pattern:** Ground fighting is shifting outwards. Its newly emerging hot spots lie at the periphery, in the western uplands, the far north and the southern coastal strip, rather than in the central plains, where LISA shows fighting is concentrated overall.
 
 ##### Explosions / remote violence
 
@@ -976,11 +1021,11 @@ Pattern. Ground fighting is shifting outwards. Its newly emerging hot spots lie 
 map_ehsa(prep_ehsa(ehsa_types$remote), "EHSA: Explosions / remote violence")
 ```
 
-Hot spots. Remote violence is the only event type with intensifying hot spots (2 townships), in the east-centre. These townships have been hot spots in at least 90% of quarters, and the intensity of air strikes and shelling there is still rising significantly. Three consecutive hot spots and one new hot spot lie inland in the south-east, where remote attacks have become sustained only recently. Sporadic hot spots (7) appear in the far north and north-centre, and oscillating hot spots (17) extend along the southern coastal strip.
+**Hot spots:** Remote violence is the only event type with intensifying hot spots (2 townships), in the east-centre. These townships have been hot spots in at least 90% of quarters, and the intensity of air strikes and shelling there is still rising significantly. Three consecutive hot spots and one new hot spot lie inland in the south-east, where remote attacks have become sustained only recently. Sporadic hot spots (7) appear in the far north and north-centre, and oscillating hot spots (17) extend along the southern coastal strip.
 
-Cold spots. Sporadic cold spots (63, the most of any class across the four maps) cover the north-west and parts of the southern delta, with oscillating cold spots (17) scattered in the centre and south.
+**Cold spots:** Sporadic cold spots (63, the most of any class across the four maps) cover the north-west and parts of the southern delta, with oscillating cold spots (17) scattered in the centre and south.
 
-Pattern. Remote violence shows the clearest signs of escalation of the three event types: it has the only intensifying and new hot spots. These emerging hot spots lie in the east and south-east rather than in the central core identified by LISA, suggesting that air and artillery attacks are expanding to new fronts. The intensifying hot spots warrant particular attention for civilian protection.
+**Pattern:** Remote violence shows the clearest signs of escalation of the three event types: it has the only intensifying and new hot spots. These emerging hot spots lie in the east and south-east rather than in the central core identified by LISA, suggesting that air and artillery attacks are expanding to new fronts. The intensifying hot spots warrant particular attention for civilian protection.
 
 ##### Violence against civilians
 
@@ -988,11 +1033,11 @@ Pattern. Remote violence shows the clearest signs of escalation of the three eve
 map_ehsa(prep_ehsa(ehsa_types$vac), "EHSA: Violence against civilians")
 ```
 
-Hot spots. Violence against civilians has no consecutive, intensifying or new hot spots. Its hot spots are only sporadic (22 townships) or oscillating (13), concentrated in the centre-west of the country and in a few south-central townships. Violence against civilians therefore occurs in recurring waves rather than following a steady upward trend.
+**Hot spots:** Violence against civilians has no consecutive, intensifying or new hot spots. Its hot spots are only sporadic (22 townships) or oscillating (13), concentrated in the centre-west of the country and in a few south-central townships. Violence against civilians therefore occurs in recurring waves rather than following a steady upward trend.
 
-Cold spots. Ten consecutive cold spots are concentrated around the southern delta’s main urban area, which has seen an uninterrupted run of low violence against civilians in the most recent quarters. Sporadic cold spots (61) run along the western coast and through the central lowlands, and oscillating cold spots (9) are scattered across the centre.
+**Cold spots:** Ten consecutive cold spots are concentrated around the southern delta’s main urban area, which has seen an uninterrupted run of low violence against civilians in the most recent quarters. Sporadic cold spots (61) run along the western coast and through the central lowlands, and oscillating cold spots (9) are scattered across the centre.
 
-Pattern. The hot spots overlap the central High-High cluster in LISA, confirming the centre as the main area where civilians are targeted. The lack of any intensifying or consecutive hot spots suggests that, while violence against civilians remains concentrated there, it has not been escalating steadily in any one place. The sporadic pattern is consistent with episodic operations rather than continuous campaigns.
+**Pattern:** The hot spots overlap the central High-High cluster in LISA, confirming the centre as the main area where civilians are targeted. The lack of any intensifying or consecutive hot spots suggests that, while violence against civilians remains concentrated there, it has not been escalating steadily in any one place. The sporadic pattern is consistent with episodic operations rather than continuous campaigns.
 
 :::
 

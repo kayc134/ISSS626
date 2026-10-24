@@ -1,5 +1,361 @@
 ---
-title: "In-Class_Ex08"
+title: "08: Market Area Analysis for Retail and Service Locations using Huff Model"
+author: "Chia Ka Ying"
+date: "2026-10-24"
+date-modified: "last-modified"
 format: html
+execute:
+  echo: true
+  eval: true
+  message: false
+  warning: false
+  freeze: true
+editor: visual
 ---
 
+## 1 Overview
+
+Market area analysis (Trade Area Analysis) defines and studies the geographical area from which a business draws its customers. The Huff Model is a classic probabilistic geospatial model used to predict the probability that a consumer from a specific origin (e.g., a village) will patronize a particular store, based on store attractiveness (such as size or sales) and travel distance/impedance relative to competitors.
+
+This exercise assumes the role of a data analyst within the business development team of a fast-food franchise. The objective is to delineate the trade areas of existing stores in Taichung City and produce corresponding spatial maps to support market analysis and strategic decision-making.
+
+### 1.1 The Data
+
+Four data sets are used in this exercise:
+
+Geospatial data:
+
+`STORES_TN`: Store locations data in ESRI shapefile format.
+
+`VILLAGE_TN`: Village boundary data in ESRI shapefile format.
+
+Aspatial data:
+
+`pop2019.csv`: Population data of Taichung City in 2019 (H_CNT, P_CNT, M_CNT, and F_CNT indicate household count, total population, male population, and female population respectively).
+
+`Store_sales_data.csv`: Store sales transaction data.
+
+## 2. Getting Started
+
+Install and launch the necessary R packages into the RStudio environment:
+
+```{r}
+pacman::p_load(sf, tidyverse, MCI, tmap, ggstatsplot)
+```
+
+## 3. Importing Data
+
+### 3.1 Importing Geospatial Data
+
+Use *st_read()* from the sf package to import the three geospatial layers into R.
+
+```{r}
+stores <- st_read(dsn = "data/geospatial", 
+                  layer = "STORES_TC")
+```
+
+```{r}
+town <- st_read(dsn = "data/geospatial", 
+                layer = "TOWN_TC")
+```
+
+```{r}
+village <- st_read(dsn = "data/geospatial", 
+                   layer = "VILLAGE_TC")
+```
+
+All data sets were checked to ensure that they share the same projected coordinate system (TWD97 / TM2 zone 121 / EPSG: 3826).
+
+Inspect the boundaries interactively using tmap:
+
+```{r}
+tmap_mode("view")
+tm_shape(town) + 
+  tm_polygons() + 
+  tm_shape(village) + 
+  tm_polygons() + 
+  tm_shape(stores) + 
+  tm_dots()
+tmap_mode("plot")
+```
+
+```{r}
+tmap_mode('plot')
+```
+
+### 3.2 Importing Aspatial Data
+
+Import the aspatial datasets using read_csv() from readr:
+
+```{r}
+pop2019 <- read_csv("data/aspatial/pop2019.csv")
+```
+
+```{r}
+store_sales <- read_csv("data/aspatial/Store_sales_data.csv")
+```
+
+```{r}
+summary(store_sales)
+```
+
+## 4. Data Preparation
+
+### 4.1 Aggregating Store Sales
+
+Aggregate store sales data by Store Code:
+
+```{r}
+store_sales_aggre <- store_sales %>%
+  group_by(`Store Code`) %>%
+  summarise(
+    "Total_Bill" = sum(Bills, na.rm = TRUE),
+    "Total_Sales" = sum(Amount, na.rm = TRUE)
+  )
+```
+
+### 4.2 Relational Join & Store Size Assignment
+
+Append the aggregated sales data onto the stores spatial data frame and assign a proxy metric for store attractiveness (Store_size).
+
+```{r}
+stores <- stores %>%
+  left_join(store_sales_aggre, 
+            by = join_by(Store_CD == `Store Code`)) %>%
+  mutate(Store_size = 1)
+```
+
+```{r}
+summary(stores)
+```
+
+### 4.3 Tidying Population Data (pop2019)
+
+Check the village ID structures to ensure compatibility before joining:
+
+```{r}
+glimpse(pop2019)
+```
+
+```{r}
+glimpse(village)
+```
+
+Remove the hyphen (-) from pop2019 village IDs to match the VILLCODE format in the village spatial file:
+
+```{r}
+pop2019 <- pop2019 %>%
+  mutate(V_ID = str_remove_all(V_ID, "-"))
+```
+
+```{r}
+village <- village %>%
+  left_join(pop2019, by = join_by(VILLCODE == V_ID))
+```
+
+### 4.4 Checking for Missing or Zero Values
+
+```{r}
+summary(village)
+```
+
+Filter out records containing missing population attributes:
+
+```{r}
+village <- village %>%
+  filter(!is.na(P_CNT))
+```
+
+```{r}
+any(is.na(village$H_CNT))
+any(is.na(village$P_CNT))
+any(is.na(village$M_CNT))
+any(is.na(village$F_CNT))
+```
+
+## 5. Computing Distance Matrix
+
+Calculate the surface centroid of each village polygon, then compute the pairwise distance matrix between village centroids and store locations.
+
+```{r}
+village_center <- st_point_on_surface(village)
+distmat <- st_distance(village_center, stores)
+```
+
+```{r}
+rownames(distmat) <- village$VILLCODE
+colnames(distmat) <- stores$Store_CD
+
+distmat_long <- distmat %>%
+  as.data.frame() %>%
+  rownames_to_column(var = "VILLCODE") %>%
+  pivot_longer(
+    cols = -VILLCODE,
+    names_to = "Store_CD",
+    values_to = "distance"
+  ) %>%
+  mutate(distance = as.numeric(distance))
+```
+
+## 6. Preparing Interaction Matrix
+
+Build the interaction matrix required by the MCI package:
+
+```{r}
+interaction_matrix <- distmat_long %>%
+  left_join(
+    stores %>% 
+      st_drop_geometry() %>% 
+      select(Store_CD, Store_size),
+    by = "Store_CD"
+  ) %>%
+  relocate(distance, .after = last_col())
+```
+
+```{r}
+summary(interaction_matrix)
+```
+
+## 7. Computing Huff Model
+
+```{r}
+huff_share <- huff.shares(
+  interaction_matrix, 
+  "VILLCODE", 
+  "Store_CD", 
+  "Store_size", 
+  "distance"
+)
+```
+
+### 7.1 Trade Area Analysis for a Single Store
+
+Select market share data for a specific store (e.g., Store_CD == "BT"):
+
+```{r}
+market_share <- huff_share %>%
+  filter(Store_CD == "BT")
+```
+
+```{r}
+Trade_area <- village %>%
+  left_join(market_share)
+```
+
+```{r}
+selected_store <- stores %>%
+  filter(Store_CD == "BT") 
+```
+
+```{r}
+tm_shape(Trade_area) +
+  tm_polygons(
+    fill = "p_ij",
+    fill.scale = tm_scale_intervals(
+      style = "quantile", 
+      n = 10, 
+      values = "brewer.blues"
+    ),
+    fill.legend = tm_legend(title = "Patronage Probability")
+  ) +
+  tm_shape(selected_store) +
+  tm_dots(size = 0.3, fill = "red", col = "black") +
+  tm_title("Distribution of Patronage Probability of Store BT by village") +
+  tm_layout(frame = TRUE) +
+  tm_borders(fill_alpha = 0.5) +
+  tm_compass(type = "8star", size = 2) +
+  tm_scalebar() +
+  tm_grid(alpha = 0.2)
+```
+
+### 7.2 Store Sales Analysis and Validation
+
+Estimate store sales by multiplying patronage probabilities by village population:
+
+```{r}
+huff_share_pp <- huff_share %>%
+  left_join(
+    village %>% 
+      st_drop_geometry() %>% 
+      select(VILLCODE, P_CNT),
+    by = "VILLCODE"
+  ) %>%
+  relocate(distance, .after = last_col())
+```
+
+```{r}
+huff_total <- shares.total(
+  huff_share_pp, "VILLCODE", "Store_CD",
+  "p_ij", "P_CNT")
+```
+
+```{r}
+store_sales_est <- stores %>%
+  left_join(huff_total,
+            by = join_by(
+              "Store_CD" == "suppliers_single"))
+```
+
+```{r}
+store_sales_nongeom <- store_sales_est %>% 
+  st_drop_geometry()
+
+ggscatterstats(
+  store_sales_nongeom,
+  x = sum_E_j,
+  y = Total_Sales)
+```
+
+The final code chunk reshapes the long-format interaction probabilities into a wide-format table with villages as rows and stores as columns. 
+
+```{r}
+huff_share_wider <- huff_share %>%
+  select(VILLCODE, Store_CD, p_ij) %>%
+    pivot_wider(names_from = Store_CD, 
+                values_from = p_ij)
+```
+
+Code chunk below will be used to tidy the village sf data frame.
+
+```{r}
+village_tidied <- village %>%
+  select(VILLCODE, H_CNT, P_CNT) %>%
+    mutate(HH_SIZE = P_CNT/H_CNT) %>%
+    st_drop_geometry()
+```
+
+Code chunk is to do a comparison of the probability values across the stores, picking out the highest value and returning the `Store_CD` in the new column `TA`.
+
+```{r}
+huff_TA <- huff_share_wider %>%
+  mutate(
+    TA = names(pick(2:29))[
+      max.col(pick(2:29),
+              ties.method = "first")
+    ]
+  )
+```
+
+Next, we will select only `VILLCODE` and `TA` from `huff_TA`, and join it with `village` to create `village_TA`. 
+
+```{r}
+huff_TA_tidied <- huff_TA %>%
+  select(VILLCODE,TA)
+
+village_TA <- village %>%
+  left_join(huff_TA_tidied,
+            by = join_by(VILLCODE))
+```
+
+```{r}
+#| fig-width: 14
+#| fig-height: 12
+tm_shape(village_TA,) + 
+  tm_polygons(fill = "TA") +
+  tm_title("Trade Areas of Stores") +
+  tm_layout(frame = TRUE) +
+  tm_borders(fill_alpha = 0.5) +
+  tm_compass(type="8star", size = 2) +
+  tm_scalebar() +
+  tm_grid(alpha = 0.2)
+```

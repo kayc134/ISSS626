@@ -1117,7 +1117,7 @@
     "href": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#research-questions",
     "title": "Executive Summary: Geospatial Analytics for Peace",
     "section": "1. Research Questions",
-    "text": "1. Research Questions\nCore Objectives & Questions\n\nRQ1 & RQ2 (LMSA): Where are the statistically significant clusters (High-High, Low-Low) and spatial outliers of armed conflict across Myanmar townships, and do they vary by conflict type (Battles, Remote Violence, Violence against Civilians)?\nRQ3 (EHSA): Where, how consistently, and in what temporal pattern have conflict hot and cold spots evolved between Q1 2021 and Q3 2025?\nRQ4 (Value-Added): Where are civilians most exposed to military air strikes post-Operation 1027, is this exposure tied directly to front-line ground clashes, and where are safer zones?"
+    "text": "1. Research Questions\nSince the February 2021 coup, Myanmar’s conflict has become one of the world’s most complex, with fragmented territorial control and mass civilian displacement. Peace-building and humanitarian actors need to know where conflict clusters, how it is evolving, and where civilians are most at risk.\n\nRQ1: Where are the statistically significant clusters of armed conflict, and do they differ by type (battles, explosions/remote violence, violence against civilians)?\nRQ2: Which townships are spatial outliers, e.g., a violent township surrounded by calm ones?\nRQ3: Where, how fast and in what pattern have hot and cold spots of armed conflict evolved between Q1 2021 and Q3 2025?\nRQ4: Where are civilians most exposed to military air strikes, is that exposure tied to front lines, and where are the relatively safer areas?"
   },
   {
     "objectID": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#study-area-data-sources",
@@ -1174,5 +1174,68 @@
     "title": "Executive Summary: Geospatial Analytics for Peace",
     "section": "10. Key References",
     "text": "10. Key References\n\nACLED. (2024). Fatalities [Methodology]. Armed Conflict Location & Event Data Project.\nACLED. (2026). Myanmar outlook: Fighting is set to intensify in the center of the country.\nAnselin, L. (2020). Local spatial autocorrelation (3): Multivariate local spatial autocorrelation [GeoDa workbook].\nHamed, K. H., & Rao, A. R. (1998). A modified Mann-Kendall trend test for autocorrelated data. Journal of Hydrology, 204(1–4), 182–196.\nKam, T. S. (2026). ISSS626 Geospatial Analytics and Applications: Lesson 5 [Lecture slides]. Singapore Management University.\nMichaels, M. (2023). Operation 1027 reshapes Myanmar’s post-coup war. International Institute for Strategic Studies."
+  },
+  {
+    "objectID": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#contents",
+    "href": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#contents",
+    "title": "Executive Summary: Geospatial Analytics for Peace",
+    "section": "Contents",
+    "text": "Contents\n\nResearch Questions\nStudy Area & Data\nAnalytical Approach\nKey Findings: Where Conflict Clusters\nKey Findings: How Conflict Is Evolving\nValue-Added: The Shift to Air Power\nValue-Added: Is Aerial Risk Tied to Front Lines?\nPublic-Safety Implications\nLimitations\nKey References"
+  },
+  {
+    "objectID": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#study-area-data",
+    "href": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#study-area-data",
+    "title": "Executive Summary: Geospatial Analytics for Peace",
+    "section": "2. Study Area & Data",
+    "text": "2. Study Area & Data\n\n\nStudy area\n\nMyanmar’s 330 townships across 18 states/regions (MIMU v9.4), projected to WGS 84 / UTM zone 47N.\nMulti-part townships merged into one row each; 8 townships with centroids outside their boundary are represented by an anchor point on their largest land part.\n\nData\n\nACLED Myanmar, 1 Jan 2021 – 30 Sep 2025 (87,109 events).\nRetained the three armed-conflict event types (battles, explosions/remote violence, violence against civilians), excluding events located only to the state/region.\n53,907 events assigned to townships and counted per quarter (330 × 19 = 6,270 township-quarters)."
+  },
+  {
+    "objectID": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#analytical-approach",
+    "href": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#analytical-approach",
+    "title": "Executive Summary: Geospatial Analytics for Peace",
+    "section": "3. Analytical Approach",
+    "text": "3. Analytical Approach\n\n\n\n\n\n%%{init: {\"theme\": \"neutral\"}}%%\nflowchart TB\n  subgraph B1[\"1. Event data\"]\n    direction LR\n    A1[\"ACLED Myanmar&lt;br/&gt;Jan 2021 – Sep 2025&lt;br/&gt;87,109 events\"] --&gt; A2[\"Keep 3 armed-&lt;br/&gt;conflict types\"]\n    A2 --&gt; A3[\"Drop&lt;br/&gt;geo_precision = 3&lt;br/&gt;53,910 events\"]\n    A3 --&gt; A4[\"Assign to townships&lt;br/&gt;(st_join)&lt;br/&gt;8 reassigned,&lt;br/&gt;3 at sea dropped\"]\n    A4 --&gt; A5[\"Remove boundary&lt;br/&gt;duplicates&lt;br/&gt;53,907 events\"]\n    A5 --&gt; A6[\"Space-time cube&lt;br/&gt;330 × 19 quarters&lt;br/&gt;= 6,270 rows\"]\n  end\n\n  subgraph B2[\"2. Spatial weights\"]\n    direction LR\n    W1[\"Township boundaries&lt;br/&gt;one row per TS_PCODE&lt;br/&gt;EPSG:32647\"] --&gt; W2[\"Anchor point on&lt;br/&gt;largest land part\"]\n    W2 --&gt; W3[\"k = 8 nearest&lt;br/&gt;neighbours\"]\n    W3 --&gt; W4[\"Row-standardised&lt;br/&gt;each neighbour = 1/8\"]\n    W4 --&gt; W5[\"+ self for&lt;br/&gt;Gi* / EHSA\"]\n  end\n\n  B1 --&gt; M[\"Analysis: LISA · EHSA · bivariate LISA\"]\n  B2 --&gt; M\n\n  classDef data fill:#dbe9f6,stroke:#2c7bb6,color:#000\n  classDef weights fill:#e3f1df,stroke:#4d9221,color:#000\n  classDef out fill:#fde0c5,stroke:#e66101,color:#000\n  class A1,A2,A3,A4,A5,A6 data\n  class W1,W2,W3,W4,W5 weights\n  class M out\n  style B1 fill:#f7f9fc,stroke:#999\n  style B2 fill:#f7faf5,stroke:#999\n\n\n\n\n\n\n\n\n\n\n\n\n\nMethod\nPurpose\n\n\n\n\nLocal Moran’s I (LISA)\nClusters (High-High, Low-Low) and outliers (High-Low, Low-High) of each conflict type\n\n\nEmerging Hot Spot Analysis (EHSA)\nQuarterly Gi* with the Mann-Kendall trend test: how hot and cold spots emerge, persist or fade\n\n\nLjung-Box & modified Mann-Kendall\nChecks that trends hold despite serial correlation between quarters\n\n\nBivariate Local Moran’s I\nWhether military air strikes in a township relate to armed clashes in neighbouring townships\n\n\n\nAll analyses use k = 8 nearest neighbours with row-standardised weights, suited to Myanmar’s widely varying township sizes and skewed counts, at α = 0.05."
+  },
+  {
+    "objectID": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#findings-clusters",
+    "href": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#findings-clusters",
+    "title": "Executive Summary: Geospatial Analytics for Peace",
+    "section": "4. Key Findings: Where Conflict Clusters",
+    "text": "4. Key Findings: Where Conflict Clusters\n\n\n\nArmed conflict is highly concentrated: 104 of 330 townships are significant, far more than the ~16 expected by chance.\nA High-High core spans the central zone for all three conflict types, with a second cluster in the south-east.\nLow-Low clusters in the southern delta and eastern highlands have remained relatively insulated.\nLow-High outliers sit on the edges of conflict zones, the townships most at risk of spill-over. High-Low outliers are rare: high conflict is almost never isolated.\nBattles extend furthest, to the far north and border areas; violence against civilians concentrates in the centre and along the south-eastern coast.\n\n\n\n\n\nConflict clusters in the centre and south-east; calm areas in the delta and eastern highlands"
+  },
+  {
+    "objectID": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#findings-evolving",
+    "href": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#findings-evolving",
+    "title": "Executive Summary: Geospatial Analytics for Peace",
+    "section": "5. Key Findings: How Conflict Is Evolving",
+    "text": "5. Key Findings: How Conflict Is Evolving\n\nEmerging hot spotsYear by year\n\n\n\n\n\nConflict is spreading outwards, not receding. Consecutive (6) and oscillating (28) hot spots appear at the periphery: the north-central area, the south-eastern interior and the south-eastern coastal strip.\nPace of change: new and consecutive hot spots mark areas where conflict has emerged recently and quickly.\nRemote violence shows the strongest escalation, with the only intensifying and new hot spots.\nNo diminishing or historical hot spots in any run, so there is no statistical evidence of de-escalation anywhere.\nTrends are robust: 90% remain significant after correcting for serial correlation.\n\n\n\n\n\nHot spots emerging at the edges of existing conflict zones, 2021–2025\n\n\n\n\n\n\n\n\nConflict has expanded from the central heartland towards the border states since 2022"
+  },
+  {
+    "objectID": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#air-power",
+    "href": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#air-power",
+    "title": "Executive Summary: Geospatial Analytics for Peace",
+    "section": "6. Value-Added: The Shift to Air Power",
+    "text": "6. Value-Added: The Shift to Air Power\n\nMilitary air strikes kept rising after Operation 1027, while armed clashes eased\nAfter Operation 1027 (Oct 2023), military air strikes roughly tripled and kept rising, from about one-tenth of armed clashes in 2022 to about three-quarters by 2025.\nState forces carried out 71% of air strikes, 37.8% of them civilian-targeted (under 6% for other groups), and account for 92.8% of deaths from civilian-targeted air strikes.\nWhen civilians are targeted, military air strikes kill 1.64 people per event, against 0.85 for all other attacks on civilians (Wilcoxon test, p &lt; 0.001)."
+  },
+  {
+    "objectID": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#front-lines",
+    "href": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#front-lines",
+    "title": "Executive Summary: Geospatial Analytics for Peace",
+    "section": "7. Value-Added: Is Aerial Risk Tied to Front Lines?",
+    "text": "7. Value-Added: Is Aerial Risk Tied to Front Lines?\n\n\nBivariate Local Moran’s I of military air strikes against neighbouring armed clashes, after Operation 1027:\n\n\n\n\n\n\n\n\nClass\nTownships\nMeaning\n\n\n\n\nHigh-High\n23\nHeavily bombed, next to heavy fighting (19.2% of strikes)\n\n\nHigh-Low\n0\nHeavy bombing away from fighting\n\n\nLow-High\n17\nNext to heavy fighting, not yet heavily bombed\n\n\nLow-Low\n94\nLittle bombing or fighting (4 strikes in total)\n\n\n\nNo High-Low clusters: bombing concentrates near active fighting rather than in quiet rear areas, so proximity to fighting is the practical warning sign for civilians.\n\n\n\n\nBombing follows the front lines in the centre, north-east and south-east"
+  },
+  {
+    "objectID": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#implications",
+    "href": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#implications",
+    "title": "Executive Summary: Geospatial Analytics for Peace",
+    "section": "8. Public-Safety Implications",
+    "text": "8. Public-Safety Implications\n\n\n\n\n\n\n\n\nPriority\nWhere\nAction\n\n\n\n\nSustained presence\nCentral High-High core\nPlan humanitarian corridors, protection monitoring and services for the long term rather than as emergency relief\n\n\nAir-raid protection\n23 bivariate High-High townships\nAir-raid shelters, trauma care and advocacy against strikes on civilians\n\n\nProtection beyond clusters\nHeavily bombed townships outside High-High (~81% of strikes)\nUse strike counts alongside the clusters when targeting protection\n\n\nEarly warning\n17 bivariate Low-High townships and LISA Low-High outliers\nMonitoring and preparedness, as conflict and aerial risk spread to neighbours of active fighting\n\n\nDisplacement planning\n94 relatively safer (Low-Low) townships\nPlan services for likely population inflows\n\n\nPeace efforts\nAreas of active conflict\nNo area has yet de-escalated, so ceasefire efforts would have to begin where fighting is ongoing"
+  },
+  {
+    "objectID": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#limitations",
+    "href": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#limitations",
+    "title": "Executive Summary: Geospatial Analytics for Peace",
+    "section": "9. Limitations",
+    "text": "9. Limitations\n\nReporting bias: ACLED relies on media and partner reports; remote areas and internet shutdowns mean some calm areas may reflect weaker reporting.\nUnder-reported civilian harm: ACLED does not separate civilian from combatant deaths, so civilian harm from air strikes is likely under-counted.\nCounts, not rates: without reliable post-2021 population figures, larger townships may appear more affected partly because of their size.\nScale and weights: results depend on the choice of townships, quarters and the k = 8 neighbour definition; remote island townships should be read with caution.\nWhat EHSA can show: maps are filtered on the trend test, so persistent hot spots with no trend rarely appear.\nClusters, not volume: the bivariate test flags where bombing and nearby fighting occur together, not where bombing is heaviest.\n“Relatively safer” is not “safe”: Low-Low townships have few strikes relative to others, and ACLED cannot confirm where displaced people actually move."
   }
 ]

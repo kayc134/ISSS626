@@ -130,6 +130,9 @@
       margin-right: 0; 
     }
   </style>
+  <script src="../../site_libs/quarto-diagram/mermaid.min.js"></script>
+  <script src="../../site_libs/quarto-diagram/mermaid-init.js"></script>
+  <link href="../../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 </head>
 <body class="quarto-light">
   <div class="reveal">
@@ -149,161 +152,303 @@ Chia Ka Ying
 
   <p class="date">2026-10-25</p>
 </section>
-<section id="overview" class="slide level2 smaller scrollable">
-<h2>Overview</h2>
-<h3 id="executive-summary-structure">Executive Summary Structure</h3>
+<section id="contents" class="slide level2 smaller scrollable">
+<h2>Contents</h2>
 <ol type="1">
 <li><a href="#/research-questions">Research Questions</a></li>
-<li><a href="#/study-area-data-sources">Study Area &amp; Data Sources</a></li>
-<li><a href="#/analytical-approach-sppa-space-time-cube">Analytical Approach: SPPA &amp; Space-Time Cube</a></li>
-<li><a href="#/analytical-approach-lmsa-ehsa">Analytical Approach: LMSA &amp; EHSA</a></li>
-<li><a href="#/key-spatial-findings-clustering-hot-spots">Key Spatial Findings: Clustering &amp; Hot Spots</a></li>
-<li><a href="#/visual-evidence-lisa-ehsa-maps">Visual Evidence: LISA &amp; EHSA Maps</a></li>
-<li><a href="#/value-added-analysis-air-strike-exposure">Value-Added Analysis: Air Strike Exposure</a></li>
-<li><a href="#/public-safety-humanitarian-implications">Public-Safety &amp; Humanitarian Implications</a></li>
-<li><a href="#/methodological-limitations">Methodological Limitations</a></li>
+<li><a href="#/study-area-data">Study Area &amp; Data</a></li>
+<li><a href="#/analytical-approach">Analytical Approach</a></li>
+<li><a href="#/findings-clusters">Key Findings: Where Conflict Clusters</a></li>
+<li><a href="#/findings-evolving">Key Findings: How Conflict Is Evolving</a></li>
+<li><a href="#/air-power">Value-Added: The Shift to Air Power</a></li>
+<li><a href="#/front-lines">Value-Added: Is Aerial Risk Tied to Front Lines?</a></li>
+<li><a href="#/implications">Public-Safety Implications</a></li>
+<li><a href="#/limitations">Limitations</a></li>
 <li><a href="#/key-references">Key References</a></li>
 </ol>
 </section>
 <section id="research-questions" class="slide level2 smaller">
 <h2>1. Research Questions</h2>
-<h3 id="core-objectives-questions">Core Objectives &amp; Questions</h3>
+<p>Since the February 2021 coup, Myanmar’s conflict has become one of the world’s most complex, with fragmented territorial control and mass civilian displacement. Peace-building and humanitarian actors need to know <strong>where conflict clusters, how it is evolving, and where civilians are most at risk</strong>.</p>
 <ul>
-<li><strong>RQ1 &amp; RQ2 (LMSA):</strong> Where are the statistically significant clusters (High-High, Low-Low) and spatial outliers of armed conflict across Myanmar townships, and do they vary by conflict type (Battles, Remote Violence, Violence against Civilians)?</li>
-<li><strong>RQ3 (EHSA):</strong> Where, how consistently, and in what temporal pattern have conflict hot and cold spots evolved between Q1 2021 and Q3 2025?</li>
-<li><strong>RQ4 (Value-Added):</strong> Where are civilians most exposed to military air strikes post-Operation 1027, is this exposure tied directly to front-line ground clashes, and where are safer zones?</li>
+<li><strong>RQ1:</strong> Where are the statistically significant clusters of armed conflict, and do they differ by type (battles, explosions/remote violence, violence against civilians)?</li>
+<li><strong>RQ2:</strong> Which townships are spatial outliers, e.g., a violent township surrounded by calm ones?</li>
+<li><strong>RQ3:</strong> Where, how fast and in what pattern have hot and cold spots of armed conflict evolved between Q1 2021 and Q3 2025?</li>
+<li><strong>RQ4:</strong> Where are civilians most exposed to military air strikes, is that exposure tied to front lines, and where are the relatively safer areas?</li>
 </ul>
 </section>
-<section id="study-area-data-sources" class="slide level2 smaller">
-<h2>2. Study Area &amp; Data Sources</h2>
+<section id="study-area-data" class="slide level2 smaller">
+<h2>2. Study Area &amp; Data</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>Study area</strong></p>
+<ul>
+<li>Myanmar’s <strong>330 townships</strong> across 18 states/regions (MIMU v9.4), projected to WGS 84 / UTM zone 47N.</li>
+<li>Multi-part townships merged into one row each; 8 townships with centroids outside their boundary are represented by an <strong>anchor point</strong> on their largest land part.</li>
+</ul>
+<p><strong>Data</strong></p>
+<ul>
+<li><strong>ACLED Myanmar</strong>, 1 Jan 2021 – 30 Sep 2025 (87,109 events).</li>
+<li>Retained the three armed-conflict event types (battles, explosions/remote violence, violence against civilians), excluding events located only to the state/region.</li>
+<li><strong>53,907 events</strong> assigned to townships and counted per <strong>quarter</strong> (330 × 19 = 6,270 township-quarters).</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/study_area.png" class="quarto-figure quarto-figure-center" style="width:90.0%"></p>
+</figure>
+</div>
+</div></div>
+</section>
+<section id="analytical-approach" class="slide level2 smaller">
+<h2>3. Analytical Approach</h2>
+<div class="cell" data-reveal="true" data-fig-width="10" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {"theme": "neutral"}}%%
+flowchart TB
+  subgraph B1["1. Event data"]
+    direction LR
+    A1["ACLED Myanmar&lt;br/&gt;Jan 2021 – Sep 2025&lt;br/&gt;87,109 events"] --&gt; A2["Keep 3 armed-&lt;br/&gt;conflict types"]
+    A2 --&gt; A3["Drop&lt;br/&gt;geo_precision = 3&lt;br/&gt;53,910 events"]
+    A3 --&gt; A4["Assign to townships&lt;br/&gt;(st_join)&lt;br/&gt;8 reassigned,&lt;br/&gt;3 at sea dropped"]
+    A4 --&gt; A5["Remove boundary&lt;br/&gt;duplicates&lt;br/&gt;53,907 events"]
+    A5 --&gt; A6["Space-time cube&lt;br/&gt;330 × 19 quarters&lt;br/&gt;= 6,270 rows"]
+  end
+
+  subgraph B2["2. Spatial weights"]
+    direction LR
+    W1["Township boundaries&lt;br/&gt;one row per TS_PCODE&lt;br/&gt;EPSG:32647"] --&gt; W2["Anchor point on&lt;br/&gt;largest land part"]
+    W2 --&gt; W3["k = 8 nearest&lt;br/&gt;neighbours"]
+    W3 --&gt; W4["Row-standardised&lt;br/&gt;each neighbour = 1/8"]
+    W4 --&gt; W5["+ self for&lt;br/&gt;Gi* / EHSA"]
+  end
+
+  B1 --&gt; M["Analysis: LISA · EHSA · bivariate LISA"]
+  B2 --&gt; M
+
+  classDef data fill:#dbe9f6,stroke:#2c7bb6,color:#000
+  classDef weights fill:#e3f1df,stroke:#4d9221,color:#000
+  classDef out fill:#fde0c5,stroke:#e66101,color:#000
+  class A1,A2,A3,A4,A5,A6 data
+  class W1,W2,W3,W4,W5 weights
+  class M out
+  style B1 fill:#f7f9fc,stroke:#999
+  style B2 fill:#f7faf5,stroke:#999
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<table class="caption-top">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Local Moran’s I (LISA)</strong></td>
+<td>Clusters (High-High, Low-Low) and outliers (High-Low, Low-High) of each conflict type</td>
+</tr>
+<tr class="even">
+<td><strong>Emerging Hot Spot Analysis (EHSA)</strong></td>
+<td>Quarterly Gi* with the Mann-Kendall trend test: how hot and cold spots emerge, persist or fade</td>
+</tr>
+<tr class="odd">
+<td><strong>Ljung-Box &amp; modified Mann-Kendall</strong></td>
+<td>Checks that trends hold despite serial correlation between quarters</td>
+</tr>
+<tr class="even">
+<td><strong>Bivariate Local Moran’s I</strong></td>
+<td>Whether military air strikes in a township relate to armed clashes in neighbouring townships</td>
+</tr>
+</tbody>
+</table>
+<p>All analyses use <strong>k = 8 nearest neighbours</strong> with row-standardised weights, suited to Myanmar’s widely varying township sizes and skewed counts, at α = 0.05.</p>
+</section>
+<section id="findings-clusters" class="slide level2 smaller">
+<h2>4. Key Findings: Where Conflict Clusters</h2>
+<div class="columns">
+<div class="column" style="width:45%;">
+<ul>
+<li>Armed conflict is <strong>highly concentrated</strong>: 104 of 330 townships are significant, far more than the ~16 expected by chance.</li>
+<li>A <strong>High-High core</strong> spans the central zone for all three conflict types, with a second cluster in the south-east.</li>
+<li><strong>Low-Low clusters</strong> in the southern delta and eastern highlands have remained relatively insulated.</li>
+<li><strong>Low-High outliers</strong> sit on the edges of conflict zones, the townships most at risk of spill-over. High-Low outliers are rare: high conflict is almost never isolated.</li>
+<li>Battles extend furthest, to the far north and border areas; violence against civilians concentrates in the centre and along the south-eastern coast.</li>
+</ul>
+</div><div class="column" style="width:55%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/lisa_ce.png" style="width:95.0%"></p>
+<figcaption>Conflict clusters in the centre and south-east; calm areas in the delta and eastern highlands</figcaption>
+</figure>
+</div>
+</div></div>
+</section>
+<section id="findings-evolving" class="slide level2 smaller">
+<h2>5. Key Findings: How Conflict Is Evolving</h2>
 <div class="panel-tabset">
-<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Spatial Scope &amp; Corrections</a></li><li><a href="#tabset-1-2">Data Inputs</a></li></ul>
+<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Emerging hot spots</a></li><li><a href="#tabset-1-2">Year by year</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1">
+<div class="columns">
+<div class="column" style="width:45%;">
 <ul>
-<li><strong>Study Boundary:</strong> Myanmar (330 Townships across 18 States and Regions; projected to WGS 84 / UTM Zone 47N).</li>
-<li><strong>Geometric Adjustments:</strong> Corrected 41 multi-part townships (906 total pieces) and resolved out-of-boundary geometric centroids by deploying anchor points via <code>st_point_on_surface()</code> on the largest land parts.</li>
+<li>Conflict is <strong>spreading outwards, not receding</strong>. Consecutive (6) and oscillating (28) hot spots appear at the periphery: the north-central area, the south-eastern interior and the south-eastern coastal strip.</li>
+<li><strong>Pace of change:</strong> new and consecutive hot spots mark areas where conflict has emerged recently and quickly.</li>
+<li>Remote violence shows the strongest escalation, with the only <strong>intensifying</strong> and <strong>new</strong> hot spots.</li>
+<li><strong>No diminishing or historical hot spots</strong> in any run, so there is no statistical evidence of de-escalation anywhere.</li>
+<li>Trends are robust: 90% remain significant after correcting for serial correlation.</li>
 </ul>
+</div><div class="column" style="width:55%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/ehsa_ce.png" style="width:95.0%"></p>
+<figcaption>Hot spots emerging at the edges of existing conflict zones, 2021–2025</figcaption>
+</figure>
+</div>
+</div></div>
 </div>
 <div id="tabset-1-2">
-<ul>
-<li><strong>Conflict Events:</strong> ACLED Myanmar Database (1 Jan 2021 – 30 Sep 2025). Filtered out events with <code>geo_precision = 3</code> and non-conflict records, retaining <strong>53,907 armed-conflict events</strong>.</li>
-<li><strong>Spatial Weights:</strong> Configured <span class="math inline">\(k = 8\)</span> Nearest Neighbours (<span class="math inline">\(KNN\)</span>) using anchor points to handle massive rural-urban size disparities.</li>
-</ul>
-</div>
-</div>
-</div>
-</section>
-<section id="analytical-approach-sppa-space-time-cube" class="slide level2 smaller">
-<h2>3. Analytical Approach: SPPA &amp; Space-Time Cube</h2>
-<div class="panel-tabset">
-<ul id="tabset-2" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-2-1">Exploratory &amp; Spatial Structure</a></li><li><a href="#tabset-2-2">Space-Time Cube Construction</a></li></ul>
-<div class="tab-content">
-<div id="tabset-2-1">
-<ul>
-<li>Evaluated global distributions, proving strong right-skewness where conflict concentrates heavily in the central dry zone and border peripheries.</li>
-<li>Addressed extreme township size variations by applying row-standardised <span class="math inline">\(KNN\)</span> weights (<span class="math inline">\(k=8\)</span>).</li>
-</ul>
-</div>
-<div id="tabset-2-2">
-<ul>
-<li>Aggregated temporal bins into <strong>19 quarters</strong> (<code>qtr</code>) spanning Jan 2021 to Sep 2025.</li>
-<li>Zero-filled missing township-quarter records to establish a complete space-time panel matrix (<span class="math inline">\(330 \times 19 = 6,270\)</span> rows).</li>
-</ul>
-</div>
-</div>
-</div>
-</section>
-<section id="analytical-approach-lmsa-ehsa" class="slide level2 smaller">
-<h2>4. Analytical Approach: LMSA &amp; EHSA</h2>
-<div class="panel-tabset">
-<ul id="tabset-3" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-3-1">Local Measures of Spatial Association (LMSA)</a></li><li><a href="#tabset-3-2">Emerging Hot Spot Analysis (EHSA)</a></li></ul>
-<div class="tab-content">
-<div id="tabset-3-1">
-<ul>
-<li>Computed local Moran’s I (99 simulations, <span class="math inline">\(\alpha = 0.05\)</span>) to isolate High-High/Low-Low spatial clusters and boundary outliers.</li>
-<li>Evaluated individual event types (Battles, Remote Violence, Violence against Civilians) independently.</li>
-</ul>
-</div>
-<div id="tabset-3-2">
-<ul>
-<li>Integrated quarterly <span class="math inline">\(Gi^*\)</span> scores with the Mann-Kendall monotonic trend test.</li>
-<li>Tested serial correlation using the Ljung-Box test and confirmed spatial trend robustness via the <strong>modified Mann-Kendall test</strong> (90% trend stability).</li>
-</ul>
-</div>
-</div>
-</div>
-</section>
-<section id="key-spatial-findings-clustering-hot-spots" class="slide level2 smaller">
-<h2>5. Key Spatial Findings: Clustering &amp; Hot Spots</h2>
-<h3 id="core-vs.-periphery-polarization">Core vs.&nbsp;Periphery Polarization</h3>
-<ul>
-<li><strong>LISA Clustering:</strong> Confirms a persistent High-High conflict core across central Myanmar and south-eastern belts (104 significant townships, far exceeding random expectation).</li>
-<li><strong>EHSA Temporal Trends:</strong> Reveals that conflict is actively expanding outward rather than contracting. New, consecutive, and oscillating hot spots concentrate at peripheral border states.</li>
-<li><strong>Escalation Trajectory:</strong> Remote violence and air strikes exhibit the steepest upward temporal trends, with zero historical or diminishing hot spots indicating a lack of de-escalation.</li>
-</ul>
-</section>
-<section id="visual-evidence-lisa-ehsa-maps" class="slide level2 smaller">
-<h2>6. Visual Evidence: LISA &amp; EHSA Maps</h2>
-<div class="panel-tabset">
-<ul id="tabset-4" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-4-1">LISA High-High Cores</a></li><li><a href="#tabset-4-2">EHSA Peripheral Expansion</a></li></ul>
-<div class="tab-content">
-<div id="tabset-4-1">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="images/lisa_ce.png" style="height:65.0%"></p>
-<figcaption>LISA Map for All Armed-Conflict Events highlighting central and south-eastern clusters</figcaption>
-</figure>
-</div>
-</div>
-<div id="tabset-4-2">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="images/ehsa_ce.png" style="height:65.0%"></p>
-<figcaption>EHSA Map showing outward spreading hot spots post-Operation 1027</figcaption>
+<p><img data-src="images/yearly.png" style="width:100.0%"></p>
+<figcaption>Conflict has expanded from the central heartland towards the border states since 2022</figcaption>
 </figure>
 </div>
 </div>
 </div>
 </div>
 </section>
-<section id="value-added-analysis-air-strike-exposure" class="slide level2 smaller">
-<h2>7. Value-Added Analysis: Air Strike Exposure</h2>
-<div class="panel-tabset">
-<ul id="tabset-5" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-5-1">Lethality &amp; Air Power Shift</a></li><li><a href="#tabset-5-2">Bivariate Local Moran’s I</a></li></ul>
-<div class="tab-content">
-<div id="tabset-5-1">
-<ul>
-<li>Following Operation 1027 (Oct 2023), military air/drone strikes roughly tripled while ground clashes plateaued.</li>
-<li>State forces account for <strong>71%</strong> of all air strikes and <strong>92.8%</strong> of all civilian-targeted deaths, averaging significantly higher lethality per event (<span class="math inline">\(p &lt; 0.001\)</span>).</li>
-</ul>
-</div>
-<div id="tabset-5-2">
-<ul>
-<li>Linked post-Operation 1027 military air strikes to neighboring ground clashes (<span class="math inline">\(k=8\)</span> spatial lag).</li>
-<li><strong>Front-Line Concentration:</strong> 23 bivariate High-High townships received <strong>19.2%</strong> of all air strikes. Zero High-Low clusters prove bombing tightly mirrors active ground fighting.</li>
-</ul>
-</div>
-</div>
-</div>
-</section>
-<section id="public-safety-humanitarian-implications" class="slide level2 smaller">
-<h2>8. Public-Safety &amp; Humanitarian Implications</h2>
-<ul>
-<li><strong>Long-Term Core Services:</strong> Humanitarian assistance in the central High-High cluster must be structured for sustained, multi-year operations rather than temporary emergency relief.</li>
-<li><strong>Front-Line Air-Raid Protection:</strong> Prioritize the 23 High-High exposure townships for decentralized bomb shelters, trauma care capacity, and localized civilian early-warning systems.</li>
-<li><strong>Early-Warning Monitoring:</strong> Designate the 17 Low-High “watch zones” for immediate preparedness as conflict spill-overs threaten adjacent areas.</li>
-<li><strong>Strategic IDP Inflows:</strong> Direct displaced populations toward the 94 Low-Low “safe-haven” townships (e.g., parts of the southern delta and eastern highlands), which recorded minimal air strike exposure (<span class="math inline">\(&lt;0.1\%\)</span>).</li>
+<section id="air-power" class="slide level2 smaller">
+<h2>6. Value-Added: The Shift to Air Power</h2>
+
+<img data-src="images/air_trend.png" style="width:85.0%" class="r-stretch quarto-figure-center"><p class="caption">Military air strikes kept rising after Operation 1027, while armed clashes eased</p><ul>
+<li>After <strong>Operation 1027</strong> (Oct 2023), military air strikes roughly tripled and kept rising, from about one-tenth of armed clashes in 2022 to about three-quarters by 2025.</li>
+<li>State forces carried out <strong>71%</strong> of air strikes, <strong>37.8%</strong> of them civilian-targeted (under 6% for other groups), and account for <strong>92.8%</strong> of deaths from civilian-targeted air strikes.</li>
+<li>When civilians are targeted, military air strikes kill <strong>1.64 people per event</strong>, against 0.85 for all other attacks on civilians (Wilcoxon test, p &lt; 0.001).</li>
 </ul>
 </section>
-<section id="methodological-limitations" class="slide level2 smaller">
-<h2>9. Methodological Limitations</h2>
-<h3 id="analytical-data-constraints">Analytical &amp; Data Constraints</h3>
+<section id="front-lines" class="slide level2 smaller">
+<h2>7. Value-Added: Is Aerial Risk Tied to Front Lines?</h2>
+<div class="columns">
+<div class="column" style="width:45%;">
+<p>Bivariate Local Moran’s I of military air strikes against neighbouring armed clashes, after Operation 1027:</p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Class</th>
+<th>Townships</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>High-High</td>
+<td>23</td>
+<td>Heavily bombed, next to heavy fighting (19.2% of strikes)</td>
+</tr>
+<tr class="even">
+<td>High-Low</td>
+<td>0</td>
+<td>Heavy bombing away from fighting</td>
+</tr>
+<tr class="odd">
+<td>Low-High</td>
+<td>17</td>
+<td>Next to heavy fighting, not yet heavily bombed</td>
+</tr>
+<tr class="even">
+<td>Low-Low</td>
+<td>94</td>
+<td>Little bombing or fighting (4 strikes in total)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>No High-Low clusters:</strong> bombing concentrates near active fighting rather than in quiet rear areas, so proximity to fighting is the practical warning sign for civilians.</p>
+</div><div class="column" style="width:55%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/bivariate.png" style="width:95.0%"></p>
+<figcaption>Bombing follows the front lines in the centre, north-east and south-east</figcaption>
+</figure>
+</div>
+</div></div>
+</section>
+<section id="implications" class="slide level2 smaller">
+<h2>8. Public-Safety Implications</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Priority</th>
+<th>Where</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Sustained presence</strong></td>
+<td>Central High-High core</td>
+<td>Plan humanitarian corridors, protection monitoring and services for the long term rather than as emergency relief</td>
+</tr>
+<tr class="even">
+<td><strong>Air-raid protection</strong></td>
+<td>23 bivariate High-High townships</td>
+<td>Air-raid shelters, trauma care and advocacy against strikes on civilians</td>
+</tr>
+<tr class="odd">
+<td><strong>Protection beyond clusters</strong></td>
+<td>Heavily bombed townships outside High-High (~81% of strikes)</td>
+<td>Use strike counts alongside the clusters when targeting protection</td>
+</tr>
+<tr class="even">
+<td><strong>Early warning</strong></td>
+<td>17 bivariate Low-High townships and LISA Low-High outliers</td>
+<td>Monitoring and preparedness, as conflict and aerial risk spread to neighbours of active fighting</td>
+</tr>
+<tr class="odd">
+<td><strong>Displacement planning</strong></td>
+<td>94 relatively safer (Low-Low) townships</td>
+<td>Plan services for likely population inflows</td>
+</tr>
+<tr class="even">
+<td><strong>Peace efforts</strong></td>
+<td>Areas of active conflict</td>
+<td>No area has yet de-escalated, so ceasefire efforts would have to begin where fighting is ongoing</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="limitations" class="slide level2 smaller">
+<h2>9. Limitations</h2>
 <ul>
-<li><strong>Reporting Bias:</strong> ACLED relies on open-source reporting; severe internet shutdowns in Myanmar restrict data capture in remote conflict zones.</li>
-<li><strong>Under-Reported Harm:</strong> Combatant vs.&nbsp;civilian casualties and indirect deaths from blockades or displacement are conservatively estimated.</li>
-<li><strong>Population Exposure:</strong> Counts reflect absolute event volume rather than per-capita risk rates due to a lack of current post-2021 census denominators.</li>
-<li><strong>Spatial Weight Constraints:</strong> Results remain sensitive to the <span class="math inline">\(k=8\)</span> nearest-neighbor structure, requiring careful interpretation for isolated island and coastal townships.</li>
+<li><strong>Reporting bias:</strong> ACLED relies on media and partner reports; remote areas and internet shutdowns mean some calm areas may reflect weaker reporting.</li>
+<li><strong>Under-reported civilian harm:</strong> ACLED does not separate civilian from combatant deaths, so civilian harm from air strikes is likely under-counted.</li>
+<li><strong>Counts, not rates:</strong> without reliable post-2021 population figures, larger townships may appear more affected partly because of their size.</li>
+<li><strong>Scale and weights:</strong> results depend on the choice of townships, quarters and the k = 8 neighbour definition; remote island townships should be read with caution.</li>
+<li><strong>What EHSA can show:</strong> maps are filtered on the trend test, so persistent hot spots with no trend rarely appear.</li>
+<li><strong>Clusters, not volume:</strong> the bivariate test flags where bombing and nearby fighting occur together, not where bombing is heaviest.</li>
+<li><strong>“Relatively safer” is not “safe”:</strong> Low-Low townships have few strikes <em>relative to others</em>, and ACLED cannot confirm where displaced people actually move.</li>
 </ul>
 </section>
 <section id="key-references" class="slide level2 smaller">

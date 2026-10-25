@@ -1,6 +1,6 @@
 ---
 title: "Executive Summary: Geospatial Analytics for Peace"
-subtitle: "Myanmar Armed Conflict (2021 to 2025)"
+subtitle: "Myanmar Armed Conflict & Civilian Protection (2021 to 2025)"
 author: "Chia Ka Ying"
 date: "25 October, 2026"
 format:
@@ -16,189 +16,129 @@ format:
 
 ### Executive Summary Structure
 
-1.  [Research Questions & Objectives](#research-questions-objectives)
-2.  [Study Area & Spatial Scope](#study-area-spatial-scope)
-3.  [Data Sources & Quality Handling](#data-sources-quality-handling)
-4.  [Analytical Approach: First-Order SPPA](#analytical-approach-first-order-sppa)
-5.  [Analytical Approach: Second-Order SPPA](#analytical-approach-second-order-sppa)
-6.  [Analytical Approach: Value-Added Analysis](#analytical-approach-value-added-analysis)
-7.  [Key Spatial Findings](#key-spatial-findings)
-8.  [Recommendations](#recommendations)
-9.  [Methodological Limitations](#methodological-limitations)
-10. [References](#references)
+1. [Research Questions](#research-questions)
+2. [Study Area & Data Sources](#study-area-data-sources)
+3. [Analytical Approach: SPPA & Space-Time Cube](#analytical-approach-sppa-space-time-cube)
+4. [Analytical Approach: LMSA & EHSA](#analytical-approach-lmsa-ehsa)
+5. [Key Spatial Findings: Clustering & Hot Spots](#key-spatial-findings-clustering-hot-spots)
+6. [Visual Evidence: LISA & EHSA Maps](#visual-evidence-lisa-ehsa-maps)
+7. [Value-Added Analysis: Air Strike Exposure](#value-added-analysis-air-strike-exposure)
+8. [Public-Safety & Humanitarian Implications](#public-safety-humanitarian-implications)
+9. [Methodological Limitations](#methodological-limitations)
+10. [Key References](#key-references)
 
-------------------------------------------------------------------------
+---
 
-## 1. Research Questions & Objectives {#research-questions-objectives .smaller}
+## 1. Research Questions {#research-questions .smaller}
 
-### Primary Research Questions
+### Core Objectives & Questions
+- **RQ1 & RQ2 (LMSA):** Where are the statistically significant clusters (High-High, Low-Low) and spatial outliers of armed conflict across Myanmar townships, and do they vary by conflict type (Battles, Remote Violence, Violence against Civilians)?
+- **RQ3 (EHSA):** Where, how consistently, and in what temporal pattern have conflict hot and cold spots evolved between Q1 2021 and Q3 2025?
+- **RQ4 (Value-Added):** Where are civilians most exposed to military air strikes post-Operation 1027, is this exposure tied directly to front-line ground clashes, and where are safer zones?
 
-- **First-Order Property:** Do 2022 traffic accidents across the Bangkok Metropolitan Region (BMR) occur with uniform intensity, or do they form distinct spatial hot spots?
-- **Second-Order Property:** Do accident point patterns show statistically significant spatial interaction (clustering or inhibition) when constrained to the physical road network?
+---
 
-### Core Analytical Objectives
-
-1.  Integrate boundaries, road networks and accident point events for analysis.
-2.  Investigate first-order properties using planar (quadrat analysis) and networked-constrained (NKDE) methods.
-3.  Investigate second-order properties using network-constrained K- and G-functions.
-4.  Translate analysis insights into public-safety recommendations.
-
-------------------------------------------------------------------------
-
-## 2. Study Area & Spatial Scope {#study-area-spatial-scope .smaller}
+## 2. Study Area & Data Sources {#study-area-data-sources .smaller}
 
 ::: panel-tabset
-### Spatial Boundary
+### Spatial Scope & Corrections
+- **Study Boundary:** Myanmar (330 Townships across 18 States and Regions; projected to WGS 84 / UTM Zone 47N).
+- **Geometric Adjustments:** Corrected 41 multi-part townships (906 total pieces) and resolved out-of-boundary geometric centroids by deploying anchor points via `st_point_on_surface()` on the largest land parts.
 
-- **Study Window:** Bangkok Metropolitan Region (BMR), Thailand.
-- **Provinces Included (6):** Bangkok, Nonthaburi, Pathum Thani, Samut Prakan, Nakhon Pathom and Samut Sakhon.
-- **Coordinate Reference System:** Reprojected to WGS 84 / UTM Zone 47N (EPSG: 32647).
-
-### BMR Map
-
-![Study Area: Bangkok Metropolitan Region with main road networks and accident point events overlay](images/bmr_plot.jpg){fig-align="center" height="80%" width="80%"}
+### Data Inputs
+- **Conflict Events:** ACLED Myanmar Database (1 Jan 2021 – 30 Sep 2025). Filtered out events with `geo_precision = 3` and non-conflict records, retaining **53,907 armed-conflict events**.
+- **Spatial Weights:** Configured $k = 8$ Nearest Neighbours ($KNN$) using anchor points to handle massive rural-urban size disparities.
 :::
 
-------------------------------------------------------------------------
+---
 
-## 3. Data Sources & Quality Handling {#data-sources-quality-handling .smaller}
-
-### Datasets Used
-
-- **Boundaries:** `geoBoundaries-THA-ADM1-all.shp` (Province limits).
-- **Accidents:** `thai_road_accident_2019_2022.csv` (Point events).
-- **Roads:** `gis_osm_roads_free_1.shp` (Filtered to main road classes).
-
-### Data Quality & Pre-processing
-
-- **Temporal & Spatial Subsetting:** Extracted 2022 records strictly within BMR boundaries.
-- **Missing & Erroneous Values:** Removed 189 records missing coordinate attributes. Retained 5 records with 0 recorded vehicles after verifying descriptions.
-- **Spatial Alignment & Overlaps:** Filtered 4 points falling outside the boundary window. Applied jittering (`rjitter()`) to resolve co-located coordinates but no point event was affected. Final dataset: **3,589 accident points**.
-
-------------------------------------------------------------------------
-
-## 4. Analytical Approach: First-Order SPPA {#analytical-approach-first-order-sppa .smaller}
+## 3. Analytical Approach: SPPA & Space-Time Cube {#analytical-approach-sppa-space-time-cube .smaller}
 
 ::: panel-tabset
-### Planar Quadrat Analysis
+### Exploratory & Spatial Structure
+- Evaluated global distributions, proving strong right-skewness where conflict concentrates heavily in the central dry zone and border peripheries.
+- Addressed extreme township size variations by applying row-standardised $KNN$ weights ($k=8$).
 
-- Exploratory step for chi-square and intensity visual observation
-- p-value of \< 0.05, thus rejecting null hypothesis of CSR
-- One cell with extreme intensity value, i.e., quadrat where Suvarnabhumi Airport is ![](images/quadrat.png){fig-align="center" height="70%" width="70%"}
-
-### Network Kernel Density Estimate
-
-- Estimates density using shortest-path distances along the network
-- Observed density concentrating heavily along a small number of specific roads, with the brightest red segments in the same areas as the quadrat analysis, i.e., quadrat 23 ![](images/NKDE.png){fig-align="center" height="70%" width="70%"}
+### Space-Time Cube Construction
+- Aggregated temporal bins into **19 quarters** (`qtr`) spanning Jan 2021 to Sep 2025.
+- Zero-filled missing township-quarter records to establish a complete space-time panel matrix ($330 \times 19 = 6,270$ rows).
 :::
 
-------------------------------------------------------------------------
+---
 
-## 5. Analytical Approach: Second-Order SPPA {#analytical-approach-second-order-sppa .smaller}
+## 4. Analytical Approach: LMSA & EHSA {#analytical-approach-lmsa-ehsa .smaller}
 
 ::: panel-tabset
-### Network K-function
+### Local Measures of Spatial Association (LMSA)
+- Computed local Moran’s I (99 simulations, $\alpha = 0.05$) to isolate High-High/Low-Low spatial clusters and boundary outliers.
+- Evaluated individual event types (Battles, Remote Violence, Violence against Civilians) independently.
 
-- Tested whether accidents cluster with one another beyond what random placement on the network would predict
-- Observed blue line sits definitively above the simulation envelope across the entire 0 to 2000m range tested. Null hypothesis was rejected. ![](images/kplot.png){fig-align="center" height="70%" width="70%"}
-
-### Network G-function
-
-- Measured nearest-neighbor distance distributions along network edges.
-- Complements K-function finding to check clustering at difference distances
-- Observed blue line sits definitively above the simulated envelope, across the entire 0 to 2000m range tested. Null hypothesis rejected. ![](images/gplot.png){fig-align="center" height="70%" width="70%"}
+### Emerging Hot Spot Analysis (EHSA)
+- Integrated quarterly $Gi^*$ scores with the Mann-Kendall monotonic trend test.
+- Tested serial correlation using the Ljung-Box test and confirmed spatial trend robustness via the **modified Mann-Kendall test** (90% trend stability).
 :::
 
-------------------------------------------------------------------------
+---
 
-## 6. Analytical Approach: Value-Added Analysis {#analytical-approach-value-added-analysis .smaller}
+## 5. Key Spatial Findings: Clustering & Hot Spots {#key-spatial-findings-clustering-hot-spots .smaller}
 
-To answer two follow-up questions: is the hotspot a real cluster or an outlier, and do fatal accidents cluster with the non-fatal accidents
+### Core vs. Periphery Polarization
+- **LISA Clustering:** Confirms a persistent High-High conflict core across central Myanmar and south-eastern belts (104 significant townships, far exceeding random expectation).
+- **EHSA Temporal Trends:** Reveals that conflict is actively expanding outward rather than contracting. New, consecutive, and oscillating hot spots concentrate at peripheral border states.
+- **Escalation Trajectory:** Remote violence and air strikes exhibit the steepest upward temporal trends, with zero historical or diminishing hot spots indicating a lack of de-escalation.
+
+---
+
+## 6. Visual Evidence: LISA & EHSA Maps {#visual-evidence-lisa-ehsa-maps .smaller}
 
 ::: panel-tabset
-### Local Moran’s I
+### LISA High-High Cores
+![LISA Map for All Armed-Conflict Events highlighting central and south-eastern clusters](images/lisa_ce.png){fig-align="center" height="65%"}
 
-- Tested whether quadrat 23’s elevated accident rate reflects a broader area cluster.
-- Observed clear separation of groups in scatterplot.
-- Reinforces cluster finding that quadrat 23 is the most severe point within a cluster, rather than an isolated spike ![](images/morani.png){fig-align="center" height="70%" width="70%"}
-
-### Network Cross-K/G Function: Fatal vs Non-Fatal Accidents
-
-- Bivariate cross-K/G function, to test whether fatal and non-fatal accidents are spatially associated with one another along the network
-- Fatal accidents consistently occur closer to non-fatal accidents than random co-location would predict
-
-![](images/xkplot.png){fig-align="left" height="40%" width="40%"} ![](images/xgplot.png){fig-align="right" height="40%" width="40%"}
+### EHSA Peripheral Expansion
+![EHSA Map showing outward spreading hot spots post-Operation 1027](images/ehsa_ce.png){fig-align="center" height="65%"}
 :::
 
-------------------------------------------------------------------------
+---
 
-## 7. Key Spatial Findings {#key-spatial-findings .smaller}
+## 7. Value-Added Analysis: Air Strike Exposure {#value-added-analysis-air-strike-exposure .smaller}
 
-### Spatial Distribution & Intensity
+::: panel-tabset
+### Lethality & Air Power Shift
+- Following Operation 1027 (Oct 2023), military air/drone strikes roughly tripled while ground clashes plateaued.
+- State forces account for **71%** of all air strikes and **92.8%** of all civilian-targeted deaths, averaging significantly higher lethality per event ($p < 0.001$).
 
-- Non-Random Network Clustering: Accidents are strongly concentrated in the central to south-eastern BMR road networks.
-- Co-Location of Severity: Cross-K/G analysis shows fatal accidents consistently cluster near non-fatal crashes at short range.
-- Network vs. Spatial Resolution: Network KDE successfully refined broad area concentrations (from Quadrat analysis) down to specific high-risk road segments.
+### Bivariate Local Moran’s I
+- Linked post-Operation 1027 military air strikes to neighboring ground clashes ($k=8$ spatial lag).
+- **Front-Line Concentration:** 23 bivariate High-High townships received **19.2%** of all air strikes. Zero High-Low clusters prove bombing tightly mirrors active ground fighting.
+:::
 
-### Network Constraints & Clustering
+---
 
-- Statistically Significant Clustering: Network K-function simulations confirm significant spatial aggregation across multiple network distance bands (p \< 0.05).
-- Local Spatial Autocorrelation: Local Moran’s I confirms these high-intensity segments represent quadrat clusters rather than isolated outliers.
+## 8. Public-Safety & Humanitarian Implications {#public-safety-humanitarian-implications .smaller}
 
-------------------------------------------------------------------------
+- **Long-Term Core Services:** Humanitarian assistance in the central High-High cluster must be structured for sustained, multi-year operations rather than temporary emergency relief.
+- **Front-Line Air-Raid Protection:** Prioritize the 23 High-High exposure townships for decentralized bomb shelters, trauma care capacity, and localized civilian early-warning systems.
+- **Early-Warning Monitoring:** Designate the 17 Low-High "watch zones" for immediate preparedness as conflict spill-overs threaten adjacent areas.
+- **Strategic IDP Inflows:** Direct displaced populations toward the 94 Low-Low "safe-haven" townships (e.g., parts of the southern delta and eastern highlands), which recorded minimal air strike exposure ($<0.1\%$).
 
-## 8. Recommendations {#recommendations .smaller}
-
-- Emergency response: Pre-position resources across the identified cluster (not one point), where fatal and non-fatal accidents co-locate, prioritising response-time reduction there. Needs congestion/peak-hour data to finalise sites.
-
-- Road safety & infrastructure: Quadrat 23's high accident rate despite a smaller road network supports targeted engineering review (signage, speed enforcement, intersections) ahead of higher-road-length areas. Not evidence of a specific design cause — needs site-level assessment.
-
-- Resource allocation: The north-western cold spot suggests lower relative accident demand. Not evidence of lower risk per unit of exposure — exposure data not available.
-
-------------------------------------------------------------------------
+---
 
 ## 9. Methodological Limitations {#methodological-limitations .smaller}
 
-### Analytic & Data Constraints
+### Analytical & Data Constraints
+- **Reporting Bias:** ACLED relies on open-source reporting; severe internet shutdowns in Myanmar restrict data capture in remote conflict zones.
+- **Under-Reported Harm:** Combatant vs. civilian casualties and indirect deaths from blockades or displacement are conservatively estimated.
+- **Population Exposure:** Counts reflect absolute event volume rather than per-capita risk rates due to a lack of current post-2021 census denominators.
+- **Spatial Weight Constraints:** Results remain sensitive to the $k=8$ nearest-neighbor structure, requiring careful interpretation for isolated island and coastal townships.
 
-- Road Network Simplification: Restricted to main road classes (motorway, trunk, primary, secondary, tertiary), excluding minor/service roads.
+---
 
-- Coordinate Data Quality: 189 records with missing coordinates were dropped, and 4 points fell outside the study boundary despite being labelled within it — some residual geo-referencing imprecision may remain.
+## 10. Key References {#key-references .smaller}
 
-- No Exposure Normalisation: Accident counts are not adjusted for traffic volume or vehicle-km; elevated intensity may partly reflect exposure rather than per-unit risk.
-
-- Temporal Aggregation: 2022 accidents were analysed as a single static pattern; seasonal and day-of-week patterns were not explored.
-
-- Attribute Depth: Analysis focuses on location and network topology; available attributes such as weather and road description were not incorporated spatially.
-
-------------------------------------------------------------------------
-
-## 10. References {#references .smaller}
-
-Baddeley, A., Turner, R., & Rubak, E. (n.d.). quadratcount: Quadrat counting for a point pattern on a linear network. Rdocumentation. https://www.rdocumentation.org/packages/spatstat.linnet/versions/3.5-0/topics/quadratcount
-
-Download OpenStreetMap for Thailand \| Geofabrik Download Server. (n.d.). Geofabrik Download Server. https://download.geofabrik.de/asia/thailand.html
-
-Gelb, J. (2025, October 4). Network Kernel Density Estimate. https://cran.r-project.org/web/packages/spNetwork/vignettes/NKDE.html
-
-Kaart: Road Classifications Guide - OpenStreetMap Wiki. (n.d.). https://wiki.openstreetmap.org/wiki/Kaart:\_Road_Classifications_Guide
-
-Kam, T. S. R for Geospatial Data Science and Analytics. https://r4gdsa.netlify.app/
-
-Klokan Technologies GmbH. (n.d.). EPSG.io: Coordinate Systems worldwide. https://epsg.io/
-
-McSwiggan, G. & Department of Mathematics and Statistics, UWA. (2019). Spatial point process methods for linear networks with applications to road accident analysis. https://api.research-repository.uwa.edu.au/ws/portalfiles/portal/81039500/THESIS_DOCTOR_OF_PHILOSOPHY_MCSWIGGAN_Gregory_Edward_2020.pdf
-
-Okabe, A., Satoh, T., Sugihara, K.: A kernel density estimation method for networks, its computational method and a GIS-based tool. International Journal of Geographical Information Science 23, 7–32 (2009)
-
-Okabe, A., & Yamada, I. (2001). The K-function method on a network and its computational implementation. Geographical Analysis, 33(3), 271–290.
-
-R, T. (2023). Thailand Road Accident \[2019-2022\]. Kaggle. https://www.kaggle.com/datasets/thaweewatboy/thailand-road-accident-2019-2022
-
-Runfola D, Anderson A, Baier H, Crittenden M, Dowker E, Fuhrig S, et al. (2020) geoBoundaries: A global database of political administrative boundaries. PLoS ONE 15(4): e0231866. https://doi.org/10.1371/journal.pone.0231866.
-
-Shiode, S. (2008). Analysis of a distribution of point events using the Network‐Based Quadrat Method. Geographical Analysis, 40(4), 380–400. https://doi.org/10.1111/j.0016-7363.2008.00735.x
-
-Sugihara, K., Satoh, T., & Okabe, A. (2010). Simple and unbiased kernel function for network analysis. 2010 10th International Symposium on Communications and Information Technologies, 827–832. IEEE.
-
-Yamada, I., & Thill, J.-C. (2004, June). Comparison of planar and network K-functions in traffic accident analysis. ScienceDirect. https://www.sciencedirect.com/science/article/abs/pii/S0966692303000619
+- **ACLED.** (2024). *Fatalities* [Methodology]. Armed Conflict Location & Event Data Project.
+- **ACLED.** (2026). *Myanmar outlook: Fighting is set to intensify in the center of the country*.
+- **Anselin, L.** (2020). *Local spatial autocorrelation (3): Multivariate local spatial autocorrelation* [GeoDa workbook].
+- **Hamed, K. H., & Rao, A. R.** (1998). A modified Mann-Kendall trend test for autocorrelated data. *Journal of Hydrology*, 204(1–4), 182–196.
+- **Kam, T. S.** (2026). *ISSS626 Geospatial Analytics and Applications: Lesson 5* [Lecture slides]. Singapore Management University.
+- **Michaels, M.** (2023). *Operation 1027 reshapes Myanmar’s post-coup war*. International Institute for Strategic Studies.

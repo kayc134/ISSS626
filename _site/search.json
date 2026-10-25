@@ -1039,8 +1039,8 @@
     "objectID": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#overview",
     "href": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#overview",
     "title": "Executive Summary: Geospatial Analytics for Peace",
-    "section": "",
-    "text": "Research Questions & Objectives\nStudy Area & Spatial Scope\nData Sources & Quality Handling\nAnalytical Approach: First-Order SPPA\nAnalytical Approach: Second-Order SPPA\nAnalytical Approach: Value-Added Analysis\nKey Spatial Findings\nRecommendations\nMethodological Limitations\nReferences"
+    "section": "Overview",
+    "text": "Overview\nExecutive Summary Structure\n\nResearch Questions\nStudy Area & Data Sources\nAnalytical Approach: SPPA & Space-Time Cube\nAnalytical Approach: LMSA & EHSA\nKey Spatial Findings: Clustering & Hot Spots\nVisual Evidence: LISA & EHSA Maps\nValue-Added Analysis: Air Strike Exposure\nPublic-Safety & Humanitarian Implications\nMethodological Limitations\nKey References"
   },
   {
     "objectID": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#research-questions-objectives",
@@ -1103,7 +1103,7 @@
     "href": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#methodological-limitations",
     "title": "Executive Summary: Geospatial Analytics for Peace",
     "section": "9. Methodological Limitations",
-    "text": "9. Methodological Limitations\n\nAnalytic & Data Constraints\n\nRoad Network Simplification: Restricted to main road classes (motorway, trunk, primary, secondary, tertiary), excluding minor/service roads.\nCoordinate Data Quality: 189 records with missing coordinates were dropped, and 4 points fell outside the study boundary despite being labelled within it — some residual geo-referencing imprecision may remain.\nNo Exposure Normalisation: Accident counts are not adjusted for traffic volume or vehicle-km; elevated intensity may partly reflect exposure rather than per-unit risk.\nTemporal Aggregation: 2022 accidents were analysed as a single static pattern; seasonal and day-of-week patterns were not explored.\nAttribute Depth: Analysis focuses on location and network topology; available attributes such as weather and road description were not incorporated spatially."
+    "text": "9. Methodological Limitations\nAnalytical & Data Constraints\n\nReporting Bias: ACLED relies on open-source reporting; severe internet shutdowns in Myanmar restrict data capture in remote conflict zones.\nUnder-Reported Harm: Combatant vs. civilian casualties and indirect deaths from blockades or displacement are conservatively estimated.\nPopulation Exposure: Counts reflect absolute event volume rather than per-capita risk rates due to a lack of current post-2021 census denominators.\nSpatial Weight Constraints: Results remain sensitive to the \\(k=8\\) nearest-neighbor structure, requiring careful interpretation for isolated island and coastal townships."
   },
   {
     "objectID": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#references",
@@ -1111,5 +1111,68 @@
     "title": "Executive Summary: Geospatial Analytics for Peace",
     "section": "10. References",
     "text": "10. References\nBaddeley, A., Turner, R., & Rubak, E. (n.d.). quadratcount: Quadrat counting for a point pattern on a linear network. Rdocumentation. https://www.rdocumentation.org/packages/spatstat.linnet/versions/3.5-0/topics/quadratcount\nDownload OpenStreetMap for Thailand | Geofabrik Download Server. (n.d.). Geofabrik Download Server. https://download.geofabrik.de/asia/thailand.html\nGelb, J. (2025, October 4). Network Kernel Density Estimate. https://cran.r-project.org/web/packages/spNetwork/vignettes/NKDE.html\nKaart: Road Classifications Guide - OpenStreetMap Wiki. (n.d.). https://wiki.openstreetmap.org/wiki/Kaart:_Road_Classifications_Guide\nKam, T. S. R for Geospatial Data Science and Analytics. https://r4gdsa.netlify.app/\nKlokan Technologies GmbH. (n.d.). EPSG.io: Coordinate Systems worldwide. https://epsg.io/\nMcSwiggan, G. & Department of Mathematics and Statistics, UWA. (2019). Spatial point process methods for linear networks with applications to road accident analysis. https://api.research-repository.uwa.edu.au/ws/portalfiles/portal/81039500/THESIS_DOCTOR_OF_PHILOSOPHY_MCSWIGGAN_Gregory_Edward_2020.pdf\nOkabe, A., Satoh, T., Sugihara, K.: A kernel density estimation method for networks, its computational method and a GIS-based tool. International Journal of Geographical Information Science 23, 7–32 (2009)\nOkabe, A., & Yamada, I. (2001). The K-function method on a network and its computational implementation. Geographical Analysis, 33(3), 271–290.\nR, T. (2023). Thailand Road Accident [2019-2022]. Kaggle. https://www.kaggle.com/datasets/thaweewatboy/thailand-road-accident-2019-2022\nRunfola D, Anderson A, Baier H, Crittenden M, Dowker E, Fuhrig S, et al. (2020) geoBoundaries: A global database of political administrative boundaries. PLoS ONE 15(4): e0231866. https://doi.org/10.1371/journal.pone.0231866.\nShiode, S. (2008). Analysis of a distribution of point events using the Network‐Based Quadrat Method. Geographical Analysis, 40(4), 380–400. https://doi.org/10.1111/j.0016-7363.2008.00735.x\nSugihara, K., Satoh, T., & Okabe, A. (2010). Simple and unbiased kernel function for network analysis. 2010 10th International Symposium on Communications and Information Technologies, 827–832. IEEE.\nYamada, I., & Thill, J.-C. (2004, June). Comparison of planar and network K-functions in traffic accident analysis. ScienceDirect. https://www.sciencedirect.com/science/article/abs/pii/S0966692303000619"
+  },
+  {
+    "objectID": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#research-questions",
+    "href": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#research-questions",
+    "title": "Executive Summary: Geospatial Analytics for Peace",
+    "section": "1. Research Questions",
+    "text": "1. Research Questions\nCore Objectives & Questions\n\nRQ1 & RQ2 (LMSA): Where are the statistically significant clusters (High-High, Low-Low) and spatial outliers of armed conflict across Myanmar townships, and do they vary by conflict type (Battles, Remote Violence, Violence against Civilians)?\nRQ3 (EHSA): Where, how consistently, and in what temporal pattern have conflict hot and cold spots evolved between Q1 2021 and Q3 2025?\nRQ4 (Value-Added): Where are civilians most exposed to military air strikes post-Operation 1027, is this exposure tied directly to front-line ground clashes, and where are safer zones?"
+  },
+  {
+    "objectID": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#study-area-data-sources",
+    "href": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#study-area-data-sources",
+    "title": "Executive Summary: Geospatial Analytics for Peace",
+    "section": "2. Study Area & Data Sources",
+    "text": "2. Study Area & Data Sources\n\nSpatial Scope & CorrectionsData Inputs\n\n\n\nStudy Boundary: Myanmar (330 Townships across 18 States and Regions; projected to WGS 84 / UTM Zone 47N).\nGeometric Adjustments: Corrected 41 multi-part townships (906 total pieces) and resolved out-of-boundary geometric centroids by deploying anchor points via st_point_on_surface() on the largest land parts.\n\n\n\n\nConflict Events: ACLED Myanmar Database (1 Jan 2021 – 30 Sep 2025). Filtered out events with geo_precision = 3 and non-conflict records, retaining 53,907 armed-conflict events.\nSpatial Weights: Configured \\(k = 8\\) Nearest Neighbours (\\(KNN\\)) using anchor points to handle massive rural-urban size disparities."
+  },
+  {
+    "objectID": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#analytical-approach-sppa-space-time-cube",
+    "href": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#analytical-approach-sppa-space-time-cube",
+    "title": "Executive Summary: Geospatial Analytics for Peace",
+    "section": "3. Analytical Approach: SPPA & Space-Time Cube",
+    "text": "3. Analytical Approach: SPPA & Space-Time Cube\n\nExploratory & Spatial StructureSpace-Time Cube Construction\n\n\n\nEvaluated global distributions, proving strong right-skewness where conflict concentrates heavily in the central dry zone and border peripheries.\nAddressed extreme township size variations by applying row-standardised \\(KNN\\) weights (\\(k=8\\)).\n\n\n\n\nAggregated temporal bins into 19 quarters (qtr) spanning Jan 2021 to Sep 2025.\nZero-filled missing township-quarter records to establish a complete space-time panel matrix (\\(330 \\times 19 = 6,270\\) rows)."
+  },
+  {
+    "objectID": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#analytical-approach-lmsa-ehsa",
+    "href": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#analytical-approach-lmsa-ehsa",
+    "title": "Executive Summary: Geospatial Analytics for Peace",
+    "section": "4. Analytical Approach: LMSA & EHSA",
+    "text": "4. Analytical Approach: LMSA & EHSA\n\nLocal Measures of Spatial Association (LMSA)Emerging Hot Spot Analysis (EHSA)\n\n\n\nComputed local Moran’s I (99 simulations, \\(\\alpha = 0.05\\)) to isolate High-High/Low-Low spatial clusters and boundary outliers.\nEvaluated individual event types (Battles, Remote Violence, Violence against Civilians) independently.\n\n\n\n\nIntegrated quarterly \\(Gi^*\\) scores with the Mann-Kendall monotonic trend test.\nTested serial correlation using the Ljung-Box test and confirmed spatial trend robustness via the modified Mann-Kendall test (90% trend stability)."
+  },
+  {
+    "objectID": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#key-spatial-findings-clustering-hot-spots",
+    "href": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#key-spatial-findings-clustering-hot-spots",
+    "title": "Executive Summary: Geospatial Analytics for Peace",
+    "section": "5. Key Spatial Findings: Clustering & Hot Spots",
+    "text": "5. Key Spatial Findings: Clustering & Hot Spots\nCore vs. Periphery Polarization\n\nLISA Clustering: Confirms a persistent High-High conflict core across central Myanmar and south-eastern belts (104 significant townships, far exceeding random expectation).\nEHSA Temporal Trends: Reveals that conflict is actively expanding outward rather than contracting. New, consecutive, and oscillating hot spots concentrate at peripheral border states.\nEscalation Trajectory: Remote violence and air strikes exhibit the steepest upward temporal trends, with zero historical or diminishing hot spots indicating a lack of de-escalation."
+  },
+  {
+    "objectID": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#visual-evidence-lisa-ehsa-maps",
+    "href": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#visual-evidence-lisa-ehsa-maps",
+    "title": "Executive Summary: Geospatial Analytics for Peace",
+    "section": "6. Visual Evidence: LISA & EHSA Maps",
+    "text": "6. Visual Evidence: LISA & EHSA Maps\n\nLISA High-High CoresEHSA Peripheral Expansion\n\n\n\n\n\nLISA Map for All Armed-Conflict Events highlighting central and south-eastern clusters\n\n\n\n\n\n\n\nEHSA Map showing outward spreading hot spots post-Operation 1027"
+  },
+  {
+    "objectID": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#value-added-analysis-air-strike-exposure",
+    "href": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#value-added-analysis-air-strike-exposure",
+    "title": "Executive Summary: Geospatial Analytics for Peace",
+    "section": "7. Value-Added Analysis: Air Strike Exposure",
+    "text": "7. Value-Added Analysis: Air Strike Exposure\n\nLethality & Air Power ShiftBivariate Local Moran’s I\n\n\n\nFollowing Operation 1027 (Oct 2023), military air/drone strikes roughly tripled while ground clashes plateaued.\nState forces account for 71% of all air strikes and 92.8% of all civilian-targeted deaths, averaging significantly higher lethality per event (\\(p &lt; 0.001\\)).\n\n\n\n\nLinked post-Operation 1027 military air strikes to neighboring ground clashes (\\(k=8\\) spatial lag).\nFront-Line Concentration: 23 bivariate High-High townships received 19.2% of all air strikes. Zero High-Low clusters prove bombing tightly mirrors active ground fighting."
+  },
+  {
+    "objectID": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#public-safety-humanitarian-implications",
+    "href": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#public-safety-humanitarian-implications",
+    "title": "Executive Summary: Geospatial Analytics for Peace",
+    "section": "8. Public-Safety & Humanitarian Implications",
+    "text": "8. Public-Safety & Humanitarian Implications\n\nLong-Term Core Services: Humanitarian assistance in the central High-High cluster must be structured for sustained, multi-year operations rather than temporary emergency relief.\nFront-Line Air-Raid Protection: Prioritize the 23 High-High exposure townships for decentralized bomb shelters, trauma care capacity, and localized civilian early-warning systems.\nEarly-Warning Monitoring: Designate the 17 Low-High “watch zones” for immediate preparedness as conflict spill-overs threaten adjacent areas.\nStrategic IDP Inflows: Direct displaced populations toward the 94 Low-Low “safe-haven” townships (e.g., parts of the southern delta and eastern highlands), which recorded minimal air strike exposure (\\(&lt;0.1\\%\\))."
+  },
+  {
+    "objectID": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#key-references",
+    "href": "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02_ExSum.html#key-references",
+    "title": "Executive Summary: Geospatial Analytics for Peace",
+    "section": "10. Key References",
+    "text": "10. Key References\n\nACLED. (2024). Fatalities [Methodology]. Armed Conflict Location & Event Data Project.\nACLED. (2026). Myanmar outlook: Fighting is set to intensify in the center of the country.\nAnselin, L. (2020). Local spatial autocorrelation (3): Multivariate local spatial autocorrelation [GeoDa workbook].\nHamed, K. H., & Rao, A. R. (1998). A modified Mann-Kendall trend test for autocorrelated data. Journal of Hydrology, 204(1–4), 182–196.\nKam, T. S. (2026). ISSS626 Geospatial Analytics and Applications: Lesson 5 [Lecture slides]. Singapore Management University.\nMichaels, M. (2023). Operation 1027 reshapes Myanmar’s post-coup war. International Institute for Strategic Studies."
   }
 ]

@@ -202,47 +202,57 @@ Chia Ka Ying
 </section>
 <section id="analytical-approach" class="slide level2 smaller">
 <h2>3. Analytical Approach</h2>
-<div class="cell" data-reveal="true" data-fig-width="10" data-layout-align="default">
+<div class="panel-tabset">
+<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Workflow</a></li><li><a href="#tabset-1-2">Methods</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1">
+<p><strong>Event data</strong></p>
+<div class="cell" data-reveal="true" data-fig-width="12" data-layout-align="default">
 <div class="cell-output-display">
 <div>
 <p></p><figure class=""><p></p>
 <div>
-<pre class="mermaid mermaid-js">%%{init: {"theme": "neutral"}}%%
-flowchart TB
-  subgraph B1["1. Event data"]
-    direction LR
-    A1["ACLED Myanmar&lt;br/&gt;Jan 2021 – Sep 2025&lt;br/&gt;87,109 events"] --&gt; A2["Keep 3 armed-&lt;br/&gt;conflict types"]
-    A2 --&gt; A3["Drop&lt;br/&gt;geo_precision = 3&lt;br/&gt;53,910 events"]
-    A3 --&gt; A4["Assign to townships&lt;br/&gt;(st_join)&lt;br/&gt;8 reassigned,&lt;br/&gt;3 at sea dropped"]
-    A4 --&gt; A5["Remove boundary&lt;br/&gt;duplicates&lt;br/&gt;53,907 events"]
-    A5 --&gt; A6["Space-time cube&lt;br/&gt;330 × 19 quarters&lt;br/&gt;= 6,270 rows"]
-  end
-
-  subgraph B2["2. Spatial weights"]
-    direction LR
-    W1["Township boundaries&lt;br/&gt;one row per TS_PCODE&lt;br/&gt;EPSG:32647"] --&gt; W2["Anchor point on&lt;br/&gt;largest land part"]
-    W2 --&gt; W3["k = 8 nearest&lt;br/&gt;neighbours"]
-    W3 --&gt; W4["Row-standardised&lt;br/&gt;each neighbour = 1/8"]
-    W4 --&gt; W5["+ self for&lt;br/&gt;Gi* / EHSA"]
-  end
-
-  B1 --&gt; M["Analysis: LISA · EHSA · bivariate LISA"]
-  B2 --&gt; M
-
+<pre class="mermaid mermaid-js">%%{init: {"theme": "neutral", "themeVariables": {"fontSize": "20px"}, "flowchart": {"nodeSpacing": 15, "rankSpacing": 20}}}%%
+flowchart LR
+  A1["ACLED Myanmar&lt;br/&gt;2021–2025&lt;br/&gt;87,109 events"] --&gt; A2["Keep 3&lt;br/&gt;armed-conflict&lt;br/&gt;types"]
+  A2 --&gt; A3["Drop&lt;br/&gt;geo_precision 3"]
+  A3 --&gt; A4["Assign to&lt;br/&gt;townships&lt;br/&gt;(st_join)"]
+  A4 --&gt; A5["Remove&lt;br/&gt;duplicates&lt;br/&gt;53,907 events"]
+  A5 --&gt; A6["Space-time cube&lt;br/&gt;330 × 19 =&lt;br/&gt;6,270 rows"]
   classDef data fill:#dbe9f6,stroke:#2c7bb6,color:#000
-  classDef weights fill:#e3f1df,stroke:#4d9221,color:#000
   classDef out fill:#fde0c5,stroke:#e66101,color:#000
-  class A1,A2,A3,A4,A5,A6 data
-  class W1,W2,W3,W4,W5 weights
-  class M out
-  style B1 fill:#f7f9fc,stroke:#999
-  style B2 fill:#f7faf5,stroke:#999
+  class A1,A2,A3,A4,A5 data
+  class A6 out
 </pre>
 </div>
 <p></p></figure><p></p>
 </div>
 </div>
 </div>
+<p><strong>Spatial weights</strong></p>
+<div class="cell" data-reveal="true" data-fig-width="12" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class=""><p></p>
+<div>
+<pre class="mermaid mermaid-js">%%{init: {"theme": "neutral", "themeVariables": {"fontSize": "20px"}, "flowchart": {"nodeSpacing": 15, "rankSpacing": 20}}}%%
+flowchart LR
+  W1["Township&lt;br/&gt;boundaries&lt;br/&gt;EPSG:32647"] --&gt; W2["Anchor point&lt;br/&gt;on largest&lt;br/&gt;land part"]
+  W2 --&gt; W3["k = 8&lt;br/&gt;nearest&lt;br/&gt;neighbours"]
+  W3 --&gt; W4["Row-&lt;br/&gt;standardised&lt;br/&gt;(1/8 each)"]
+  W4 --&gt; W5["+ self for&lt;br/&gt;Gi* / EHSA"]
+  classDef weights fill:#e3f1df,stroke:#4d9221,color:#000
+  classDef out fill:#fde0c5,stroke:#e66101,color:#000
+  class W1,W2,W3,W4 weights
+  class W5 out
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-1-2">
 <table class="caption-top">
 <colgroup>
 <col style="width: 50%">
@@ -274,6 +284,9 @@ flowchart TB
 </tbody>
 </table>
 <p>All analyses use <strong>k = 8 nearest neighbours</strong> with row-standardised weights, suited to Myanmar’s widely varying township sizes and skewed counts, at α = 0.05.</p>
+</div>
+</div>
+</div>
 </section>
 <section id="findings-clusters" class="slide level2 smaller">
 <h2>4. Key Findings: Where Conflict Clusters</h2>
@@ -298,9 +311,9 @@ flowchart TB
 <section id="findings-evolving" class="slide level2 smaller">
 <h2>5. Key Findings: How Conflict Is Evolving</h2>
 <div class="panel-tabset">
-<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Emerging hot spots</a></li><li><a href="#tabset-1-2">Year by year</a></li></ul>
+<ul id="tabset-2" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-2-1">Emerging hot spots</a></li><li><a href="#tabset-2-2">Year by year</a></li></ul>
 <div class="tab-content">
-<div id="tabset-1-1">
+<div id="tabset-2-1">
 <div class="columns">
 <div class="column" style="width:45%;">
 <ul>
@@ -319,7 +332,7 @@ flowchart TB
 </div>
 </div></div>
 </div>
-<div id="tabset-1-2">
+<div id="tabset-2-2">
 <div class="quarto-figure quarto-figure-center">
 <figure>
 <p><img data-src="images/yearly.png" style="width:100.0%"></p>
@@ -454,12 +467,20 @@ flowchart TB
 <section id="key-references" class="slide level2 smaller">
 <h2>10. Key References</h2>
 <ul>
-<li><strong>ACLED.</strong> (2024). <em>Fatalities</em> [Methodology]. Armed Conflict Location &amp; Event Data Project.</li>
-<li><strong>ACLED.</strong> (2026). <em>Myanmar outlook: Fighting is set to intensify in the center of the country</em>.</li>
-<li><strong>Anselin, L.</strong> (2020). <em>Local spatial autocorrelation (3): Multivariate local spatial autocorrelation</em> [GeoDa workbook].</li>
-<li><strong>Hamed, K. H., &amp; Rao, A. R.</strong> (1998). A modified Mann-Kendall trend test for autocorrelated data. <em>Journal of Hydrology</em>, 204(1–4), 182–196.</li>
-<li><strong>Kam, T. S.</strong> (2026). <em>ISSS626 Geospatial Analytics and Applications: Lesson 5</em> [Lecture slides]. Singapore Management University.</li>
-<li><strong>Michaels, M.</strong> (2023). <em>Operation 1027 reshapes Myanmar’s post-coup war</em>. International Institute for Strategic Studies.</li>
+<li>ACLED. (2024). <em>Fatalities</em> [Methodology, last updated 7 May 2024]. Armed Conflict Location &amp; Event Data Project. https://acleddata.com/methodology/fatalities</li>
+<li>ACLED. (2026, July 27). <em>Myanmar outlook: Fighting is set to intensify in the center of the country</em>. Armed Conflict Location &amp; Event Data Project. https://acleddata.com/report/myanmar-outlook-fighting-set-intensify-center-country</li>
+<li>Anselin, L. (2020). <em>Local spatial autocorrelation (3): Multivariate local spatial autocorrelation</em> [GeoDa workbook]. https://geodacenter.github.io/workbook/6c_local_multi/lab6c.html</li>
+<li>ESRI. (n.d.). <em>Modeling spatial relationships</em>. ArcGIS Pro documentation. https://pro.arcgis.com/en/pro-app/3.4/tool-reference/spatial-statistics/modeling-spatial-relationships.htm</li>
+<li>Hamed, K. H., &amp; Rao, A. R. (1998). A modified Mann-Kendall trend test for autocorrelated data. <em>Journal of Hydrology, 204</em>(1–4), 182–196. https://doi.org/10.1016/S0022-1694(97)00125-X</li>
+<li>Hyndman, R. J., &amp; Athanasopoulos, G. (2021). <em>Forecasting: Principles and practice</em> (3rd ed.). OTexts. https://otexts.com/fpp3/diagnostics.html</li>
+<li>Kam, T. S. (2026). <em>ISSS626 Geospatial Analytics and Applications: Lesson 5, Global and local measures of spatial association</em> [Lecture slides]. Singapore Management University.</li>
+<li>Kam, T. S., &amp; Zhi, V. (2018). Is there space for violence?: A data-driven approach to the exploration of spatial-temporal dimensions of conflict. In <em>Proceedings of the 2nd ACM SIGSPATIAL Workshop on Geospatial Humanities</em> (pp.&nbsp;1–10). ACM.</li>
+<li>Ljung, G. M., &amp; Box, G. E. P. (1978). On a measure of lack of fit in time series models. <em>Biometrika, 65</em>(2), 297–303. https://doi.org/10.1093/biomet/65.2.297</li>
+<li>Lovelace, R., Nowosad, J., &amp; Muenchow, J. (2026). <em>Geocomputation with R</em>. https://r.geocompx.org/geometry-operations.html</li>
+<li>Michaels, M. (2023, November). <em>Operation 1027 reshapes Myanmar’s post-coup war</em>. International Institute for Strategic Studies. https://myanmar.iiss.org/analysis/2023-11</li>
+<li>Patakamuri, S. K., &amp; O’Brien, N. (2021). <em>modifiedmk: Modified versions of Mann Kendall and Spearman’s Rho trend tests</em> [R package]. https://CRAN.R-project.org/package=modifiedmk</li>
+<li>Pebesma, E., &amp; Bivand, R. (2023). <em>Spatial data science: With applications in R</em> (ch.&nbsp;14, Proximity and areal data). https://r-spatial.org/book/14-Areal.html</li>
+<li>Voice of America. (2025, February 24). <em>Report: In record year of internet shutdowns, Myanmar leads</em>. https://www.voanews.com/a/report-in-record-year-of-internet-shutdowns-myanmar-leads/7985585.html</li>
 </ul>
 
 

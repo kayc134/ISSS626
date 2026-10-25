@@ -63,49 +63,55 @@ Since the February 2021 coup, Myanmar's conflict has become one of the world's m
 
 ## 3. Analytical Approach {#analytical-approach .smaller}
 
+::: panel-tabset
+### Workflow
+
+**Event data**
+
 ```{mermaid}
 %%| echo: false
-%%| fig-width: 10
-%%{init: {"theme": "neutral"}}%%
-flowchart TB
-  subgraph B1["1. Event data"]
-    direction LR
-    A1["ACLED Myanmar<br/>Jan 2021 – Sep 2025<br/>87,109 events"] --> A2["Keep 3 armed-<br/>conflict types"]
-    A2 --> A3["Drop<br/>geo_precision = 3<br/>53,910 events"]
-    A3 --> A4["Assign to townships<br/>(st_join)<br/>8 reassigned,<br/>3 at sea dropped"]
-    A4 --> A5["Remove boundary<br/>duplicates<br/>53,907 events"]
-    A5 --> A6["Space-time cube<br/>330 × 19 quarters<br/>= 6,270 rows"]
-  end
-
-  subgraph B2["2. Spatial weights"]
-    direction LR
-    W1["Township boundaries<br/>one row per TS_PCODE<br/>EPSG:32647"] --> W2["Anchor point on<br/>largest land part"]
-    W2 --> W3["k = 8 nearest<br/>neighbours"]
-    W3 --> W4["Row-standardised<br/>each neighbour = 1/8"]
-    W4 --> W5["+ self for<br/>Gi* / EHSA"]
-  end
-
-  B1 --> M["Analysis: LISA · EHSA · bivariate LISA"]
-  B2 --> M
-
+%%| fig-width: 12
+%%{init: {"theme": "neutral", "themeVariables": {"fontSize": "20px"}, "flowchart": {"nodeSpacing": 15, "rankSpacing": 20}}}%%
+flowchart LR
+  A1["ACLED Myanmar<br/>2021–2025<br/>87,109 events"] --> A2["Keep 3<br/>armed-conflict<br/>types"]
+  A2 --> A3["Drop<br/>geo_precision 3"]
+  A3 --> A4["Assign to<br/>townships<br/>(st_join)"]
+  A4 --> A5["Remove<br/>duplicates<br/>53,907 events"]
+  A5 --> A6["Space-time cube<br/>330 × 19 =<br/>6,270 rows"]
   classDef data fill:#dbe9f6,stroke:#2c7bb6,color:#000
-  classDef weights fill:#e3f1df,stroke:#4d9221,color:#000
   classDef out fill:#fde0c5,stroke:#e66101,color:#000
-  class A1,A2,A3,A4,A5,A6 data
-  class W1,W2,W3,W4,W5 weights
-  class M out
-  style B1 fill:#f7f9fc,stroke:#999
-  style B2 fill:#f7faf5,stroke:#999
+  class A1,A2,A3,A4,A5 data
+  class A6 out
 ```
 
+**Spatial weights**
+
+```{mermaid}
+%%| echo: false
+%%| fig-width: 12
+%%{init: {"theme": "neutral", "themeVariables": {"fontSize": "20px"}, "flowchart": {"nodeSpacing": 15, "rankSpacing": 20}}}%%
+flowchart LR
+  W1["Township<br/>boundaries<br/>EPSG:32647"] --> W2["Anchor point<br/>on largest<br/>land part"]
+  W2 --> W3["k = 8<br/>nearest<br/>neighbours"]
+  W3 --> W4["Row-<br/>standardised<br/>(1/8 each)"]
+  W4 --> W5["+ self for<br/>Gi* / EHSA"]
+  classDef weights fill:#e3f1df,stroke:#4d9221,color:#000
+  classDef out fill:#fde0c5,stroke:#e66101,color:#000
+  class W1,W2,W3,W4 weights
+  class W5 out
+```
+
+### Methods
+
 | Method | Purpose |
-|------------------------------------|------------------------------------|
+|---|---|
 | **Local Moran's I (LISA)** | Clusters (High-High, Low-Low) and outliers (High-Low, Low-High) of each conflict type |
 | **Emerging Hot Spot Analysis (EHSA)** | Quarterly Gi\* with the Mann-Kendall trend test: how hot and cold spots emerge, persist or fade |
 | **Ljung-Box & modified Mann-Kendall** | Checks that trends hold despite serial correlation between quarters |
 | **Bivariate Local Moran's I** | Whether military air strikes in a township relate to armed clashes in neighbouring townships |
 
 All analyses use **k = 8 nearest neighbours** with row-standardised weights, suited to Myanmar's widely varying township sizes and skewed counts, at α = 0.05.
+:::
 
 ------------------------------------------------------------------------
 
@@ -213,9 +219,17 @@ Bivariate Local Moran's I of military air strikes against neighbouring armed cla
 
 ## 10. Key References {#key-references .smaller}
 
-- **ACLED.** (2024). *Fatalities* \[Methodology\]. Armed Conflict Location & Event Data Project.
-- **ACLED.** (2026). *Myanmar outlook: Fighting is set to intensify in the center of the country*.
-- **Anselin, L.** (2020). *Local spatial autocorrelation (3): Multivariate local spatial autocorrelation* \[GeoDa workbook\].
-- **Hamed, K. H., & Rao, A. R.** (1998). A modified Mann-Kendall trend test for autocorrelated data. *Journal of Hydrology*, 204(1–4), 182–196.
-- **Kam, T. S.** (2026). *ISSS626 Geospatial Analytics and Applications: Lesson 5* \[Lecture slides\]. Singapore Management University.
-- **Michaels, M.** (2023). *Operation 1027 reshapes Myanmar’s post-coup war*. International Institute for Strategic Studies.
+- ACLED. (2024). *Fatalities* \[Methodology, last updated 7 May 2024\]. Armed Conflict Location & Event Data Project. https://acleddata.com/methodology/fatalities
+- ACLED. (2026, July 27). *Myanmar outlook: Fighting is set to intensify in the center of the country*. Armed Conflict Location & Event Data Project. https://acleddata.com/report/myanmar-outlook-fighting-set-intensify-center-country
+- Anselin, L. (2020). *Local spatial autocorrelation (3): Multivariate local spatial autocorrelation* \[GeoDa workbook\]. https://geodacenter.github.io/workbook/6c_local_multi/lab6c.html
+- ESRI. (n.d.). *Modeling spatial relationships*. ArcGIS Pro documentation. https://pro.arcgis.com/en/pro-app/3.4/tool-reference/spatial-statistics/modeling-spatial-relationships.htm
+- Hamed, K. H., & Rao, A. R. (1998). A modified Mann-Kendall trend test for autocorrelated data. *Journal of Hydrology, 204*(1–4), 182–196. https://doi.org/10.1016/S0022-1694(97)00125-X
+- Hyndman, R. J., & Athanasopoulos, G. (2021). *Forecasting: Principles and practice* (3rd ed.). OTexts. https://otexts.com/fpp3/diagnostics.html
+- Kam, T. S. (2026). *ISSS626 Geospatial Analytics and Applications: Lesson 5, Global and local measures of spatial association* \[Lecture slides\]. Singapore Management University.
+- Kam, T. S., & Zhi, V. (2018). Is there space for violence?: A data-driven approach to the exploration of spatial-temporal dimensions of conflict. In *Proceedings of the 2nd ACM SIGSPATIAL Workshop on Geospatial Humanities* (pp. 1–10). ACM.
+- Ljung, G. M., & Box, G. E. P. (1978). On a measure of lack of fit in time series models. *Biometrika, 65*(2), 297–303. https://doi.org/10.1093/biomet/65.2.297
+- Lovelace, R., Nowosad, J., & Muenchow, J. (2026). *Geocomputation with R*. https://r.geocompx.org/geometry-operations.html
+- Michaels, M. (2023, November). *Operation 1027 reshapes Myanmar's post-coup war*. International Institute for Strategic Studies. https://myanmar.iiss.org/analysis/2023-11
+- Patakamuri, S. K., & O'Brien, N. (2021). *modifiedmk: Modified versions of Mann Kendall and Spearman's Rho trend tests* \[R package\]. https://CRAN.R-project.org/package=modifiedmk
+- Pebesma, E., & Bivand, R. (2023). *Spatial data science: With applications in R* (ch. 14, Proximity and areal data). https://r-spatial.org/book/14-Areal.html
+- Voice of America. (2025, February 24). *Report: In record year of internet shutdowns, Myanmar leads*. https://www.voanews.com/a/report-in-record-year-of-internet-shutdowns-myanmar-leads/7985585.html

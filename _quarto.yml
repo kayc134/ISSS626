@@ -32,7 +32,8 @@ website:
           href: "Hands-on_Ex/Hands-on_Ex07/Hands-On_Ex07.html"
         - text: "08: Market Area Analysis for Retail and Service Locations using Huff Model"
           href: "Hands-on_Ex/Hands-on_Ex08/Hands-On_Ex08.html"
-        - text: "Hands-On Exercise 09"
+        - text: "09: Calibrating Hedonic Pricing Model for Private Highrise Property with GWR Method"
+          href: "Hands-on_Ex/Hands-on_Ex09/Hands-On_Ex09.html"
         - text: "Hands-On Exercise 10"
       - text: "In-Class Exercise"
         menu:

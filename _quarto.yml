@@ -53,6 +53,8 @@ website:
           href: "Take-Home_Ex/Take-Home_Ex01/Take-Home_Ex01.html"
         - text: "02: Geospatial Analytics for Peace"
           href: "Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02.html"
+        - text: "03: Geospatial Analytics for Urban Sustainability"
+          href: "Take-Home_Ex/Take-Home_Ex03/Take-Home_Ex03.html"
           
     right:
       - href: index.qmd

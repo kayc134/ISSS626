@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Chia Ka Ying">
+<meta name="dcterms.date" content="2026-11-03">
+
+<title>03: Geospatial Analytics for Urban Sustainability – Kay’s GeoHub</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../images/favicon.png" rel="icon" type="image/png">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-bcaea1afbde5c3fcfe46a7eae4a52071.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Kay’s GeoHub</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-hands-on-exercise" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Hands-On Exercise</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-hands-on-exercise">    
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex01/Hands-On_Ex01a.html">
+ <span class="dropdown-text">01a: Geospatial Data Science with R</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex01/Hands-On_Ex01b.html">
+ <span class="dropdown-text">01b: Thematic Mapping and GeoVisualisation with R</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex02/Hands-On_Ex02a.html">
+ <span class="dropdown-text">02a: First Order Spatial Points Analysis Methods</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex02/Hands-On_Ex02b.html">
+ <span class="dropdown-text">02b: Second Order Spatial Points Analysis Methods</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex03/Hands-On_Ex03.html">
+ <span class="dropdown-text">03: Spatio-Temporal Point Patterns Analysis</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex04/Hands-On_Ex04a.html">
+ <span class="dropdown-text">04a: Network Constrained Spatial Point Patterns Analysis</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex04/Hands-On_Ex04b.html">
+ <span class="dropdown-text">04b: Spatial Weights and Applications</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex05/Hands-On_Ex05a.html">
+ <span class="dropdown-text">05a: Global Measures of Spatial Autocorrelation</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex05/Hands-On_Ex05b.html">
+ <span class="dropdown-text">05b: Local Measures of Spatial Autocorrelation</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex06/Hands-On_Ex06.html">
+ <span class="dropdown-text">06 Geographical Segmentation with Spatially Constrained Clustering Techniques</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex07/Hands-On_Ex07.html">
+ <span class="dropdown-text">07: Modelling Geographical Accessibility</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex08/Hands-On_Ex08.html">
+ <span class="dropdown-text">08: Market Area Analysis for Retail and Service Locations using Huff Model</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex09/Hands-On_Ex09.html">
+ <span class="dropdown-text">09: Calibrating Hedonic Pricing Model for Private Highrise Property with GWR Method</span></a>
+  </li>  
+        <li class="dropdown-header">Hands-On Exercise 10</li>
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-in-class-exercise" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">In-Class Exercise</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-in-class-exercise">    
+        <li>
+    <a class="dropdown-item" href="../../In-Class_Ex/In-Class_Ex04/In-Class_Ex04.html">
+ <span class="dropdown-text">04: Geographically Weighted Summary Statistics</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-Class_Ex/In-Class_Ex05/In-Class_Ex05.html">
+ <span class="dropdown-text">05: Global and Local Spatial Analysis</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-Class_Ex/In-Class_Ex06/In-Class_Ex06.html">
+ <span class="dropdown-text">06: Emerging Hot Spot Analysis</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-Class_Ex/In-Class_Ex07/In-Class_Ex07.html">
+ <span class="dropdown-text">07: Modelling Geographic of Accessibility</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-Class_Ex/In-Class_Ex08/In-Class_Ex08.html">
+ <span class="dropdown-text">08: Market Area Analysis for Retail and Service Locations using Huff Model</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-take-home-exercise" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Take-Home Exercise</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-take-home-exercise">    
+        <li>
+    <a class="dropdown-item" href="../../Take-Home_Ex/Take-Home_Ex01/Take-Home_Ex01.html">
+ <span class="dropdown-text">01: Study on Road Accidents in Bangkok Greater Metropolitan Area</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Take-Home_Ex/Take-Home_Ex02/Take-Home_Ex02.html">
+ <span class="dropdown-text">02: Geospatial Analytics for Peace</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Take-Home_Ex/Take-Home_Ex03/Take-Home_Ex03.html">
+ <span class="dropdown-text">03: Geospatial Analytics for Urban Sustainability</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction-and-study-context" id="toc-introduction-and-study-context" class="nav-link active" data-scroll-target="#introduction-and-study-context">1. Introduction and Study Context</a></li>
+  <li><a href="#research-objectives-and-questions" id="toc-research-objectives-and-questions" class="nav-link" data-scroll-target="#research-objectives-and-questions">2. Research Objectives and Questions</a>
+  <ul class="collapse">
+  <li><a href="#research-objectives" id="toc-research-objectives" class="nav-link" data-scroll-target="#research-objectives">2.1 Research Objectives</a></li>
+  <li><a href="#research-questions" id="toc-research-questions" class="nav-link" data-scroll-target="#research-questions">2.2 Research Questions</a></li>
+  <li><a href="#model-components" id="toc-model-components" class="nav-link" data-scroll-target="#model-components">2.3 Model Components</a></li>
+  </ul></li>
+  <li><a href="#getting-started" id="toc-getting-started" class="nav-link" data-scroll-target="#getting-started">3. Getting Started</a>
+  <ul class="collapse">
+  <li><a href="#installing-r-packages" id="toc-installing-r-packages" class="nav-link" data-scroll-target="#installing-r-packages">3.1 Installing R Packages</a></li>
+  <li><a href="#project-structure" id="toc-project-structure" class="nav-link" data-scroll-target="#project-structure">3.2 Project Structure</a></li>
+  <li><a href="#datasets" id="toc-datasets" class="nav-link" data-scroll-target="#datasets">3.3 Datasets</a></li>
+  <li><a href="#downloading-the-passenger-volume-data" id="toc-downloading-the-passenger-volume-data" class="nav-link" data-scroll-target="#downloading-the-passenger-volume-data">3.4 Downloading the Passenger Volume Data</a></li>
+  <li><a href="#importing-geospatial-data" id="toc-importing-geospatial-data" class="nav-link" data-scroll-target="#importing-geospatial-data">3.5 Importing Geospatial Data</a></li>
+  <li><a href="#importing-aspatial-data" id="toc-importing-aspatial-data" class="nav-link" data-scroll-target="#importing-aspatial-data">3.6 Importing Aspatial Data</a></li>
+  </ul></li>
+  <li><a href="#data-wrangling" id="toc-data-wrangling" class="nav-link" data-scroll-target="#data-wrangling">4. Data Wrangling</a>
+  <ul class="collapse">
+  <li><a href="#crs-transformation-and-geometry-repair" id="toc-crs-transformation-and-geometry-repair" class="nav-link" data-scroll-target="#crs-transformation-and-geometry-repair">4.1 CRS Transformation and Geometry Repair</a></li>
+  <li><a href="#preparing-the-subzone-boundary" id="toc-preparing-the-subzone-boundary" class="nav-link" data-scroll-target="#preparing-the-subzone-boundary">4.2 Preparing the Subzone Boundary</a></li>
+  <li><a href="#preparing-the-study-boundary" id="toc-preparing-the-study-boundary" class="nav-link" data-scroll-target="#preparing-the-study-boundary">4.3 Preparing the Study Boundary</a></li>
+  <li><a href="#plotting-the-study-boundary" id="toc-plotting-the-study-boundary" class="nav-link" data-scroll-target="#plotting-the-study-boundary">4.4 Plotting the Study Boundary</a></li>
+  </ul></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">03: Geospatial Analytics for Urban Sustainability</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Chia Ka Ying </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">November 3, 2026</p>
+    </div>
+  </div>
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">November 3, 2026</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction-and-study-context" class="level2">
+<h2 class="anchored" data-anchor-id="introduction-and-study-context">1. Introduction and Study Context</h2>
+<p>Urban Rail Transit (URT) is central to sustainable urban development. By moving large numbers of people quickly and reliably, it supports transit-oriented development, reduces road congestion and connects residents to jobs, services and education. In Singapore, the Mass Rapid Transit (MRT) system has been the backbone of public transport since 1987. As of 2024, the network had 143 stations across six lines and about 242.6 km of track, carrying an average of 3.41 million passengers a day.</p>
+<p>Expanding the network carries a planning risk. Stations are often built ahead of demand to avoid future disruption and cost, but a station that opens before its catchment has developed incurs operating costs with few riders. Hume station’s structural shell was completed in 2015, but the station opened only on 28 February 2025, a decade after Downtown Line Stage 2 began operating. Buangkok and Woodleigh stations remained closed when the North East Line opened in 2003 because the projected passenger volumes did not justify their operating costs. Such decisions depend on estimating a station’s catchment and predicting its ridership before it opens.</p>
+<p>Two new lines will add 36 stations by 2030: the Jurong Region Line (JRL, 24 stations) and Phase 1 of the Cross Island Line (CRL, 12 stations). New stations also compete with existing ones. Residents who live between an existing and a new station may switch, so the new lines can reduce ridership at existing stations as well as add their own.</p>
+<p>Probabilistic spatial interaction models address this question directly. The Huff model estimates the probability that a resident at a given location uses each station, based on the station’s attractiveness and the distance to it, relative to all competing stations (Huff, 1964). Zhu et al.&nbsp;(2021) applied an improved Huff model to estimate URT station catchments in Xi’an, measuring station attractiveness through walkability, public transport accessibility and service quality. However, they adopted the distance-decay and attractiveness parameters from the literature and from expert ratings rather than calibrating them, and noted this as their main limitation. This exercise calibrates the model parameters against observed station ridership in Singapore, using the Multiplicative Competitive Interaction (MCI) model, the calibratable form of the Huff model (Nakanishi &amp; Cooper, 1974).</p>
+</section>
+<section id="research-objectives-and-questions" class="level2">
+<h2 class="anchored" data-anchor-id="research-objectives-and-questions">2. Research Objectives and Questions</h2>
+<section id="research-objectives" class="level3">
+<h3 class="anchored" data-anchor-id="research-objectives">2.1 Research Objectives</h3>
+<p>This exercise develops an analytical framework for station-level ridership prediction to:</p>
+<ul>
+<li>Calibrate a probabilistic spatial interaction model for station-level ridership estimation.</li>
+<li>Predict the potential ridership of the proposed JRL and CRL Phase 1 stations.</li>
+<li>Evaluate the potential impact of the new stations on the ridership and market areas of existing stations.</li>
+</ul>
+</section>
+<section id="research-questions" class="level3">
+<h3 class="anchored" data-anchor-id="research-questions">2.2 Research Questions</h3>
+<ul>
+<li><strong>RQ1:</strong> How well does a calibrated probabilistic spatial interaction model explain the observed weekday morning-peak ridership of existing MRT and LRT stations, and which station attributes matter beyond distance?</li>
+<li><strong>RQ2:</strong> What ridership can be expected at the 36 proposed JRL and CRL Phase 1 stations, and which stations are at risk of low ridership?</li>
+<li><strong>RQ3:</strong> How will the new stations redistribute the market areas and ridership of existing stations?</li>
+</ul>
+</section>
+<section id="model-components" class="level3">
+<h3 class="anchored" data-anchor-id="model-components">2.3 Model Components</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 27%">
+<col style="width: 44%">
+<col style="width: 27%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Component</th>
+<th>Definition in this exercise</th>
+<th>Data</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Origins</td>
+<td>Hexagonal grid cells covering mainland Singapore</td>
+<td>Created in this exercise</td>
+</tr>
+<tr class="even">
+<td>Market potential</td>
+<td>HDB residents aged 15–64 in each hexagon, June 2026</td>
+<td>SingStat population by subzone, HDB Property Information, HDB Existing Building</td>
+</tr>
+<tr class="odd">
+<td>Destinations</td>
+<td>Existing MRT/LRT stations, and existing plus proposed stations</td>
+<td>LTA Train Station, URA Master Plan 2025 Rail Station</td>
+</tr>
+<tr class="even">
+<td>Observed ridership</td>
+<td>Average weekday tap-ins between 7am and 9am, July–September 2026</td>
+<td>LTA Passenger Volume by Origin Destination Train Stations</td>
+</tr>
+<tr class="odd">
+<td>Attractiveness</td>
+<td>Candidate station attributes, such as nearby points of interest, bus interchanges and bus stops, and the number of lines served</td>
+<td>OpenStreetMap, LTA Bus Stop</td>
+</tr>
+<tr class="even">
+<td>Distance</td>
+<td>Straight-line distance from each hexagon to each station, in metres</td>
+<td>Computed in this exercise</td>
+</tr>
+</tbody>
+</table>
+<p>Market potential is defined as HDB residents aged 15 to 64, covering the secondary-school, tertiary and working-age groups that make up most weekday morning-peak MRT trips. Children under 15 are excluded because most travel to nearby primary schools on foot or by school bus. Residents aged 65 and over are excluded because their trips are less concentrated in the morning peak.</p>
+</section>
+</section>
+<section id="getting-started" class="level2">
+<h2 class="anchored" data-anchor-id="getting-started">3. Getting Started</h2>
+<section id="installing-r-packages" class="level3">
+<h3 class="anchored" data-anchor-id="installing-r-packages">3.1 Installing R Packages</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 37%">
+<col style="width: 62%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Package</th>
+<th>Purpose in this exercise</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>sf</strong></td>
+<td>Import, reproject, validate and process geospatial data</td>
+</tr>
+<tr class="even">
+<td><strong>tidyverse</strong></td>
+<td>Import CSV files, data cleaning, joins and aggregation</td>
+</tr>
+<tr class="odd">
+<td><strong>readxl</strong></td>
+<td>Import the SingStat population workbook (.xlsx)</td>
+</tr>
+<tr class="even">
+<td><strong>httr2, jsonlite</strong></td>
+<td>Download the passenger volume data from the LTA DataMall API (Section 3.4)</td>
+</tr>
+<tr class="odd">
+<td><strong>MCI</strong></td>
+<td>Calibrate the MCI model and compute Huff probabilities</td>
+</tr>
+<tr class="even">
+<td><strong>tmap</strong> (version 4)</td>
+<td>Thematic maps</td>
+</tr>
+<tr class="odd">
+<td><strong>knitr, kableExtra</strong></td>
+<td>Tables</td>
+</tr>
+</tbody>
+</table>
+<p><em>p_load()</em> of <strong>pacman</strong> installs any package that is missing and then loads all of them. The map code in this report uses <strong>tmap</strong> version 4 syntax (for example, <code>fill =</code> instead of <code>col =</code>), so <strong>tmap</strong> 4.0 or later is required.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, tidyverse, readxl, httr2, jsonlite, MCI,</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>               tmap, knitr, kableExtra)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="project-structure" class="level3">
+<h3 class="anchored" data-anchor-id="project-structure">3.2 Project Structure</h3>
+<p>All file paths in this report are relative to the Quarto project folder, so the code runs on any computer once the data are placed in the same structure:</p>
+<pre><code>Take-Home_Ex03/
+├── Take-Home_Ex03.qmd
+├── data/
+│   ├── geospatial/   # boundary, land use, buildings, stations, bus stops, OSM POIs
+│   └──  aspatial/     # passenger volume CSVs, station codes, HDB properties, population</code></pre>
+</section>
+<section id="datasets" class="level3">
+<h3 class="anchored" data-anchor-id="datasets">3.3 Datasets</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th>Source</th>
+<th>Format</th>
+<th>Version / period</th>
+<th>Use in this exercise</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Master Plan 2019 Subzone Boundary (No Sea)</td>
+<td><a href="https://data.gov.sg/">data.gov.sg</a> (URA)</td>
+<td>GeoJSON</td>
+<td>MP2019</td>
+<td>Study boundary; link to population by subzone</td>
+</tr>
+<tr class="even">
+<td>Master Plan 2019 Land Use</td>
+<td><a href="https://data.gov.sg/">data.gov.sg</a> (URA)</td>
+<td>GeoJSON, 113,213 polygons</td>
+<td>MP2019</td>
+<td>Locating residents in private housing</td>
+</tr>
+<tr class="odd">
+<td>HDB Existing Building</td>
+<td><a href="https://data.gov.sg/">data.gov.sg</a> (HDB)</td>
+<td>GeoJSON, 13,436 footprints</td>
+<td>Updated to 2026</td>
+<td>Locating HDB blocks</td>
+</tr>
+<tr class="even">
+<td>Master Plan 2025 Rail Station</td>
+<td><a href="https://data.gov.sg/">data.gov.sg</a> (URA)</td>
+<td>GeoJSON, 272 polygons</td>
+<td>MP2025</td>
+<td>Locations of the proposed JRL and CRL stations</td>
+</tr>
+<tr class="odd">
+<td>Train Station</td>
+<td><a href="https://datamall.lta.gov.sg/content/datamall/en/static-data.html">LTA DataMall</a></td>
+<td>Shapefile, 234 polygons</td>
+<td>September 2026</td>
+<td>Locations of existing stations</td>
+</tr>
+<tr class="even">
+<td>Bus Stop Location</td>
+<td><a href="https://datamall.lta.gov.sg/content/datamall/en/static-data.html">LTA DataMall</a></td>
+<td>Shapefile, 5,205 points</td>
+<td>September 2026</td>
+<td>Station attractiveness (bus access)</td>
+</tr>
+<tr class="odd">
+<td>OpenStreetMap points of interest</td>
+<td><a href="https://download.geofabrik.de/asia/malaysia-singapore-brunei.html">Geofabrik</a>, Malaysia, Singapore and Brunei extract</td>
+<td>Shapefiles: points and polygons</td>
+<td>Downloaded [date]</td>
+<td>Station attractiveness (nearby activities)</td>
+</tr>
+<tr class="even">
+<td>Passenger Volume by Origin Destination Train Stations</td>
+<td><a href="https://datamall.lta.gov.sg/content/datamall/en/dynamic-data.html">LTA DataMall API</a></td>
+<td>CSV, one file per month</td>
+<td>July–September 2026</td>
+<td>Observed station ridership</td>
+</tr>
+<tr class="odd">
+<td>Train Station Codes and Chinese Names</td>
+<td><a href="https://datamall.lta.gov.sg/content/datamall/en/static-data.html">LTA DataMall</a></td>
+<td>CSV, 184 codes</td>
+<td>As downloaded</td>
+<td>Linking passenger volume codes to station names</td>
+</tr>
+<tr class="even">
+<td>HDB Property Information</td>
+<td><a href="https://data.gov.sg/">data.gov.sg</a> (HDB)</td>
+<td>CSV, 13,392 blocks</td>
+<td>Completions to 2026</td>
+<td>Residential flag and dwelling units per block</td>
+</tr>
+<tr class="odd">
+<td>Singapore Residents by Planning Area/Subzone, Age Group, Sex and Type of Dwelling</td>
+<td><a href="https://www.singstat.gov.sg/find-data/explore-data-themes/population/geographic-distribution/latest-news-data">SingStat</a></td>
+<td>Excel workbook</td>
+<td>June 2026</td>
+<td>Market potential (residents aged 15–64)</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="downloading-the-passenger-volume-data" class="level3">
+<h3 class="anchored" data-anchor-id="downloading-the-passenger-volume-data">3.4 Downloading the Passenger Volume Data</h3>
+<p>Unlike the other datasets, the passenger volume data cannot be downloaded directly from a web page. It is served through the LTA DataMall API, which requires an Account Key. To reproduce this step, request an Account Key at the <a href="https://datamall.lta.gov.sg/content/datamall/en/request-for-api.html">LTA DataMall API request page</a>. The key is sent by email.</p>
+<p>DataMall only provides the three most recent months. The July to September 2026 files will therefore no longer be available from the API after December 2026.</p>
+</section>
+<section id="importing-geospatial-data" class="level3">
+<h3 class="anchored" data-anchor-id="importing-geospatial-data">3.5 Importing Geospatial Data</h3>
+<p>The eight geospatial datasets are imported with <em>st_read()</em>. GeoJSON files are read by file path. Shapefiles are read by folder (<code>dsn</code>) and layer name, because a shapefile consists of several files (<code>.shp</code>, <code>.shx</code>, <code>.dbf</code>, <code>.prj</code>) that must sit together in the same folder.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>mpsz_raw     <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"data/geospatial/MasterPlan2019SubzoneBoundaryNoSeaGEOJSON.geojson"</span>, <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>landuse_raw  <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"data/geospatial/MasterPlan2019LandUselayer.geojson"</span>, <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>hdb_bldg_raw <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"data/geospatial/HDBExistingBuilding.geojson"</span>, <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>mp25_stn_raw <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="st">"data/geospatial/MasterPlan2025RailStationLayer.geojson"</span>, <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>rts_raw      <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/geospatial/RapidTransitSystemStation"</span>, <span class="at">layer =</span> <span class="st">"RapidTransitSystemStation"</span>, <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>busstop_raw  <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/geospatial/BusStopLocation_Sep2026"</span>, <span class="at">layer =</span> <span class="st">"BusStop"</span>, <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>poi_pt_raw   <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/geospatial/gis_osm_pois"</span>, <span class="at">layer =</span> <span class="st">"gis_osm_pois_free_1"</span>, <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>poi_poly_raw <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/geospatial/gis_osm_pois"</span>, <span class="at">layer =</span> <span class="st">"gis_osm_pois_a_free_1"</span>, <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>To check all eight layers at once, the code chunk below summarises each layer’s number of features, geometry type, whether it carries a Z (height) dimension, its coordinate reference system (CRS) and its number of invalid geometries.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>AI Use Disclosure
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>AI tools were used to draft the R code that summarises the eight layers into a single table using <em>imap()</em> and <em>list_rbind()</em>. The output was reviewed and run by the author to verify correctness against the study data.</p>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>geo_layers <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">mpsz_raw =</span> mpsz_raw, <span class="at">landuse_raw =</span> landuse_raw,</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">hdb_bldg_raw =</span> hdb_bldg_raw, <span class="at">mp25_stn_raw =</span> mp25_stn_raw,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">rts_raw =</span> rts_raw, <span class="at">busstop_raw =</span> busstop_raw,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">poi_pt_raw =</span> poi_pt_raw, <span class="at">poi_poly_raw =</span> poi_poly_raw)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">imap</span>(geo_layers, \(x, name) <span class="fu">tibble</span>(</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">layer    =</span> name,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">features =</span> <span class="fu">nrow</span>(x),</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">geometry =</span> <span class="fu">paste</span>(<span class="fu">unique</span>(<span class="fu">as.character</span>(<span class="fu">st_geometry_type</span>(x))), <span class="at">collapse =</span> <span class="st">", "</span>),</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">has_z    =</span> <span class="sc">!</span><span class="fu">is.null</span>(<span class="fu">st_z_range</span>(x)),</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">crs      =</span> <span class="fu">st_crs</span>(x)<span class="sc">$</span>Name,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">epsg     =</span> <span class="fu">st_crs</span>(x)<span class="sc">$</span>epsg,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">invalid  =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">st_is_valid</span>(x), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list_rbind</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">layer</th>
+<th style="text-align: right;">features</th>
+<th style="text-align: left;">geometry</th>
+<th style="text-align: left;">has_z</th>
+<th style="text-align: left;">crs</th>
+<th style="text-align: right;">epsg</th>
+<th style="text-align: right;">invalid</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">mpsz_raw</td>
+<td style="text-align: right;">332</td>
+<td style="text-align: left;">MULTIPOLYGON</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">WGS 84</td>
+<td style="text-align: right;">4326</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">landuse_raw</td>
+<td style="text-align: right;">113213</td>
+<td style="text-align: left;">MULTIPOLYGON</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">WGS 84</td>
+<td style="text-align: right;">4326</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">hdb_bldg_raw</td>
+<td style="text-align: right;">13436</td>
+<td style="text-align: left;">MULTIPOLYGON</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">WGS 84</td>
+<td style="text-align: right;">4326</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mp25_stn_raw</td>
+<td style="text-align: right;">272</td>
+<td style="text-align: left;">MULTIPOLYGON</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">WGS 84</td>
+<td style="text-align: right;">4326</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">rts_raw</td>
+<td style="text-align: right;">234</td>
+<td style="text-align: left;">MULTIPOLYGON</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">SVY21</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">busstop_raw</td>
+<td style="text-align: right;">5205</td>
+<td style="text-align: left;">POINT</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">SVY21</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">poi_pt_raw</td>
+<td style="text-align: right;">108841</td>
+<td style="text-align: left;">POINT</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">WGS 84</td>
+<td style="text-align: right;">4326</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">poi_poly_raw</td>
+<td style="text-align: right;">64468</td>
+<td style="text-align: left;">MULTIPOLYGON</td>
+<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">WGS 84</td>
+<td style="text-align: right;">4326</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The summary shows four issues that are addressed in Section 4:</p>
+<ul>
+<li><strong>Mixed coordinate systems.</strong> The GeoJSON files and the OpenStreetMap files are in WGS 84 (longitude and latitude, in degrees), while the two LTA shapefiles are in SVY21 without an EPSG code. Distances must be measured in metres, so all layers are projected to SVY21 / Singapore TM (EPSG:3414).</li>
+<li><strong>Invalid geometries.</strong> A small number of polygons are invalid, for example with self-intersecting outlines, in the land use and HDB building layers and possibly the subzone boundary. These can cause spatial joins and overlays to fail or return wrong results.</li>
+<li><strong>Possible Z dimension in the subzone boundary.</strong> Some versions of the boundary file carry a height (Z) value for each vertex. It holds no information for this analysis and is removed with <em>st_zm()</em>, which has no effect if there is no Z dimension.</li>
+<li><strong>OpenStreetMap coverage.</strong> The extract covers Malaysia, Singapore and Brunei, so 108,841 points and 64,468 polygons are imported, most of them outside Singapore. They are clipped to the study area when station attractiveness is prepared.</li>
+</ul>
+</section>
+<section id="importing-aspatial-data" class="level3">
+<h3 class="anchored" data-anchor-id="importing-aspatial-data">3.6 Importing Aspatial Data</h3>
+<section id="passenger-volume" class="level4">
+<h4 class="anchored" data-anchor-id="passenger-volume">3.6.1 Passenger volume</h4>
+<p>The three monthly passenger volume files are read together. <em>list.files()</em> finds every file that matches the naming pattern <code>origin_destination_train_YYYYMM.csv</code>, and <em>read_csv()</em> reads and stacks them in one step. The column types are set explicitly so that every month is read the same way, with station codes such as <code>EW24/NS1</code> kept as text.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>od_files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="st">"data/aspatial"</span>,</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">pattern =</span> <span class="st">"^origin_destination_train_</span><span class="sc">\\</span><span class="st">d{6}</span><span class="sc">\\</span><span class="st">.csv$"</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                       <span class="at">full.names =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>od_files</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "data/aspatial/origin_destination_train_202607.csv"
+[2] "data/aspatial/origin_destination_train_202608.csv"
+[3] "data/aspatial/origin_destination_train_202609.csv"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>od_raw <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(od_files,</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">col_types =</span> <span class="fu">cols</span>(<span class="at">YEAR_MONTH          =</span> <span class="fu">col_character</span>(),</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">DAY_TYPE            =</span> <span class="fu">col_character</span>(),</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">TIME_PER_HOUR       =</span> <span class="fu">col_integer</span>(),</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">PT_TYPE             =</span> <span class="fu">col_character</span>(),</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">ORIGIN_PT_CODE      =</span> <span class="fu">col_character</span>(),</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">DESTINATION_PT_CODE =</span> <span class="fu">col_character</span>(),</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">TOTAL_TRIPS         =</span> <span class="fu">col_double</span>()))</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(od_raw)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 2,702,429
+Columns: 7
+$ YEAR_MONTH          &lt;chr&gt; "2026-07", "2026-07", "2026-07", "2026-07", "2026-…
+$ DAY_TYPE            &lt;chr&gt; "WEEKENDS/HOLIDAY", "WEEKENDS/HOLIDAY", "WEEKDAY",…
+$ TIME_PER_HOUR       &lt;int&gt; 8, 14, 20, 19, 17, 11, 7, 9, 16, 5, 15, 16, 20, 17…
+$ PT_TYPE             &lt;chr&gt; "TRAIN", "TRAIN", "TRAIN", "TRAIN", "TRAIN", "TRAI…
+$ ORIGIN_PT_CODE      &lt;chr&gt; "EW33", "CE1/DT16", "NE4/DT19", "EW30", "DT30", "D…
+$ DESTINATION_PT_CODE &lt;chr&gt; "TE18", "NS23", "SW4", "NS12", "SW4", "NE18", "DT3…
+$ TOTAL_TRIPS         &lt;dbl&gt; 3, 141, 159, 4, 5, 29, 426, 25, 7, 12, 107, 124, 4…</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>od_raw <span class="sc">%&gt;%</span> <span class="fu">count</span>(YEAR_MONTH, DAY_TYPE)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+  YEAR_MONTH DAY_TYPE              n
+  &lt;chr&gt;      &lt;chr&gt;             &lt;int&gt;
+1 2026-07    WEEKDAY          487167
+2 2026-07    WEEKENDS/HOLIDAY 420799
+3 2026-08    WEEKDAY          471262
+4 2026-08    WEEKENDS/HOLIDAY 435723
+5 2026-09    WEEKDAY          475395
+6 2026-09    WEEKENDS/HOLIDAY 412083</code></pre>
+</div>
+</div>
+<p>The combined data have 2,702,429 rows, each recording the number of trips between one pair of stations in one hour, for weekdays or for weekends and holidays, in each month. <code>TOTAL_TRIPS</code> is the total for the whole month, not a daily figure, so months with more weekdays have larger totals. This is accounted for when the observed ridership is computed.</p>
+</section>
+<section id="train-station-codes" class="level4">
+<h4 class="anchored" data-anchor-id="train-station-codes">3.6.2 Train station codes</h4>
+<p>The passenger volume data identify stations by code only. The station code list links each code to its station name and line. Only the English columns are imported, as the Chinese names are not used in this exercise.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>stn_code_raw <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/aspatial/TrainStationChineseNames.csv"</span>,</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>                         <span class="at">col_select =</span> <span class="fu">c</span>(stn_code, mrt_station_english, mrt_line_english),</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(stn_code_raw)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 184
+Columns: 3
+$ stn_code            &lt;chr&gt; "NS1", "NS2", "NS3", "NS4", "NS5", "NS7", "NS8", "…
+$ mrt_station_english &lt;chr&gt; "Jurong East", "Bukit Batok", "Bukit Gombak", "Cho…
+$ mrt_line_english    &lt;chr&gt; "North South Line", "North South Line", "North Sou…</code></pre>
+</div>
+</div>
+</section>
+<section id="hdb-property-information" class="level4">
+<h4 class="anchored" data-anchor-id="hdb-property-information">3.6.3 HDB Property Information</h4>
+<p><code>blk_no</code> is read as text because block numbers can carry a letter suffix, such as <code>1A</code>. Reading it as a number would turn these into missing values.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>hdb_prop_raw <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/aspatial/HDBPropertyInformation.csv"</span>,</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>                         <span class="at">col_types =</span> <span class="fu">cols</span>(<span class="at">blk_no =</span> <span class="fu">col_character</span>(), <span class="at">.default =</span> <span class="fu">col_guess</span>()))</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(hdb_prop_raw)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 13,392
+Columns: 24
+$ blk_no                &lt;chr&gt; "1", "1", "1", "1", "1", "1", "1", "1", "1", "1"…
+$ street                &lt;chr&gt; "BEACH RD", "BEDOK STH AVE 1", "CANTONMENT RD", …
+$ max_floor_lvl         &lt;dbl&gt; 16, 14, 2, 15, 4, 25, 12, 14, 12, 2, 15, 15, 13,…
+$ year_completed        &lt;dbl&gt; 1970, 1975, 2010, 1982, 1975, 1982, 1975, 1977, …
+$ residential           &lt;chr&gt; "Y", "Y", "N", "Y", "Y", "Y", "Y", "Y", "Y", "N"…
+$ commercial            &lt;chr&gt; "Y", "N", "Y", "N", "Y", "N", "N", "N", "Y", "Y"…
+$ market_hawker         &lt;chr&gt; "N", "N", "N", "N", "N", "N", "N", "N", "N", "N"…
+$ miscellaneous         &lt;chr&gt; "N", "Y", "N", "N", "N", "N", "Y", "Y", "N", "N"…
+$ multistorey_carpark   &lt;chr&gt; "N", "N", "N", "N", "N", "N", "N", "N", "N", "N"…
+$ precinct_pavilion     &lt;chr&gt; "N", "N", "N", "N", "N", "N", "N", "N", "N", "N"…
+$ bldg_contract_town    &lt;chr&gt; "KWN", "BD", "CT", "BD", "PRC", "BM", "QT", "GL"…
+$ total_dwelling_units  &lt;dbl&gt; 142, 206, 0, 102, 55, 96, 125, 247, 95, 0, 220, …
+$ `1room_sold`          &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
+$ `2room_sold`          &lt;dbl&gt; 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
+$ `3room_sold`          &lt;dbl&gt; 138, 204, 0, 0, 54, 0, 118, 0, 62, 0, 216, 213, …
+$ `4room_sold`          &lt;dbl&gt; 1, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,…
+$ `5room_sold`          &lt;dbl&gt; 2, 2, 0, 92, 1, 96, 7, 0, 33, 0, 4, 5, 0, 4, 0, …
+$ exec_sold             &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
+$ multigen_sold         &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
+$ studio_apartment_sold &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
+$ `1room_rental`        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 319, 0, 0, 0…
+$ `2room_rental`        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 247, 0, 0, 0, 0, 0, 0, 56, …
+$ `3room_rental`        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 14, 1,…
+$ other_room_rental     &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 14, 0,…</code></pre>
+</div>
+</div>
+</section>
+<section id="population-by-planning-area-and-subzone" class="level4">
+<h4 class="anchored" data-anchor-id="population-by-planning-area-and-subzone">3.6.4 Population by planning area and subzone</h4>
+<p>The SingStat workbook has three sheets: total, male and female population. Only <code>2026(Total)</code> is needed. The sheet starts with a title row and a blank row, so the first two rows are skipped. SingStat uses <code>-</code> to denote nil or negligible values, so <code>na = "-"</code> reads these as missing values, which keeps the population column numeric.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>pop_file <span class="ot">&lt;-</span> <span class="st">"data/aspatial/Singapore_Residents_by_Planning_Area_Subzone_Jun 2026.xlsx"</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">excel_sheets</span>(pop_file)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2026(Total)"  "2026(Male)"   "2026(Female)"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>pop_raw <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(pop_file, <span class="at">sheet =</span> <span class="st">"2026(Total)"</span>, <span class="at">skip =</span> <span class="dv">2</span>,</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">col_types =</span> <span class="fu">c</span>(<span class="st">"text"</span>, <span class="st">"text"</span>, <span class="st">"text"</span>, <span class="st">"text"</span>, <span class="st">"numeric"</span>),</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">na =</span> <span class="st">"-"</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(pop_raw)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 69,848
+Columns: 5
+$ `Planning Area`    &lt;chr&gt; "Total", "Total", "Total", "Total", "Total", "Total…
+$ Subzone            &lt;chr&gt; "Total", "Total", "Total", "Total", "Total", "Total…
+$ `Age Group`        &lt;chr&gt; "Total", "Total", "Total", "Total", "Total", "Total…
+$ `Type of Dwelling` &lt;chr&gt; "Total", "Total HDB^", "1- and 2-Room Flats*", "3-R…
+$ `2026`             &lt;dbl&gt; 4231520, 3195130, 205410, 545530, 1364600, 1079600,…</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span>(pop_raw, <span class="dv">7</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 7 × 5
+  `Planning Area`                  Subzone `Age Group` `Type of Dwelling` `2026`
+  &lt;chr&gt;                            &lt;chr&gt;   &lt;chr&gt;       &lt;chr&gt;               &lt;dbl&gt;
+1 "Note:"                          &lt;NA&gt;    &lt;NA&gt;        &lt;NA&gt;                   NA
+2 "Planning areas refer to areas … &lt;NA&gt;    &lt;NA&gt;        &lt;NA&gt;                   NA
+3 "Data from 2003 onwards exclude… &lt;NA&gt;    &lt;NA&gt;        &lt;NA&gt;                   NA
+4 "\"-\" denotes Nil or negligibl… &lt;NA&gt;    &lt;NA&gt;        &lt;NA&gt;                   NA
+5 "Data has been rounded to the n… &lt;NA&gt;    &lt;NA&gt;        &lt;NA&gt;                   NA
+6 "^ Includes non-privatised Hous… &lt;NA&gt;    &lt;NA&gt;        &lt;NA&gt;                   NA
+7 "* Includes HDB studio apartmen… &lt;NA&gt;    &lt;NA&gt;        &lt;NA&gt;                   NA</code></pre>
+</div>
+</div>
+<p>The last seven rows are footnotes rather than data. They have no <code>Subzone</code> value and are removed when the population data are prepared. The table also mixes subzone rows with “Total” rows for Singapore, for each planning area, for all ages and for all HDB flat types, so those rows must be filtered out to avoid double-counting.</p>
+</section>
+</section>
+</section>
+<section id="data-wrangling" class="level2">
+<h2 class="anchored" data-anchor-id="data-wrangling">4. Data Wrangling</h2>
+<section id="crs-transformation-and-geometry-repair" class="level3">
+<h3 class="anchored" data-anchor-id="crs-transformation-and-geometry-repair">4.1 CRS Transformation and Geometry Repair</h3>
+<p>All layers are projected to SVY21 / Singapore TM (EPSG:3414), Singapore’s national projected coordinate system, which measures distance in metres.</p>
+<p>The two LTA shapefiles are already in SVY21 coordinates, but their projection file does not carry the EPSG code. Either <em>st_set_crs()</em> (which relabels the CRS without changing the coordinates) or <em>st_transform()</em> (which converts the coordinates) could be used. Before choosing, the two results were compared:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">max</span>(<span class="fu">abs</span>(<span class="fu">st_coordinates</span>(<span class="fu">st_set_crs</span>(rts_raw, <span class="dv">3414</span>))[, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>] <span class="sc">-</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>        <span class="fu">st_coordinates</span>(<span class="fu">st_transform</span>(rts_raw, <span class="dv">3414</span>))[, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+</div>
+<p>The largest difference is 0 m, confirming that the shapefiles’ SVY21 definition is identical to EPSG:3414. <em>st_transform()</em> is therefore used for every layer.</p>
+<p>Invalid geometries in the land use and HDB building layers are repaired with <em>st_make_valid()</em>. The repair is done after projecting, because converting coordinates can itself make a small number of polygons invalid: when the repair was done first, two land use polygons were invalid again after projection. The subzone boundary is processed separately in Section 4.2.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>landuse  <span class="ot">&lt;-</span> landuse_raw  <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="dv">3414</span>) <span class="sc">%&gt;%</span> <span class="fu">st_make_valid</span>()</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>hdb_bldg <span class="ot">&lt;-</span> hdb_bldg_raw <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="dv">3414</span>) <span class="sc">%&gt;%</span> <span class="fu">st_make_valid</span>()</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>mp25_stn <span class="ot">&lt;-</span> mp25_stn_raw <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="dv">3414</span>)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>rts      <span class="ot">&lt;-</span> rts_raw      <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="dv">3414</span>)</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>busstop  <span class="ot">&lt;-</span> busstop_raw  <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="dv">3414</span>)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>poi_pt   <span class="ot">&lt;-</span> poi_pt_raw   <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="dv">3414</span>)</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>poi_poly <span class="ot">&lt;-</span> poi_poly_raw <span class="sc">%&gt;%</span> <span class="fu">st_transform</span>(<span class="dv">3414</span>)</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">landuse =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">st_is_valid</span>(landuse)), <span class="at">hdb_bldg =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">st_is_valid</span>(hdb_bldg)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> landuse hdb_bldg 
+       0        0 </code></pre>
+</div>
+</div>
+<p>After projection and repair, both layers have no invalid geometries, so they can be used safely in spatial joins and overlays.</p>
+</section>
+<section id="preparing-the-subzone-boundary" class="level3">
+<h3 class="anchored" data-anchor-id="preparing-the-subzone-boundary">4.2 Preparing the Subzone Boundary</h3>
+<p>The subzone boundary is used both to define the study area and to link the SingStat population data to locations, so its subzone names must match the population table exactly.</p>
+<p>data.gov.sg has distributed this file in two formats. In one, the attributes are ordinary columns (<code>SUBZONE_N</code>, <code>PLN_AREA_N</code> and so on). In the other, all attributes are packed into an HTML table in a single <code>Description</code> column. <em>names()</em> shows which format was downloaded:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(mpsz_raw)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "OBJECTID"   "SUBZONE_NO" "SUBZONE_N"  "SUBZONE_C"  "CA_IND"    
+ [6] "PLN_AREA_N" "PLN_AREA_C" "REGION_N"   "REGION_C"   "INC_CRC"   
+[11] "FMEL_UPD_D" "SHAPE.AREA" "SHAPE.LEN"  "geometry"  </code></pre>
+</div>
+</div>
+<p>If the attributes sit inside <code>Description</code>, the code below extracts each one with a regular expression, which captures the text between <code>&lt;th&gt;FIELD&lt;/th&gt;&lt;td&gt;</code> and <code>&lt;/td&gt;</code>. If they are already columns, this step is skipped.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>AI Use Disclosure
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>AI tools were used to draft the regular expression that extracts subzone attributes from the HTML in the <code>Description</code> column. The output was reviewed and run by the author to verify correctness against the study data.</p>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="st">"SUBZONE_N"</span> <span class="sc">%in%</span> <span class="fu">names</span>(mpsz_raw)) {</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  get_attr <span class="ot">&lt;-</span> <span class="cf">function</span>(html, field) {</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">str_match</span>(html, <span class="fu">paste0</span>(<span class="st">"&lt;th&gt;"</span>, field, <span class="st">"&lt;/th&gt;</span><span class="sc">\\</span><span class="st">s*&lt;td&gt;(.*?)&lt;/td&gt;"</span>))[, <span class="dv">2</span>]</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (field <span class="cf">in</span> <span class="fu">c</span>(<span class="st">"SUBZONE_N"</span>, <span class="st">"SUBZONE_C"</span>, <span class="st">"PLN_AREA_N"</span>,</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"PLN_AREA_C"</span>, <span class="st">"REGION_N"</span>, <span class="st">"REGION_C"</span>)) {</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>    mpsz_raw[[field]] <span class="ot">&lt;-</span> <span class="fu">get_attr</span>(mpsz_raw<span class="sc">$</span>Description, field)</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The boundary is then cleaned:</p>
+<ul>
+<li><em>select()</em> keeps the subzone, planning area and region names and codes.</li>
+<li><em>st_zm()</em> drops the Z dimension, if present.</li>
+<li><em>st_transform()</em> projects to EPSG:3414, and <em>st_make_valid()</em> then repairs invalid polygons.</li>
+<li>Names are converted to upper case and extra spaces removed with <em>str_to_upper()</em> and <em>str_squish()</em>, so that they can be matched reliably with the population table.</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>mpsz <span class="ot">&lt;-</span> mpsz_raw <span class="sc">%&gt;%</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(SUBZONE_N, SUBZONE_C, PLN_AREA_N, PLN_AREA_C, REGION_N, REGION_C) <span class="sc">%&gt;%</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_zm</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="dv">3414</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_make_valid</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(SUBZONE_N, PLN_AREA_N, REGION_N),</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>                \(x) <span class="fu">str_squish</span>(<span class="fu">str_to_upper</span>(x))))</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">subzones       =</span> <span class="fu">nrow</span>(mpsz),</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">duplicate_code =</span> <span class="fu">sum</span>(<span class="fu">duplicated</span>(mpsz<span class="sc">$</span>SUBZONE_C)),</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">missing_name   =</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(mpsz<span class="sc">$</span>SUBZONE_N)),</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">invalid        =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">st_is_valid</span>(mpsz)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 4
+  subzones duplicate_code missing_name invalid
+     &lt;int&gt;          &lt;int&gt;        &lt;int&gt;   &lt;int&gt;
+1      332              0            0       0</code></pre>
+</div>
+</div>
+<p>Next, the subzones in the boundary are compared with those in the population table. Planning area and subzone are matched together. <em>anti_join()</em> returns the rows of one table that have no match in the other, so both directions are checked.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>pop_subzones <span class="ot">&lt;-</span> pop_raw <span class="sc">%&gt;%</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(Subzone), <span class="st">`</span><span class="at">Planning Area</span><span class="st">`</span> <span class="sc">!=</span> <span class="st">"Total"</span>, Subzone <span class="sc">!=</span> <span class="st">"Total"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(<span class="at">PLN_AREA_N =</span> <span class="fu">str_squish</span>(<span class="fu">str_to_upper</span>(<span class="st">`</span><span class="at">Planning Area</span><span class="st">`</span>)),</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">SUBZONE_N  =</span> <span class="fu">str_squish</span>(<span class="fu">str_to_upper</span>(Subzone)))</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(pop_subzones)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 332</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anti_join</span>(pop_subzones, <span class="fu">st_drop_geometry</span>(mpsz), <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"PLN_AREA_N"</span>, <span class="st">"SUBZONE_N"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 0 × 2
+# ℹ 2 variables: PLN_AREA_N &lt;chr&gt;, SUBZONE_N &lt;chr&gt;</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anti_join</span>(<span class="fu">st_drop_geometry</span>(mpsz), pop_subzones, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"PLN_AREA_N"</span>, <span class="st">"SUBZONE_N"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(PLN_AREA_N, SUBZONE_N)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] PLN_AREA_N SUBZONE_N 
+&lt;0 rows&gt; (or 0-length row.names)</code></pre>
+</div>
+</div>
+<p>Both checks return no rows, so all 332 subzones in the population table match the boundary.</p>
+<p>This is why the Master Plan 2019 boundary is used rather than the Master Plan 2014 boundary. The SingStat 2026 population figures are published for the 2019 subzones. When the same check was run against the 2014 boundary, 12 subzones in the population table had no match, including the Tengah subzones of Brickland, Forest Hill, Garden, Park and Plantation. Tengah is the core catchment of the JRL, so its residents would have been lost.</p>
+</section>
+<section id="preparing-the-study-boundary" class="level3">
+<h3 class="anchored" data-anchor-id="preparing-the-study-boundary">4.3 Preparing the Study Boundary</h3>
+<p>The study area is mainland Singapore. Offshore islands are excluded because they have no HDB flats and no MRT or LRT stations, and therefore neither market potential nor destinations.</p>
+<p>Excluding islands needs care. Jurong Island and Sentosa are joined to the mainland by causeways, so in the boundary file their polygons touch the mainland. Keeping only the largest piece of land would therefore still include them. Instead, the study area is built in three steps:</p>
+<ol type="1">
+<li><p>The three planning areas that consist of offshore islands are removed: Western Islands (including Jurong Island), Southern Islands (including Sentosa) and North-Eastern Islands (Pulau Ubin and Pulau Tekong).</p></li>
+<li><p>The remaining subzones are merged with <em>st_union()</em> and split into separate pieces of land with <em>st_cast(“POLYGON”)</em>. The largest piece is mainland Singapore. Smaller islands that belong to mainland planning areas, such as Pulau Seletar, are dropped at this step.</p></li>
+<li><p>Merging adjacent subzones can leave small gaps along shared borders, which appear as holes in the merged polygon. These are slivers rather than real features, so the holes are filled by keeping only the polygon’s outer ring.</p></li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>island_pa <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"WESTERN ISLANDS"</span>, <span class="st">"SOUTHERN ISLANDS"</span>, <span class="st">"NORTH-EASTERN ISLANDS"</span>)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>mpsz <span class="sc">%&gt;%</span> <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(PLN_AREA_N <span class="sc">%in%</span> island_pa) <span class="sc">%&gt;%</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(PLN_AREA_N, SUBZONE_N)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             PLN_AREA_N               SUBZONE_N
+1       WESTERN ISLANDS JURONG ISLAND AND BUKOM
+2       WESTERN ISLANDS                  SUDONG
+3       WESTERN ISLANDS                 SEMAKAU
+4      SOUTHERN ISLANDS          SOUTHERN GROUP
+5      SOUTHERN ISLANDS                 SENTOSA
+6 NORTH-EASTERN ISLANDS   NORTH-EASTERN ISLANDS</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>sg_parts <span class="ot">&lt;-</span> mpsz <span class="sc">%&gt;%</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>PLN_AREA_N <span class="sc">%in%</span> island_pa) <span class="sc">%&gt;%</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_union</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_cast</span>(<span class="st">"POLYGON"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_sf</span>(<span class="at">geometry =</span> .) <span class="sc">%&gt;%</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">area_km2 =</span> <span class="fu">as.numeric</span>(<span class="fu">st_area</span>(geometry)) <span class="sc">/</span> <span class="fl">1e6</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(area_km2))</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sg_parts<span class="sc">$</span>area_km2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 6.629136e+02 1.611279e+00 2.800020e-02 1.503148e-02 1.496630e-02
+[6] 8.187501e-03</code></pre>
+</div>
+</div>
+<p>The largest piece is far bigger than the rest, confirming that it is the mainland.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>AI Use Disclosure
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>AI tools were used to draft the R code that keeps only the outer ring of the mainland polygon to fill sliver holes, using <em>st_polygon()</em> on the first ring of the geometry. The output was reviewed and run by the author to verify correctness against the study data.</p>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>mainland <span class="ot">&lt;-</span> <span class="fu">slice_max</span>(sg_parts, area_km2, <span class="at">n =</span> <span class="dv">1</span>)</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">st_geometry</span>(mainland)[[<span class="dv">1</span>]])   <span class="co"># number of rings: 1 outer ring + holes</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 30</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>study_area <span class="ot">&lt;-</span> <span class="fu">st_sf</span>(<span class="at">study =</span> <span class="st">"Mainland Singapore"</span>,</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">geometry =</span> <span class="fu">st_sfc</span>(<span class="fu">st_polygon</span>(<span class="fu">st_geometry</span>(mainland)[[<span class="dv">1</span>]][<span class="dv">1</span>]),</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>                                      <span class="at">crs =</span> <span class="dv">3414</span>))</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="fu">as.numeric</span>(<span class="fu">st_area</span>(study_area)) <span class="sc">/</span> <span class="fl">1e6</span>   <span class="co"># study area in km²</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 663.014</code></pre>
+</div>
+</div>
+<p>The subzones are then clipped to the study area with <em>st_intersection()</em>. Where an island subzone only touches the mainland along a causeway, the clip leaves a line rather than an area, so <em>st_collection_extract(“POLYGON”)</em> keeps only polygon pieces. Any subzone split into several pieces by the clip is merged back into one row with <em>group_by()</em> and <em>summarise()</em>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>mpsz_study <span class="ot">&lt;-</span> <span class="fu">st_intersection</span>(mpsz, study_area) <span class="sc">%&gt;%</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_collection_extract</span>(<span class="st">"POLYGON"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(SUBZONE_N, SUBZONE_C, PLN_AREA_N, PLN_AREA_C, REGION_N, REGION_C) <span class="sc">%&gt;%</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(mpsz_study)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 326</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>mpsz <span class="sc">%&gt;%</span> <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">anti_join</span>(<span class="fu">st_drop_geometry</span>(mpsz_study), <span class="at">by =</span> <span class="st">"SUBZONE_C"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(PLN_AREA_N, SUBZONE_N)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             PLN_AREA_N               SUBZONE_N
+1       WESTERN ISLANDS JURONG ISLAND AND BUKOM
+2       WESTERN ISLANDS                  SUDONG
+3       WESTERN ISLANDS                 SEMAKAU
+4      SOUTHERN ISLANDS          SOUTHERN GROUP
+5               SIMPANG           PULAU SELETAR
+6 NORTH-EASTERN ISLANDS   NORTH-EASTERN ISLANDS</code></pre>
+</div>
+</div>
+<p>To confirm that excluding the islands removes no relevant data, each layer is checked for features that fall outside the study area. For polygons, <em>st_point_on_surface()</em> gives a point that is guaranteed to lie inside each polygon, and that point is tested against the study area.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>count_outside <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(<span class="fu">lengths</span>(<span class="fu">st_intersects</span>(<span class="fu">st_point_on_surface</span>(<span class="fu">st_geometry</span>(x)), study_area)) <span class="sc">==</span> <span class="dv">0</span>)</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">layer   =</span> <span class="fu">c</span>(<span class="st">"HDB buildings"</span>, <span class="st">"LTA stations"</span>, <span class="st">"MP2025 stations"</span>, <span class="st">"Bus stops"</span>),</span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">total   =</span> <span class="fu">c</span>(<span class="fu">nrow</span>(hdb_bldg), <span class="fu">nrow</span>(rts), <span class="fu">nrow</span>(mp25_stn), <span class="fu">nrow</span>(busstop)),</span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>       <span class="at">outside =</span> <span class="fu">c</span>(<span class="fu">count_outside</span>(hdb_bldg), <span class="fu">count_outside</span>(rts),</span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">count_outside</span>(mp25_stn), <span class="fu">count_outside</span>(busstop)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 3
+  layer           total outside
+  &lt;chr&gt;           &lt;int&gt;   &lt;int&gt;
+1 HDB buildings   13436       0
+2 LTA stations      234       0
+3 MP2025 stations   272       3
+4 Bus stops        5205       8</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>mp25_stn<span class="sc">$</span>NAME[<span class="fu">lengths</span>(<span class="fu">st_intersects</span>(<span class="fu">st_point_on_surface</span>(<span class="fu">st_geometry</span>(mp25_stn)), study_area)) <span class="sc">==</span> <span class="dv">0</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "RESORTS WORLD" "IMBIAH"        "BEACH"        </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>busstop <span class="sc">%&gt;%</span> <span class="fu">st_drop_geometry</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">lengths</span>(<span class="fu">st_intersects</span>(busstop, study_area)) <span class="sc">==</span> <span class="dv">0</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(BUS_STOP_N, LOC_DESC)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  BUS_STOP_N              LOC_DESC
+1      47711    JB Sentral Bus Ter
+2      46211   Johor Bahru Checkpt
+3      46219   Johor Bahru Checkpt
+4      46239            Larkin Ter
+5      14519 Resorts World Sentosa
+6      14521         Village Hotel
+7      14529     Opp Village Hotel
+8      14539         Beach Stn Ter</code></pre>
+</div>
+</div>
+<p>The check confirms the choice of study area:</p>
+<ul>
+<li><strong>No HDB buildings and no LTA stations lie outside it.</strong> No residents or existing stations are lost.</li>
+<li><strong>The three Master Plan 2025 stations outside it are Resorts World, Imbiah and Beach.</strong> These are Sentosa Express monorail stations, which are not part of the MRT/LRT network and do not appear in the passenger volume data.</li>
+<li><strong>The eight bus stops outside it are four in Johor Bahru and four on Sentosa.</strong> The Johor Bahru stops (JB Sentral, Larkin Terminal and Johor Bahru Checkpoint) serve cross-border bus routes and do not lie in Singapore.</li>
+</ul>
+</section>
+<section id="plotting-the-study-boundary" class="level3">
+<h3 class="anchored" data-anchor-id="plotting-the-study-boundary">4.4 Plotting the Study Boundary</h3>
+<p>The map below shows the study area in blue, with subzone boundaries in white, and the excluded offshore islands in grey.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mpsz) <span class="sc">+</span></span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">fill =</span> <span class="st">"grey85"</span>, <span class="at">col =</span> <span class="st">"white"</span>, <span class="at">lwd =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(mpsz_study) <span class="sc">+</span></span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">fill =</span> <span class="st">"#9ecae1"</span>, <span class="at">col =</span> <span class="st">"white"</span>, <span class="at">lwd =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(study_area) <span class="sc">+</span></span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">col =</span> <span class="st">"grey20"</span>, <span class="at">lwd =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_add_legend</span>(<span class="at">type =</span> <span class="st">"polygons"</span>,</span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a>                <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Study area (mainland)"</span>, <span class="st">"Excluded (offshore islands)"</span>),</span>
+<span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a>                <span class="at">fill =</span> <span class="fu">c</span>(<span class="st">"#9ecae1"</span>, <span class="st">"grey85"</span>), <span class="at">col =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb54-12"><a href="#cb54-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_title</span>(<span class="st">"Study area: mainland Singapore"</span>) <span class="sc">+</span></span>
+<span id="cb54-13"><a href="#cb54-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_compass</span>(<span class="at">type =</span> <span class="st">"8star"</span>, <span class="at">size =</span> <span class="dv">2</span>, <span class="at">position =</span> <span class="fu">c</span>(<span class="st">"right"</span>, <span class="st">"top"</span>)) <span class="sc">+</span></span>
+<span id="cb54-14"><a href="#cb54-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_scalebar</span>(<span class="at">position =</span> <span class="fu">c</span>(<span class="st">"left"</span>, <span class="st">"bottom"</span>)) <span class="sc">+</span></span>
+<span id="cb54-15"><a href="#cb54-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">frame =</span> <span class="cn">TRUE</span>, <span class="at">legend.position =</span> <span class="fu">c</span>(<span class="st">"right"</span>, <span class="st">"bottom"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_Ex03_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

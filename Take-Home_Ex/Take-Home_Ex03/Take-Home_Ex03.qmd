@@ -91,16 +91,16 @@ Take-Home_Ex03/
 
 | Dataset | Source | Format | Version / period | Use in this exercise |
 |-----------------|-----------------|-----------------|-----------------|-----------------|
-| Master Plan 2019 Subzone Boundary (No Sea) | [data.gov.sg](https://data.gov.sg/) (URA) | GeoJSON | MP2019 | Study boundary; link to population by subzone |
-| Master Plan 2019 Land Use | [data.gov.sg](https://data.gov.sg/) (URA) | GeoJSON, 113,213 polygons | MP2019 | Locating residents in private housing |
-| HDB Existing Building | [data.gov.sg](https://data.gov.sg/) (HDB) | GeoJSON, 13,436 footprints | Updated to 2026 | Locating HDB blocks |
-| Master Plan 2025 Rail Station | [data.gov.sg](https://data.gov.sg/) (URA) | GeoJSON, 272 polygons | MP2025 | Locations of the proposed JRL and CRL stations |
+| Master Plan 2019 Subzone Boundary (No Sea) | [data.gov.sg](https://data.gov.sg/datasets/d_8594ae9ff96d0c708bc2af633048edfb/view) (URA) | GeoJSON | MP2019 | Study boundary; link to population by subzone |
+| Master Plan 2019 Land Use | [data.gov.sg](https://data.gov.sg/datasets/d_90d86daa5bfaa371668b84fa5f01424f/view) (URA) | GeoJSON, 113,213 polygons | MP2019 | Locating residents in private housing |
+| HDB Property Information | [data.gov.sg](https://data.gov.sg/datasets/d_16b157c52ed637edd6ba1232e026258d/view) (HDB) | GeoJSON, 13,436 footprints | Updated to 2026 | Locating HDB blocks |
+| Master Plan 2025 Rail Station | [data.gov.sg](https://data.gov.sg/datasets/d_2c06c9fe8ae724b5d33efa1f203e2c38/view) (URA) | GeoJSON, 272 polygons | MP2025 | Locations of the proposed JRL and CRL stations |
 | Train Station | [LTA DataMall](https://datamall.lta.gov.sg/content/datamall/en/static-data.html) | Shapefile, 234 polygons | September 2026 | Locations of existing stations |
 | Bus Stop Location | [LTA DataMall](https://datamall.lta.gov.sg/content/datamall/en/static-data.html) | Shapefile, 5,205 points | September 2026 | Station attractiveness (bus access) |
-| OpenStreetMap points of interest | [Geofabrik](https://download.geofabrik.de/asia/malaysia-singapore-brunei.html), Malaysia, Singapore and Brunei extract | Shapefiles: points and polygons | Downloaded [date] | Station attractiveness (nearby activities) |
-| Passenger Volume by Origin Destination Train Stations | [LTA DataMall API](https://datamall.lta.gov.sg/content/datamall/en/dynamic-data.html) | CSV, one file per month | July–September 2026 | Observed station ridership |
-| Train Station Codes and Chinese Names | [LTA DataMall](https://datamall.lta.gov.sg/content/datamall/en/static-data.html) | CSV, 184 codes | As downloaded | Linking passenger volume codes to station names |
-| HDB Property Information | [data.gov.sg](https://data.gov.sg/) (HDB) | CSV, 13,392 blocks | Completions to 2026 | Residential flag and dwelling units per block |
+| OpenStreetMap points of interest | [Geofabrik](https://download.geofabrik.de/asia/malaysia-singapore-brunei.html), Malaysia, Singapore and Brunei extract | Shapefiles: points and polygons | Downloaded in October 2026 | Station attractiveness (nearby activities) |
+| Passenger Volume by Origin Destination Train Stations | [LTA DataMall API](https://datamall.lta.gov.sg/content/datamall/en/dynamic-data.html) | CSV, one file per month | July-September 2026 | Observed station ridership |
+| Train Station Codes and Chinese Names | [data.gov.sg](https://data.gov.sg/datasets/d_d312a5b127e1ae74299b8ae664cedd4e/view) | CSV, 184 codes | December 2015 | Linking passenger volume codes to station names |
+| HDB Property Information | [data.gov.sg](https://data.gov.sg/datasets/d_17f5382f26140b1fdae0ba2ef6239d2f/view) (HDB) | CSV, 13,392 blocks | 2025 | Residential flag and dwelling units per block |
 | Singapore Residents by Planning Area/Subzone, Age Group, Sex and Type of Dwelling | [SingStat](https://www.singstat.gov.sg/find-data/explore-data-themes/population/geographic-distribution/latest-news-data) | Excel workbook | June 2026 | Market potential (residents aged 15–64) |
 
 ### 3.4 Downloading the Passenger Volume Data
@@ -441,3 +441,5 @@ tm_shape(mpsz) +
 
 
 ## References
+
+Zhenjun Zhu et. al. (2021) “Improved Huff Model for Estimating Urban Rail Transit Station Catchment Areas considering Station Choices” Journal of Advanced Transportation, Volume 2021.

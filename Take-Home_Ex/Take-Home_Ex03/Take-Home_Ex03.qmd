@@ -42,7 +42,7 @@ This exercise develops an analytical framework for station-level ridership predi
 ### 2.3 Model Components
 
 | Component | Definition in this exercise | Data |
-|------------------|-----------------------------|------------------|
+|--------------------|--------------------------------|--------------------|
 | Origins | Hexagonal grid cells covering mainland Singapore | Created in this exercise |
 | Market potential | HDB residents aged 15–64 in each hexagon, June 2026 | SingStat population by subzone, HDB Property Information, HDB Existing Building |
 | Destinations | Existing MRT/LRT stations, and existing plus proposed stations | LTA Train Station, URA Master Plan 2025 Rail Station |
@@ -66,7 +66,7 @@ Market potential is defined as HDB residents aged 15 to 64, covering the seconda
 | **tmap** (version 4) | Thematic maps |
 | **knitr, kableExtra** | Tables |
 
-*p_load()* of **pacman** installs any package that is missing and then loads all of them. The map code in this report uses **tmap** version 4 syntax (for example, `fill = ` instead of `col = `), so **tmap** 4.0 or later is required.
+*p_load()* of **pacman** installs any package that is missing and then loads all of them. The map code in this report uses **tmap** version 4 syntax (for example, `fill =` instead of `col =`), so **tmap** 4.0 or later is required.
 
 ```{r}
 #| message: false
@@ -79,7 +79,7 @@ pacman::p_load(sf, tidyverse, readxl, httr2, jsonlite, MCI,
 
 All file paths in this report are relative to the Quarto project folder, so the code runs on any computer once the data are placed in the same structure:
 
-```
+```         
 Take-Home_Ex03/
 ├── Take-Home_Ex03.qmd
 ├── data/
@@ -90,7 +90,7 @@ Take-Home_Ex03/
 ### 3.3 Datasets
 
 | Dataset | Source | Format | Version / period | Use in this exercise |
-|-----------------|-----------------|-----------------|-----------------|-----------------|
+|---------------|---------------|---------------|---------------|---------------|
 | Master Plan 2019 Subzone Boundary (No Sea) | [data.gov.sg](https://data.gov.sg/datasets/d_8594ae9ff96d0c708bc2af633048edfb/view) (URA) | GeoJSON | MP2019 | Study boundary; link to population by subzone |
 | Master Plan 2019 Land Use | [data.gov.sg](https://data.gov.sg/datasets/d_90d86daa5bfaa371668b84fa5f01424f/view) (URA) | GeoJSON, 113,213 polygons | MP2019 | Locating residents in private housing |
 | HDB Property Information | [data.gov.sg](https://data.gov.sg/datasets/d_16b157c52ed637edd6ba1232e026258d/view) (HDB) | GeoJSON, 13,436 footprints | Updated to 2026 | Locating HDB blocks |
@@ -107,7 +107,7 @@ Take-Home_Ex03/
 
 Unlike the other datasets, the passenger volume data cannot be downloaded directly from a web page. It is served through the LTA DataMall API, which requires an Account Key. To reproduce this step, request an Account Key at the [LTA DataMall API request page](https://datamall.lta.gov.sg/content/datamall/en/request-for-api.html). The key is sent by email.
 
-DataMall only provides the three most recent months. The July to September 2026 files will therefore no longer be available from the API after December 2026. 
+DataMall only provides the three most recent months. The July to September 2026 files will therefore no longer be available from the API after December 2026.
 
 ### 3.5 Importing Geospatial Data
 
@@ -330,11 +330,11 @@ The study area is mainland Singapore. Offshore islands are excluded because they
 
 Excluding islands needs care. Jurong Island and Sentosa are joined to the mainland by causeways, so in the boundary file their polygons touch the mainland. Keeping only the largest piece of land would therefore still include them. Instead, the study area is built in three steps:
 
-1. The three planning areas that consist of offshore islands are removed: Western Islands (including Jurong Island), Southern Islands (including Sentosa) and North-Eastern Islands (Pulau Ubin and Pulau Tekong).
+1.  The three planning areas that consist of offshore islands are removed: Western Islands (including Jurong Island), Southern Islands (including Sentosa) and North-Eastern Islands (Pulau Ubin and Pulau Tekong).
 
-2. The remaining subzones are merged with *st_union()* and split into separate pieces of land with *st_cast("POLYGON")*. The largest piece is mainland Singapore. Smaller islands that belong to mainland planning areas, such as Pulau Seletar, are dropped at this step.
+2.  The remaining subzones are merged with *st_union()* and split into separate pieces of land with *st_cast("POLYGON")*. The largest piece is mainland Singapore. Smaller islands that belong to mainland planning areas, such as Pulau Seletar, are dropped at this step.
 
-3. Merging adjacent subzones can leave small gaps along shared borders, which appear as holes in the merged polygon. These are slivers rather than real features, so the holes are filled by keeping only the polygon's outer ring.
+3.  Merging adjacent subzones can leave small gaps along shared borders, which appear as holes in the merged polygon. These are slivers rather than real features, so the holes are filled by keeping only the polygon's outer ring.
 
 ```{r}
 island_pa <- c("WESTERN ISLANDS", "SOUTHERN ISLANDS", "NORTH-EASTERN ISLANDS")
@@ -372,11 +372,13 @@ study_area <- st_sf(study = "Mainland Singapore",
 as.numeric(st_area(study_area)) / 1e6   # study area in km²
 ```
 
-The subzones are then clipped to the study area with *st_intersection()*. Where an island subzone only touches the mainland along a causeway, the clip leaves a line rather than an area, so *st_collection_extract("POLYGON")* keeps only polygon pieces. Any subzone split into several pieces by the clip is merged back into one row with *group_by()* and *summarise()*.
+The island planning areas are removed first, and the remaining subzones are then clipped to the study area with *st_intersection()*. Removing the island planning areas explicitly matters because, in the boundary file, Sentosa’s polygon slightly overlaps the mainland outline near the causeway, so clipping alone would keep a thin sliver of it.
 
 ```{r}
 #| warning: false
-mpsz_study <- st_intersection(mpsz, study_area) %>%
+mpsz_study <- mpsz %>%
+  filter(!PLN_AREA_N %in% island_pa) %>%
+  st_intersection(study_area) %>%
   st_collection_extract("POLYGON") %>%
   group_by(SUBZONE_N, SUBZONE_C, PLN_AREA_N, PLN_AREA_C, REGION_N, REGION_C) %>%
   summarise(.groups = "drop")
@@ -416,7 +418,7 @@ The check confirms the choice of study area:
 
 ### 4.4 Plotting the Study Boundary
 
-The map below shows the study area in blue, with subzone boundaries in white, and the excluded offshore islands in grey.
+The map below shows the study area in blue, with subzone boundaries in white, and the excluded offshore islands in grey. 
 
 ```{r}
 #| fig-width: 10
@@ -438,7 +440,1005 @@ tm_shape(mpsz) +
   tm_layout(frame = TRUE, legend.position = c("right", "bottom"))
 ```
 
+### 4.5 Plotting Existing and Upcoming Stations
 
+**Existing stations** are taken from the LTA Train Station layer. A station is treated as existing if at least one of its codes appears in the July–September 2026 passenger volume data, i.e. it recorded tap-ins or tap-outs. This removes depots and stations that are built but not yet open. Interchange codes in both datasets combine several lines (e.g. `EW24 / NS1` and `EW24/NS1`), so they are split into individual codes with *str_split()* before matching.
+
+```{r}
+od_codes <- unique(c(od_raw$ORIGIN_PT_CODE, od_raw$DESTINATION_PT_CODE)) %>%
+  str_split("/") %>% unlist() %>% str_squish() %>% unique()
+
+stn_existing <- rts %>%
+  filter(map_lgl(str_split(STN_NAM, "/"), \(x) any(str_squish(x) %in% od_codes))) %>%
+  group_by(STN_NAM) %>%
+  summarise(.groups = "drop") %>%
+  st_point_on_surface()
+nrow(stn_existing)
+
+# LTA records with no passenger data
+rts %>% st_drop_geometry() %>% distinct(STN_NAM) %>%
+  filter(!map_lgl(str_split(STN_NAM, "/"), \(x) any(str_squish(x) %in% od_codes))) %>%
+  pull(STN_NAM)
+
+# Passenger volume codes with no polygon of their own in the LTA layer
+setdiff(od_codes, str_squish(unlist(str_split(rts$STN_NAM, "/"))))
+```
+
+The LTA layer contains 19 records with no passenger data:
+
+- 15 depots and operational facilities, such as `BD`, `KCD` and `TSFB`.
+- Four stations that are built but not open: Bukit Brown (`CC18`), Mount Pleasant (`TE10`), Marina South (`TE21`) and Founders' Memorial (`TE22A`).
+
+Eight passenger volume codes have no polygon of their own in the LTA layer, for example `TE14` (Orchard) and `NE1` (HarbourFront). These are not missing stations. Each is an interchange whose polygon is filed under the other line's code (`NS22`, `CC29`), so the station is still matched through that code.
+
+There are 206 existing station records. Some interchanges are drawn once per line, so the same station can appear more than once at this stage. They are merged into one destination per station when the destination table is prepared.
+
+**Upcoming stations** are the 24 JRL and 12 CRL Phase 1 stations, taken from the Master Plan 2025 Rail Station layer. That layer has no line or opening-status attribute, so the stations are selected by name. Seven of the 36 are existing stations that will gain a new line: Choa Chu Kang, Boon Lay and Jurong East on the JRL, and Pasir Ris, Hougang, Ang Mo Kio and Bright Hill on the CRL. They are shown separately from the 29 entirely new station sites.
+
+```{r}
+jrl <- c("CHOA CHU KANG", "CHOA CHU KANG WEST", "TENGAH", "HONG KAH", "CORPORATION",
+         "JURONG WEST", "BAHAR JUNCTION", "BOON LAY INTERCHANGE", "ENTERPRISE", "TUKANG",
+         "JURONG HILL", "JURONG PIER", "GEK POH", "TAWAS", "NANYANG GATEWAY",
+         "NANYANG CRESCENT", "PENG KANG HILL", "TENGAH PLANTATION", "TENGAH PARK",
+         "BUKIT BATOK WEST", "TOH GUAN", "JURONG EAST INTERCHANGE", "JURONG TOWN HALL",
+         "PANDAN RESERVOIR")
+crl <- c("AVIATION PARK", "LOYANG", "PASIR RIS EAST", "PASIR RIS INTERCHANGE",
+         "TAMPINES NORTH", "DEFU", "HOUGANG INTERCHANGE", "SERANGOON NORTH",
+         "TAVISTOCK", "ANG MO KIO INTERCHANGE", "TECK GHEE", "BRIGHT HILL INTERCHANGE")
+interchange <- c("CHOA CHU KANG", "BOON LAY INTERCHANGE", "JURONG EAST INTERCHANGE",
+                 "PASIR RIS INTERCHANGE", "HOUGANG INTERCHANGE",
+                 "ANG MO KIO INTERCHANGE", "BRIGHT HILL INTERCHANGE")
+
+stn_upcoming <- mp25_stn %>%
+  mutate(NAME = str_squish(NAME)) %>%   # some names carry trailing spaces
+  filter(NAME %in% c(jrl, crl)) %>%
+  group_by(NAME) %>%
+  summarise(.groups = "drop") %>%
+  mutate(line = if_else(NAME %in% jrl, "Jurong Region Line", "Cross Island Line"),
+         type = if_else(NAME %in% interchange, "Interchange", "New station")) %>%
+  st_point_on_surface()
+
+stn_upcoming %>% st_drop_geometry() %>% count(line, type)
+
+stn_new         <- stn_upcoming %>% filter(type == "New station")
+stn_interchange <- stn_upcoming %>% filter(type == "Interchange")
+
+# Distance from each interchange to the nearest existing station
+d <- st_distance(stn_interchange, stn_existing)
+tibble(station          = stn_interchange$NAME,
+       nearest_existing = stn_existing$STN_NAM[apply(d, 1, which.min)],
+       distance_m       = round(apply(d, 1, min)))
+```
+
+Five of the seven interchanges lie within 140 m of the existing station. Ang Mo Kio (275 m) and Bright Hill (451 m) lie further away. The reason is that the Master Plan 2025 layer draws each line's platforms as a separate polygon, and merging these places the representative point between them. For modelling, each interchange therefore keeps its existing station location, and the new line is reflected in its attractiveness rather than as a separate destination.
+
+The interactive map below is used for visual inspection. Each station can be clicked to show its name and status.
+
+::: callout-note
+## Note
+
+The interactive map block is set to *eval: FALSE* to minimise computational overhead and reduce report rendering time.
+:::
+
+```{r}
+#| eval: false
+stn_existing    <- stn_existing %>% mutate(station = STN_NAM, status = "Existing station")
+stn_interchange <- stn_interchange %>%
+  mutate(station = str_to_title(NAME), status = "Existing station gaining a JRL/CRL interchange")
+stn_new         <- stn_new %>%
+  mutate(station = str_to_title(NAME), status = paste("Upcoming:", line))
+
+tmap_mode("view")
+
+tm_shape(mpsz_study) +
+  tm_polygons(fill = "grey95", col = "grey70", lwd = 0.5, fill_alpha = 0.4,
+              id = "SUBZONE_N", popup.vars = c("Planning area" = "PLN_AREA_N")) +
+  tm_shape(stn_existing) +
+  tm_symbols(fill = "grey40", col = "black", size = 0.4,
+             id = "station", popup.vars = c("Status" = "status")) +
+  tm_shape(stn_interchange) +
+  tm_symbols(fill = "gold", col = "black", size = 0.8,
+             id = "station", popup.vars = c("Status" = "status")) +
+  tm_shape(stn_new) +
+  tm_symbols(fill = "line",
+             fill.scale = tm_scale_categorical(values = c("#e41a1c", "#377eb8")),
+             fill.legend = tm_legend(title = "Upcoming stations"),
+             col = "white", size = 0.7,
+             id = "station", popup.vars = c("Status" = "status")) +
+  tm_add_legend(type = "symbols",
+                labels = c("Existing station", "Existing station gaining a JRL/CRL interchange"),
+                fill = c("grey40", "gold"), col = "black",
+                title = "Existing network") +
+  tm_title("Existing and upcoming MRT/LRT stations")
+
+tmap_mode("plot")
+```
+### 4.6 Preparing the Destinations
+
+The destinations are the stations that residents can choose. Two destination tables are needed: one for the existing network, with observed ridership, and one for the future network, which adds the upcoming JRL and CRL stations. Each table must have one row per station, so interchange stations, which carry several codes, have to be merged into a single destination.
+
+#### 4.6.1 Completing the station code list
+
+The LTA station code list was last updated before the Thomson–East Coast Line opened, so it has no `TE` codes. It also lacks Canberra (`NS12`), Hume (`DT4`), Punggol Coast (`NE18`) and the Circle Line Stage 6 codes (`CC30` to `CC34`), which first appear in the July 2026 passenger data. The 35 missing codes are added below. Codes for stations that are built but not yet open, Mount Pleasant (`TE10`), Marina South (`TE21`) and Founders' Memorial (`TE22A`), are not added, as they have no passengers.
+
+```{r}
+stn_code_extra <- tribble(
+  ~stn_code, ~mrt_station_english,   ~mrt_line_english,
+  "NS12",    "Canberra",             "North South Line",
+  "NE18",    "Punggol Coast",        "North East Line",
+  "DT4",     "Hume",                 "Downtown Line",
+  "CC30",    "Keppel",               "Circle Line",
+  "CC31",    "Cantonment",           "Circle Line",
+  "CC32",    "Prince Edward Road",   "Circle Line",
+  "CC33",    "Marina Bay",           "Circle Line",
+  "CC34",    "Bayfront",             "Circle Line",
+  "TE1",     "Woodlands North",      "Thomson-East Coast Line",
+  "TE2",     "Woodlands",            "Thomson-East Coast Line",
+  "TE3",     "Woodlands South",      "Thomson-East Coast Line",
+  "TE4",     "Springleaf",           "Thomson-East Coast Line",
+  "TE5",     "Lentor",               "Thomson-East Coast Line",
+  "TE6",     "Mayflower",            "Thomson-East Coast Line",
+  "TE7",     "Bright Hill",          "Thomson-East Coast Line",
+  "TE8",     "Upper Thomson",        "Thomson-East Coast Line",
+  "TE9",     "Caldecott",            "Thomson-East Coast Line",
+  "TE11",    "Stevens",              "Thomson-East Coast Line",
+  "TE12",    "Napier",               "Thomson-East Coast Line",
+  "TE13",    "Orchard Boulevard",    "Thomson-East Coast Line",
+  "TE14",    "Orchard",              "Thomson-East Coast Line",
+  "TE15",    "Great World",          "Thomson-East Coast Line",
+  "TE16",    "Havelock",             "Thomson-East Coast Line",
+  "TE17",    "Outram Park",          "Thomson-East Coast Line",
+  "TE18",    "Maxwell",              "Thomson-East Coast Line",
+  "TE19",    "Shenton Way",          "Thomson-East Coast Line",
+  "TE20",    "Marina Bay",           "Thomson-East Coast Line",
+  "TE22",    "Gardens by the Bay",   "Thomson-East Coast Line",
+  "TE23",    "Tanjong Rhu",          "Thomson-East Coast Line",
+  "TE24",    "Katong Park",          "Thomson-East Coast Line",
+  "TE25",    "Tanjong Katong",       "Thomson-East Coast Line",
+  "TE26",    "Marine Parade",        "Thomson-East Coast Line",
+  "TE27",    "Marine Terrace",       "Thomson-East Coast Line",
+  "TE28",    "Siglap",               "Thomson-East Coast Line",
+  "TE29",    "Bayshore",             "Thomson-East Coast Line"
+)
+
+stn_codes <- bind_rows(stn_code_raw, stn_code_extra) %>%
+  mutate(stn_code = str_squish(stn_code),
+         station  = str_to_upper(str_squish(mrt_station_english)))
+
+sum(duplicated(stn_codes$stn_code))
+```
+
+#### 4.6.2 Linking passenger volume codes to stations
+
+In the passenger data, an interchange is recorded under a combined code such as `NS24/NE6/CC1`. Each combined code is split into its individual codes, and each code is matched to a station name. Three checks follow:
+
+1. Every individual code has a station name.
+2. All the codes in a combined code belong to the same station.
+3. Stations recorded under more than one code are listed, as these must be merged.
+
+```{r}
+od_code_map <- tibble(pt_code = unique(c(od_raw$ORIGIN_PT_CODE,
+                                         od_raw$DESTINATION_PT_CODE))) %>%
+  mutate(stn_code = str_split(pt_code, "/")) %>%
+  unnest(stn_code) %>%
+  mutate(stn_code = str_squish(stn_code)) %>%
+  left_join(stn_codes %>% select(stn_code, station), by = "stn_code")
+
+od_code_map %>% filter(is.na(station)) # check 1
+
+od_code_map %>% # check 2
+  group_by(pt_code) %>%
+  summarise(n_station = n_distinct(station)) %>%
+  filter(n_station != 1)
+
+pt_lookup <- od_code_map %>% distinct(pt_code, station)
+
+pt_lookup %>% group_by(station) %>% filter(n() > 1) %>% arrange(station) # check 3
+```
+
+The first two checks return no rows. The third finds three stations recorded under two codes:
+
+- **Bayfront and Marina Bay** were renumbered when Circle Line Stage 6 opened in July 2026 (`CE1/DT16` became `CC34/DT16`, and `NS27/CE2/TE20` became `NS27/CC33/TE20`).
+- **Stevens** is recorded separately for the Downtown Line (`DT10`) and the Thomson–East Coast Line (`TE11`).
+
+Because ridership is aggregated by `station` rather than by code, these are merged automatically.
+
+#### 4.6.3 Observed ridership
+
+Observed ridership is defined as the **average number of tap-ins per weekday between 7am and 9am** (`TIME_PER_HOUR` 7 and 8). Morning-peak tap-ins are used because most morning trips start near home, which matches residential population as the origin of the model.
+
+`TOTAL_TRIPS` is a monthly total, so it is divided by the number of weekdays in the month. *seq()* lists every day of the month, *wday()* identifies Monday to Friday, and public holidays are removed. The only public holiday in the three months is the National Day holiday on Monday 10 August 2026. 9 August fell on a Sunday, so the holiday was observed on the Monday.
+
+::: callout-note
+### AI Use Disclosure
+
+AI tools were used to draft the R code that counts the weekdays in each month using *seq()*, *ym()* and *wday()*. The output was reviewed and run by the author to verify correctness against the study data.
+:::
+
+```{r}
+public_holidays <- ymd("2026-08-10")
+
+weekdays_in_month <- tibble(YEAR_MONTH = sort(unique(od_raw$YEAR_MONTH))) %>%
+  mutate(weekdays = map_int(YEAR_MONTH, \(m) {
+    days <- seq(ym(m), ym(m) + months(1) - days(1), by = "day")
+    sum(wday(days, week_start = 1) <= 5 & !days %in% public_holidays)
+  }))
+weekdays_in_month
+
+od_raw %>%
+  filter(DAY_TYPE == "WEEKDAY") %>%
+  group_by(YEAR_MONTH) %>%
+  summarise(monthly_trips = sum(TOTAL_TRIPS)) %>%
+  left_join(weekdays_in_month, by = "YEAR_MONTH") %>%
+  mutate(trips_per_weekday = round(monthly_trips / weekdays))
+```
+
+July, August and September have 23, 20 and 22 weekdays. Once each monthly total is divided by these, every month carries about 3.0 to 3.1 million trips per weekday, which confirms the weekday counts. Without the adjustment, July would appear 13% busier than August.
+
+```{r}
+am_tapins <- od_raw %>%
+  filter(DAY_TYPE == "WEEKDAY", TIME_PER_HOUR %in% c(7, 8)) %>%
+  left_join(pt_lookup, by = c("ORIGIN_PT_CODE" = "pt_code")) %>%
+  group_by(YEAR_MONTH, station) %>%
+  summarise(trips = sum(TOTAL_TRIPS), .groups = "drop") %>%
+  left_join(weekdays_in_month, by = "YEAR_MONTH") %>%
+  mutate(daily_tapins = trips / weekdays)
+
+am_tapins %>%
+  select(station, YEAR_MONTH, daily_tapins) %>%
+  pivot_wider(names_from = YEAR_MONTH, values_from = daily_tapins) %>%
+  mutate(change_jul_sep = `2026-09` / `2026-07` - 1) %>%
+  arrange(desc(abs(change_jul_sep))) %>%
+  head(8)
+```
+
+Most stations change little across the three months. The three new Circle Line stations are the exception: Prince Edward Road, Keppel and Cantonment rise by 72% to 143% between July and September as ridership builds up after opening. For these three stations, September alone is used as the most representative month. For all other stations, the three months are averaged.
+
+```{r}
+ccl6 <- c("KEPPEL", "CANTONMENT", "PRINCE EDWARD ROAD")
+
+ridership <- am_tapins %>%
+  filter(!station %in% ccl6 | YEAR_MONTH == "2026-09") %>%
+  group_by(station) %>%
+  summarise(am_tapins = mean(daily_tapins), .groups = "drop")
+
+nrow(ridership)
+summary(ridership$am_tapins)
+ridership %>% arrange(am_tapins) %>% slice(c(1:5, (n() - 4):n()))
+```
+
+There are 184 existing stations. None has zero or missing ridership, so the observed values can be used directly in the model.
+
+#### 4.6.4 Lines served and station type
+
+The number of lines at a station is a candidate attractiveness variable, since an interchange offers more destinations without a transfer. Each code prefix is assigned to a line. `CG` (Changi Airport branch) is counted as part of the East–West Line, and `CE` (Circle Line Extension) as part of the Circle Line. A station is classed as LRT only if all its codes are LRT codes.
+
+```{r}
+line_of <- function(code) {
+  case_when(
+    str_detect(code, "^NS")          ~ "NSL",
+    str_detect(code, "^(EW|CG)")     ~ "EWL",
+    str_detect(code, "^NE")          ~ "NEL",
+    str_detect(code, "^(CC|CE)")     ~ "CCL",
+    str_detect(code, "^DT")          ~ "DTL",
+    str_detect(code, "^TE")          ~ "TEL",
+    str_detect(code, "^BP")          ~ "BPLRT",
+    str_detect(code, "^(STC|SE|SW)") ~ "SKLRT",
+    str_detect(code, "^(PTC|PE|PW)") ~ "PGLRT"
+  )
+}
+
+stn_lines <- od_code_map %>%
+  mutate(line = line_of(stn_code)) %>%
+  group_by(station) %>%
+  summarise(lines   = paste(sort(unique(line)), collapse = ", "),
+            n_lines = n_distinct(line),
+            mode    = if_else(all(str_detect(line, "LRT")), "LRT", "MRT"),
+            .groups = "drop")
+
+stn_lines %>% count(mode, n_lines)
+```
+
+Of the 184 stations, 38 are LRT stations. Among the MRT stations, 26 serve two lines and three serve three: Dhoby Ghaut, Outram Park and Marina Bay.
+
+LRT stations are kept as destinations. Residents of Sengkang, Punggol and Bukit Panjang often start their journey at an LRT station, and their tap-in is recorded there rather than at the MRT interchange. Excluding LRT stations would wrongly assign these residents to the interchange.
+
+#### 4.6.5 Station locations
+
+Each station's location is taken from the LTA Train Station layer. That layer's station codes are split in the same way and matched to station names. All polygons belonging to a station, such as one platform polygon per line, are merged with *summarise()*. *st_point_on_surface()* then gives one point inside the merged station footprint.
+
+```{r}
+rts_loc <- rts %>%
+  mutate(stn_code = str_split(STN_NAM, "/")) %>%
+  unnest(stn_code) %>%
+  st_as_sf() %>%
+  mutate(stn_code = str_squish(stn_code)) %>%
+  inner_join(stn_codes %>% select(stn_code, station), by = "stn_code") %>%
+  group_by(station) %>%
+  summarise(.groups = "drop") %>%
+  st_point_on_surface()
+
+dest_existing <- ridership %>%
+  left_join(stn_lines, by = "station") %>%
+  left_join(rts_loc, by = "station") %>%
+  st_as_sf()
+
+c(stations = nrow(dest_existing), without_location = sum(st_is_empty(dest_existing)))
+```
+
+All 184 stations have a location. As an independent check of the code-to-name matching, including the 35 codes added manually, each station is compared with the nearest station in the Master Plan 2025 layer. That layer comes from a different agency (URA) and names stations rather than coding them. The nearest station should carry the same name.
+
+```{r}
+mp25_pts <- mp25_stn %>%
+  mutate(mp25_name = str_remove(str_squish(NAME), " INTERCHANGE$")) %>%
+  st_point_on_surface()
+
+nn <- st_nearest_feature(dest_existing, mp25_pts)
+
+dest_existing %>%
+  mutate(mp25_name = mp25_pts$mp25_name[nn],
+         dist_m    = as.numeric(st_distance(geometry, mp25_pts[nn, ], by_element = TRUE))) %>%
+  st_drop_geometry() %>%
+  filter(station != mp25_name) %>%
+  select(station, mp25_name, dist_m)
+```
+
+Only four of 184 stations differ, and all lie within 12 m of the matching Master Plan 2025 station:
+
+- Three are spelling variants in the Master Plan 2025 layer: `GARDEN BY THE BAY`, `JELEPANG` and `ONE NORTH`.
+- One is a different label for the same station: the Master Plan 2025 polygon at Fort Canning is labelled `RIVER VALLEY`.
+
+The code-to-name matching is therefore correct.
+
+#### 4.6.6 Future network
+
+The future network adds the upcoming stations prepared in Section 4.5:
+
+- **29 new stations**, each served by one line.
+- **7 interchanges** at existing stations: Choa Chu Kang, Boon Lay and Jurong East on the JRL, and Pasir Ris, Hougang, Ang Mo Kio and Bright Hill on the CRL. These are not added as new destinations. Instead, the existing station gains one line. This avoids two destinations at the same place competing for the same residents.
+
+```{r}
+interchange_gain <- stn_upcoming %>%
+  st_drop_geometry() %>%
+  filter(type == "Interchange") %>%
+  transmute(station  = str_remove(NAME, " INTERCHANGE$"),
+            new_line = if_else(line == "Jurong Region Line", "JRL", "CRL"))
+
+interchange_gain %>% anti_join(st_drop_geometry(dest_existing), by = "station")
+
+dest_new <- stn_new %>%
+  transmute(station   = NAME,
+            lines     = if_else(line == "Jurong Region Line", "JRL", "CRL"),
+            n_lines   = 1L,
+            mode      = "MRT",
+            am_tapins = NA_real_)
+
+dest_future <- dest_existing %>%
+  left_join(interchange_gain, by = "station") %>%
+  mutate(lines   = if_else(is.na(new_line), lines, paste(lines, new_line, sep = ", ")),
+         n_lines = n_lines + !is.na(new_line)) %>%
+  select(-new_line) %>%
+  bind_rows(dest_new) %>%
+  mutate(status = if_else(is.na(am_tapins), "Upcoming", "Existing"))
+
+dest_future %>% st_drop_geometry() %>% count(status, n_lines)
+```
+
+The future network has 213 destinations: the 184 existing stations, seven of which now serve one more line, plus 29 new stations. `am_tapins` is missing for the new stations, because their ridership is what the model will predict.
+
+### 4.7 Preparing the Market Potential
+
+The market potential of each hexagon is the number of residents aged 15 to 64 who live in it. SingStat publishes population only by subzone, so residents are spread within each subzone to where they actually live:
+
+- **HDB residents** are spread across HDB residential blocks in proportion to the number of flats in each block.
+- **Residents of private housing** (condominiums, landed homes and other non-HDB dwellings) are spread across private residential land parcels in proportion to their estimated floor area.
+
+Spreading population this way, rather than evenly across a subzone's area, is known as dasymetric mapping. It prevents residents from being placed in parks, industrial estates or reservoirs that share a subzone with housing.
+
+#### 4.7.1 Residents aged 15 to 64 by subzone
+
+The population table is filtered to the ten five-year age groups from 15-19 to 60-64 and summed for each subzone. HDB residents are the `Total HDB^` rows. Private residents are the subzone total minus HDB residents. `-` values were read as missing in Section 3.6.4, and are treated as zero here.
+
+```{r}
+age_15_64 <- c("15 - 19", "20 - 24", "25 - 29", "30 - 34", "35 - 39",
+               "40 - 44", "45 - 49", "50 - 54", "55 - 59", "60 - 64")
+
+pop_sz <- pop_raw %>%
+  filter(!is.na(Subzone), `Planning Area` != "Total", Subzone != "Total",
+         `Age Group` %in% age_15_64,
+         `Type of Dwelling` %in% c("Total", "Total HDB^")) %>%
+  mutate(PLN_AREA_N = str_squish(str_to_upper(`Planning Area`)),
+         SUBZONE_N  = str_squish(str_to_upper(Subzone)),
+         pop        = replace_na(`2026`, 0)) %>%
+  group_by(PLN_AREA_N, SUBZONE_N, `Type of Dwelling`) %>%
+  summarise(pop = sum(pop), .groups = "drop") %>%
+  pivot_wider(names_from = `Type of Dwelling`, values_from = pop) %>%
+  transmute(PLN_AREA_N, SUBZONE_N,
+            pop_hdb     = `Total HDB^`,
+            pop_private = pmax(Total - `Total HDB^`, 0))
+
+colSums(pop_sz[, c("pop_hdb", "pop_private")])
+```
+
+Singapore has 2,128,360 HDB residents and 714,300 private-housing residents aged 15 to 64. *pmax()* guards against a negative private count, which could otherwise arise because SingStat rounds each figure to the nearest 10.
+
+The subzone codes are then attached by joining to the study-area subzones. Residents of the excluded offshore islands, mainly Sentosa, drop out at this step.
+
+```{r}
+pop_sz <- mpsz_study %>%
+  st_drop_geometry() %>%
+  select(SUBZONE_C, PLN_AREA_N, SUBZONE_N) %>%
+  inner_join(pop_sz, by = c("PLN_AREA_N", "SUBZONE_N"))
+
+colSums(pop_sz[, c("pop_hdb", "pop_private")])
+```
+
+#### 4.7.2 Locating HDB residential blocks
+
+HDB Property Information records whether each block is residential and how many flats it has, but not where it is. The HDB Existing Building layer has each block's location, but not its flat count. The two must be joined, but they share no common identifier:
+
+- Property Information identifies a block by `blk_no` and an abbreviated street name, such as `TOH GUAN RD`.
+- The building layer identifies a block by `BLK_NO` and a street code, such as `TOG02Q`.
+
+Block numbers repeat across streets, so `blk_no` alone is not enough. Geocoding each block's address through an online service would need about 10,800 requests, and the report would then depend on that service being available. Instead, the street codes are linked to street names from the data themselves. The idea is that a street code and a street name that refer to the same street should list largely the same set of block numbers.
+
+The matching proceeds as follows:
+
+1. Every building is paired with every property record that has the same block number.
+2. For each street code and street name pair, `shared_blocks` counts how many block numbers they have in common. A true pair, such as `TOG02Q` and `TOH GUAN RD`, shares many blocks. A false pair usually shares only one.
+3. Pairs are ranked by `shared_blocks`. Ties are broken by whether the street code and street name begin with the same two letters (`TO`), since street codes are formed from the street name.
+4. Each building is assigned to its best-ranked property record, and each property record to its best-ranked building, so that no block is used twice. Any building or record that loses its best match to a stronger pair is matched again among the remaining candidates. This repeats until no further matches can be made.
+
+::: callout-note
+### AI Use Disclosure
+
+AI tools were used to design the matching of street codes to street names by shared block numbers, and to draft the R code for the repeated one-to-one assignment using *distinct()* within a *repeat* loop. The output was reviewed and run by the author, and its accuracy was checked against the study data using the distance and coverage checks below.
+:::
+
+```{r}
+hdb_pts <- hdb_bldg %>%
+  st_point_on_surface() %>%
+  mutate(blk = str_to_upper(str_squish(BLK_NO))) %>%
+  select(OBJECTID, blk, ST_COD, POSTAL_COD)
+
+hdb_prop <- hdb_prop_raw %>%
+  mutate(blk = str_to_upper(str_squish(blk_no))) %>%
+  select(blk, street, residential, year_completed, total_dwelling_units)
+
+candidates <- hdb_pts %>%
+  st_drop_geometry() %>%
+  inner_join(hdb_prop, by = "blk", relationship = "many-to-many")
+
+pair_strength <- candidates %>% count(ST_COD, street, name = "shared_blocks")
+
+scored <- candidates %>%
+  left_join(pair_strength, by = c("ST_COD", "street")) %>%
+  mutate(same_prefix = str_sub(ST_COD, 1, 2) == str_sub(street, 1, 2)) %>%
+  arrange(desc(shared_blocks), desc(same_prefix))
+
+hdb_match <- tibble()
+remaining <- scored
+repeat {
+  this_round <- remaining %>%
+    distinct(OBJECTID, .keep_all = TRUE) %>%
+    distinct(blk, street, .keep_all = TRUE)
+  if (nrow(this_round) == 0) break
+  hdb_match <- bind_rows(hdb_match, this_round)
+  remaining <- remaining %>%
+    filter(!OBJECTID %in% this_round$OBJECTID) %>%
+    anti_join(this_round, by = c("blk", "street"))
+}
+nrow(hdb_match)
+```
+
+The matching is then checked spatially. Blocks on the same street lie close together, so each matched building's distance to the median location of its street's buildings is computed. A building far from the rest of its street signals a false match.
+
+```{r}
+hdb_match <- hdb_pts %>%
+  select(OBJECTID) %>%
+  inner_join(hdb_match, by = "OBJECTID")
+
+xy <- st_coordinates(hdb_match)
+hdb_match <- hdb_match %>%
+  mutate(x = xy[, 1], y = xy[, 2]) %>%
+  group_by(street) %>%
+  mutate(dist_to_street_m = sqrt((x - median(x))^2 + (y - median(y))^2)) %>%
+  ungroup()
+
+summary(hdb_match$dist_to_street_m)
+
+hdb_match %>%
+  st_drop_geometry() %>%
+  filter(dist_to_street_m > 3000) %>%
+  select(blk, street, ST_COD, POSTAL_COD, shared_blocks, dist_to_street_m)
+
+hdb_match <- hdb_match %>% filter(dist_to_street_m <= 3000)
+```
+
+Half of the matched buildings lie within 180m of their street's median location. The longest legitimate streets, such as Jalan Bukit Merah, extend to about 2.3km. A threshold of 3km therefore flags only one match: block 56 Owen Road, matched to a building 12.6km away. That block is not yet in the building layer, so the match is false and is removed.
+
+```{r}
+hdb_res         <- hdb_prop %>% filter(residential == "Y")
+hdb_res_matched <- hdb_match %>% filter(residential == "Y")
+
+tibble(residential_blocks = nrow(hdb_res),
+       matched            = nrow(hdb_res_matched),
+       share_of_flats     = sum(hdb_res_matched$total_dwelling_units) /
+                            sum(hdb_res$total_dwelling_units))
+
+hdb_res %>%
+  anti_join(st_drop_geometry(hdb_res_matched), by = c("blk", "street")) %>%
+  count(year_completed, wt = total_dwelling_units, name = "dwelling_units")
+```
+
+10,766 of the 10,817 residential blocks are located, covering 99.4% of HDB flats. All 51 unmatched blocks were completed in 2026 and are not yet in the building layer. Their 7,438 flats are a limitation, where their residents are spread across the other blocks in the same subzone rather than placed at their own block.
+
+#### 4.7.3 Allocating HDB residents to blocks
+
+Each block is assigned to the subzone it lies in with *st_join()*. Each subzone's HDB residents aged 15 to 64 are then shared among its blocks in proportion to the number of flats, so a block with 5% of a subzone's flats receives 5% of its HDB residents.
+
+```{r}
+hdb_pop <- hdb_res_matched %>%
+  select(blk, street, total_dwelling_units) %>%
+  st_join(mpsz_study %>% select(SUBZONE_C), join = st_intersects) %>%
+  group_by(SUBZONE_C) %>%
+  mutate(du_share = total_dwelling_units / sum(total_dwelling_units)) %>%
+  ungroup() %>%
+  left_join(pop_sz %>% select(SUBZONE_C, pop_hdb), by = "SUBZONE_C")
+
+c(blocks_without_subzone    = sum(is.na(hdb_pop$SUBZONE_C)),
+  blocks_without_pop_record = sum(is.na(hdb_pop$pop_hdb)))
+
+hdb_pop <- hdb_pop %>%
+  mutate(pop = replace_na(pop_hdb, 0) * du_share, source = "HDB")
+
+pop_sz %>%   # subzones with HDB residents but no located block
+  filter(pop_hdb > 0, !SUBZONE_C %in% hdb_pop$SUBZONE_C) %>%
+  select(PLN_AREA_N, SUBZONE_N, pop_hdb)
+```
+
+Every block falls inside a study-area subzone and has a population record, and every subzone with HDB residents has at least one located block. All HDB residents are therefore placed.
+
+#### 4.7.4 Allocating private-housing residents to land parcels
+
+The Master Plan 2019 land use layer identifies residential parcels. Four land-use types are treated as residential: `RESIDENTIAL`, `RESIDENTIAL WITH COMMERCIAL AT 1ST STOREY`, `COMMERCIAL & RESIDENTIAL` and `RESIDENTIAL / INSTITUTION`. HDB estates are also zoned residential, so any parcel that contains an HDB building is removed. The remaining parcels are private housing.
+
+Within a subzone, a large condominium houses more people than a terrace house on the same land area. Residents are therefore spread in proportion to each parcel's estimated floor area: its land area multiplied by its gross plot ratio (`GPR`), the ratio of permitted floor area to land area. Some parcels have no numeric plot ratio:
+
+- **Landed housing (`LND`)** has no plot ratio. A value of 1.0 is assumed, reflecting two- to three-storey houses covering part of their plot.
+- **Other codes, such as `EVA` and `SDP`, and missing values** are assigned 1.4, the most common plot ratio among residential parcels.
+
+These assumptions only affect how residents are spread within a subzone, since each subzone's total comes from SingStat.
+
+::: callout-note
+### AI Use Disclosure
+
+AI tools were used to draft the R code that weights private residential parcels by estimated floor area, using *case_when()* to assign plot ratios to the `LND` and non-numeric `GPR` codes. The output was reviewed and run by the author to verify correctness against the study data.
+:::
+
+```{r}
+res_types <- c("RESIDENTIAL", "RESIDENTIAL WITH COMMERCIAL AT 1ST STOREY",
+               "COMMERCIAL & RESIDENTIAL", "RESIDENTIAL / INSTITUTION")
+
+res_parcels <- landuse %>%
+  filter(LU_DESC %in% res_types) %>%
+  select(LU_DESC, GPR)
+
+hdb_parcel <- lengths(st_intersects(res_parcels, hdb_pts)) > 0
+table(hdb_parcel)
+
+private_pts <- res_parcels[!hdb_parcel, ] %>%
+  mutate(gpr_num    = suppressWarnings(as.numeric(GPR)),
+         gpr_used   = case_when(GPR == "LND"     ~ 1.0,
+                                !is.na(gpr_num)  ~ gpr_num,
+                                TRUE             ~ 1.4),
+         floor_area = as.numeric(st_area(geometry)) * gpr_used) %>%
+  st_point_on_surface() %>%
+  st_join(mpsz_study %>% select(SUBZONE_C), join = st_intersects) %>%
+  filter(!is.na(SUBZONE_C))
+
+private_pts %>%
+  st_drop_geometry() %>%
+  count(gpr_type = case_when(GPR == "LND"    ~ "Landed (LND)",
+                             is.na(gpr_num)  ~ "Other or missing",
+                             TRUE            ~ "Numeric plot ratio"))
+
+private_pop <- private_pts %>%
+  group_by(SUBZONE_C) %>%
+  mutate(fa_share = floor_area / sum(floor_area)) %>%
+  ungroup() %>%
+  left_join(pop_sz %>% select(SUBZONE_C, pop_private), by = "SUBZONE_C") %>%
+  mutate(pop = replace_na(pop_private, 0) * fa_share, source = "Private")
+
+pop_sz %>% # subzones with private residents but no private residential parcel
+  filter(pop_private > 0, !SUBZONE_C %in% private_pop$SUBZONE_C) %>%
+  select(PLN_AREA_N, SUBZONE_N, pop_private)
+```
+
+1,981 residential parcels contain an HDB building and are excluded as HDB land. Fourteen subzones, with 3,640 private-housing residents aged 15–64 in total, have residents but no private residential parcel. Most are in the city centre, such as Central Subzone, City Hall and Boat Quay. The rest are areas whose housing sits on land zoned for other uses, such as university hostels at the National University of Singapore and housing on land zoned for institutional or special uses at Murai and Seletar. These residents cannot be placed and are left out. They are about 0.5% of private-housing residents, so the effect on the model is negligible.
+
+The HDB block points and private parcel points are combined into one layer of population points. The total placed is compared with the subzone total.
+
+```{r}
+pop_pts <- bind_rows(hdb_pop %>% select(source, pop),
+                     private_pop %>% select(source, pop))
+
+pop_pts %>%
+  st_drop_geometry() %>%
+  group_by(source) %>%
+  summarise(points = n(), residents = sum(pop))
+
+c(placed = sum(pop_pts$pop), subzone_total = sum(pop_sz$pop_hdb + pop_sz$pop_private))
+```
+
+### 4.8 Creating the Hexagon Grid
+
+#### 4.8.1 Hexagon size
+
+Hexagons are used rather than squares because every neighbour of a hexagon is the same distance from its centre, and a hexagon is closer to a circle, so distances measured from its centre represent all of its area more evenly.
+
+*st_make_grid()* with `square = FALSE` creates hexagons, and `cellsize` sets the distance between opposite sides. A cellsize of 500 m is used, giving hexagons of about 0.22 km², with every point within about 290 m of the centre. This size is chosen because:
+
+- **It is finer than station spacing.** Neighbouring stations are typically about 1km apart, so each station's catchment spans several hexagons. The model can therefore show residents splitting between nearby competing stations.
+- **It matches walking distance.** A 400 m walking catchment covers about two to three hexagons.
+- **It keeps the model manageable.** The number of populated hexagons multiplied by 213 stations gives a few hundred thousand origin-destination pairs.
+
+Results can depend on the size of the areal units used (the modifiable areal unit problem). This is noted as a limitation.
+
+#### 4.8.2 Building the grid and summing population
+
+The grid is generated over the study area's bounding box, and only hexagons that touch the study area are kept with *st_filter()*. Hexagons along the coast are then clipped to land with *st_intersection()*, so that each hexagon's representative point lies on land. Each population point is assigned to the hexagon it falls in, and residents are summed per hexagon.
+
+```{r}
+hex <- st_make_grid(study_area, cellsize = 500, square = FALSE) %>%
+  st_sf(geometry = .) %>%
+  st_filter(study_area) %>%
+  mutate(hex_id = sprintf("H%04d", row_number()))
+
+c(hexagons = nrow(hex), area_m2 = as.numeric(st_area(hex[1, ])))
+
+hex_land <- st_intersection(hex, study_area) %>%
+  st_collection_extract("POLYGON") %>%
+  group_by(hex_id) %>%
+  summarise(.groups = "drop")
+
+hex_pop <- pop_pts %>%
+  st_join(hex_land, join = st_intersects) %>%
+  st_drop_geometry() %>%
+  group_by(hex_id) %>%
+  summarise(pop_hdb     = sum(pop[source == "HDB"]),
+            pop_private = sum(pop[source == "Private"]),
+            .groups = "drop") %>%
+  mutate(pop_total = pop_hdb + pop_private)
+
+sum(is.na(hex_pop$hex_id))   # population points outside every hexagon
+
+hex_land <- hex_land %>%
+  left_join(hex_pop, by = "hex_id") %>%
+  mutate(across(starts_with("pop_"), \(x) replace_na(x, 0)))
+
+c(hexagons  = nrow(hex_land),
+  populated = sum(hex_land$pop_total > 0),
+  residents = round(sum(hex_land$pop_total)))
+summary(hex_land$pop_total[hex_land$pop_total > 0])
+```
+
+No population point falls outside the grid, and the residents summed across hexagons equal those placed in Section 4.7.
+
+The origins of the model are the populated hexagons. As advised for distance calculations from polygons, each origin is represented by *st_point_on_surface()* rather than *st_centroid()*, so the point always lies inside the hexagon's land area. This matters for coastal hexagons, whose centroid could fall in the sea.
+
+```{r}
+origins <- hex_land %>%
+  filter(pop_total > 0) %>%
+  st_point_on_surface()
+
+nrow(origins)
+```
+
+#### 4.8.3 Mapping the market potential
+
+```{r}
+#| fig-width: 11
+#| fig-height: 7
+hex_populated <- hex_land %>% filter(pop_total > 0)
+
+tm_shape(hex_land) +
+  tm_polygons(fill = "grey95", col = "grey85", lwd = 0.2) +
+  tm_shape(hex_populated) +
+  tm_polygons(fill = "pop_total",
+              fill.scale = tm_scale_intervals(
+                style  = "fixed",
+                breaks = c(0, 500, 1000, 2000, 4000, 8000, Inf),
+                labels = c("Under 500", "500 to 999", "1,000 to 1,999",
+                           "2,000 to 3,999", "4,000 to 7,999", "8,000 or more"),
+                values = "brewer.yl_or_rd"),
+              fill.legend = tm_legend(title = "Residents aged 15-64"),
+              col = "grey85", lwd = 0.2) +
+  tm_shape(dest_future) +
+  tm_dots(fill = "status",
+          fill.scale = tm_scale_categorical(values = c("black", "#377eb8")),
+          fill.legend = tm_legend(title = "Stations"),
+          size = 0.2) +
+  tm_title("Market potential: residents aged 15-64 per hexagon, June 2026") +
+  tm_compass(type = "8star", size = 2, position = c("right", "top")) +
+  tm_scalebar(position = c("left", "bottom")) +
+  tm_layout(frame = TRUE, legend.position = c("right", "bottom"))
+```
+
+### 4.9 Preparing the Attractiveness Variables
+
+In the Huff and MCI models, a station's attractiveness is what draws residents to it ahead of a nearer station. Following Zhu et al. (2021), who measured attractiveness through the surrounding built environment, public transport access and the service a station offers, the candidate variables below are built from the data available for Singapore:
+
+| Variable | Definition | Concept (Zhu et al., 2021) |
+|------------------|-------------------------------|-------------------------|
+| `n_lines` | Number of MRT/LRT lines serving the station | Service quality |
+| `bus_stops` | Bus stops within 400 m | Public transport access |
+| `bus_int` | Whether a bus interchange lies within 400 m | Public transport access |
+| `shopping` | Malls, department stores, supermarkets and markets within 400 m | Built environment |
+| `food` | Food courts, restaurants, fast-food outlets and cafés within 400 m | Built environment |
+| `education` | Schools, colleges and universities within 400 m | Built environment |
+| `healthcare` | Hospitals, clinics and doctors within 400 m | Built environment |
+| `community` | Community centres, libraries and sports centres within 400 m | Built environment |
+
+A radius of 400 m, about a five-minute walk, is used to capture what lies immediately around each station. Which of these variables are kept in the final model is decided during calibration (Section 5), taking into account their correlation, shown in Section 4.9.4.
+
+#### 4.9.1 Points of interest
+
+The two OpenStreetMap files are combined. Polygon features are converted to points with *st_point_on_surface()*, so that malls, schools and hospitals, which are mostly mapped as polygons, are counted alongside point features. Only the categories in the table above are kept, and the result is clipped to the study area with *st_filter()*, which also removes all features in Malaysia and Brunei.
+
+```{r}
+poi_groups <- tribble(
+  ~fclass,            ~poi_group,
+  "mall",             "shopping",
+  "department_store", "shopping",
+  "supermarket",      "shopping",
+  "marketplace",      "shopping",
+  "food_court",       "food",
+  "restaurant",       "food",
+  "fast_food",        "food",
+  "cafe",             "food",
+  "school",           "education",
+  "college",          "education",
+  "university",       "education",
+  "hospital",         "healthcare",
+  "clinic",           "healthcare",
+  "doctors",          "healthcare",
+  "community_centre", "community",
+  "library",          "community",
+  "sports_centre",    "community"
+)
+
+poi <- bind_rows(
+  poi_pt   %>% mutate(osm_geom = "point"),
+  poi_poly %>% st_point_on_surface() %>% mutate(osm_geom = "polygon")
+) %>%
+  inner_join(poi_groups, by = "fclass") %>%
+  st_filter(study_area)
+
+poi %>%
+  st_drop_geometry() %>%
+  count(poi_group, osm_geom) %>%
+  pivot_wider(names_from = osm_geom, values_from = n)
+```
+
+The table confirms that both files are needed. Most education POIs (545 of 645) exist only as polygons, as do about a third of shopping POIs, while food outlets are almost all points.
+
+A feature could in principle be mapped twice, once as a point and once as a polygon. This is checked by counting pairs with the same name and category, one from each file, within 100 m of each other.
+
+::: callout-note
+### AI Use Disclosure
+
+AI tools were used to draft the R code that counts possible duplicate POIs across the point and polygon files using *st_is_within_distance()* and *map2_int()*. The output was reviewed and run by the author to verify correctness against the study data.
+:::
+
+```{r}
+named <- poi %>% filter(!is.na(name))
+near  <- st_is_within_distance(named, named, dist = 100)
+
+sum(map2_int(near, seq_along(near), \(js, i) {
+  sum(js > i &
+        named$name[js]     == named$name[i] &
+        named$fclass[js]   == named$fclass[i] &
+        named$osm_geom[js] != named$osm_geom[i])
+}))
+```
+
+Only 22 such pairs exist among nearly 11,400 POIs, so possible double-counting is negligible and no features are removed.
+
+#### 4.9.2 Bus stops and bus interchanges
+
+Bus stops outside the study area, in Johor Bahru and on Sentosa, are removed. Bus interchanges are identified from the stop description. The bus stop layer's service-type code is not used, because it does not mark interchanges consistently (Section 3.5). Interchange stops are named after the interchange, such as `Toa Payoh Int`. Stops described as after, before or opposite an interchange (`Aft`, `Bef`, `Opp`) are only near one and are excluded.
+
+```{r}
+busstop_sg <- busstop %>% st_filter(study_area)
+
+bus_int <- busstop_sg %>%
+  filter(str_detect(LOC_DESC, "\\bInt($|/)"),
+         !str_detect(LOC_DESC, "^(Aft|Bef|Opp) "))
+
+nrow(bus_int)
+sort(unique(bus_int$LOC_DESC))
+```
+
+42 interchange stops are found. They cover all the main bus interchanges, including the recently opened Tengah, Punggol Coast and Woodlands Temporary interchanges.
+
+#### 4.9.3 Counting features around each station
+
+*st_is_within_distance()* lists, for each station, the features within 400 m, and *lengths()* counts them. The same function is applied to the existing and future networks, so that the new stations' attractiveness is measured in exactly the same way as the existing stations'.
+
+```{r}
+count_within <- function(stations, features, dist) {
+  lengths(st_is_within_distance(stations, features, dist = dist))
+}
+
+add_attractiveness <- function(dest) {
+  dest %>%
+    mutate(
+      bus_stops   = count_within(geometry, busstop_sg, 400),
+      bus_int     = as.integer(count_within(geometry, bus_int, 400) > 0),
+      shopping    = count_within(geometry, filter(poi, poi_group == "shopping"), 400),
+      food        = count_within(geometry, filter(poi, poi_group == "food"), 400),
+      education   = count_within(geometry, filter(poi, poi_group == "education"), 400),
+      healthcare  = count_within(geometry, filter(poi, poi_group == "healthcare"), 400),
+      community   = count_within(geometry, filter(poi, poi_group == "community"), 400)
+    )
+}
+
+dest_existing <- add_attractiveness(dest_existing)
+dest_future   <- add_attractiveness(dest_future)
+
+attr_vars <- c("n_lines", "bus_stops", "bus_int", "shopping", "food",
+               "education", "healthcare", "community")
+
+dest_existing %>% st_drop_geometry() %>% select(all_of(attr_vars)) %>% summary()
+```
+
+#### 4.9.4 Checking for zero values and correlation
+
+The MCI model takes the logarithm of each attractiveness variable, and the logarithm of 0 is undefined, so no variable may contain 0 or a missing value. *summary()* above shows no missing values. The number of zeros in each variable is counted below.
+
+```{r}
+dest_existing %>%
+  st_drop_geometry() %>%
+  summarise(across(all_of(attr_vars), \(x) sum(x == 0))) %>%
+  pivot_longer(everything(), names_to = "variable", values_to = "stations_with_zero")
+```
+
+Zeros are genuine here, not data errors. For example, 154 stations have no bus interchange nearby, and 70 have no school within 400 m. They are therefore recoded rather than removed:
+
+- **`bus_int`** is a yes/no variable, so 0 is recoded to 0.01, a value close to 0 but not 0.
+- **The counts** (`bus_stops`, `shopping`, `food`, `education`, `healthcare`, `community`) have 1 added to every station. Recoding a count of 0 to 0.01 would make a station with no POIs look far more different from one with a single POI (log 0.01 = −4.6, against log 1 = 0) than one POI is from fifty. Adding 1 keeps the spacing between counts sensible, and is applied to every station so that rankings are unchanged.
+- **`dist_cbd_km`** is 0 for Raffles Place itself, so 1 km is added to every station for the same reason.
+
+```{r}
+recode_attr <- function(dest) {
+  dest %>%
+    mutate(across(c(bus_stops, shopping, food, education, healthcare, community),
+                  \(x) x + 1),
+           bus_int     = if_else(bus_int == 1, 1, 0.01))
+}
+
+dest_existing <- recode_attr(dest_existing)
+dest_future   <- recode_attr(dest_future)
+
+dest_existing %>%   # values that would break the log transform
+  st_drop_geometry() %>%
+  summarise(across(all_of(attr_vars), \(x) sum(x <= 0 | is.na(x))))
+```
+
+No zero or missing values remain.
+
+Strongly correlated attractiveness variables would make the model's estimates unstable, as the model cannot separate their effects. Spearman's rank correlation is used, since the counts are highly skewed.
+
+```{r}
+dest_existing %>%
+  st_drop_geometry() %>%
+  select(am_tapins, all_of(attr_vars)) %>%
+  cor(method = "spearman") %>%
+  round(2)
+```
+
+`shopping` and `food` are strongly correlated (0.71), and `healthcare` is moderately correlated with both (0.55 and 0.57), as all three concentrate in town centres. These variables largely measure the same thing, so only one of them should enter the model together with the others. All other pairs are below 0.45.
+
+The correlations with am_tapins give a first indication. Stations near a bus interchange (0.38), and those with more healthcare (0.30) and community facilities (0.27) nearby, record more morning-peak tap-ins. 
+
+The upcoming stations' attractiveness values are listed below for a visual check.
+
+```{r}
+dest_future %>%
+  st_drop_geometry() %>%
+  filter(status == "Upcoming") %>%
+  select(station, lines, all_of(attr_vars)) %>%
+  arrange(lines, station)
+```
+
+As expected for stations built ahead of development, several new stations, such as Tengah, Hong Kah and Aviation Park, have almost nothing within 400 m. Only Tampines North is near a bus interchange.
+
+### 4.10 Building the Spatial Interaction Data Frames
+
+#### 4.10.1 Distance matrices
+
+The distance from every origin to every station is computed with *st_distance()*. Origins are passed first and stations second, so that each row of the matrix is an origin and each column a station. The row and column names are set to `hex_id` and `station` before the matrix is converted to long format with *pivot_longer()*, so each distance stays attached to the correct origin and station. Each origin's point lies inside its hexagon, as prepared in Section 4.8.2.
+
+The same steps are applied to the existing and future networks, so they are wrapped in a function. The function also attaches each station's attractiveness variables, giving one row per origin–station pair. The columns are ordered with origin first, station second, then distance and attractiveness, which is the long format the MCI functions require.
+
+```{r}
+build_si <- function(origins, dest) {
+  dmat <- st_distance(origins, dest)
+  rownames(dmat) <- origins$hex_id
+  colnames(dmat) <- dest$station
+
+  dmat %>%
+    as.data.frame() %>%
+    rownames_to_column("hex_id") %>%
+    pivot_longer(-hex_id, names_to = "station", values_to = "distance") %>%
+    mutate(distance = as.numeric(distance)) %>%
+    left_join(dest %>% st_drop_geometry() %>% select(station, all_of(attr_vars)),
+              by = "station")
+}
+
+si_existing <- build_si(origins, dest_existing)
+si_future   <- build_si(origins, dest_future)
+
+c(existing_rows = nrow(si_existing), future_rows = nrow(si_future))
+head(si_existing)
+summary(si_existing$distance)
+```
+
+Each data frame has one row per origin–station pair: the number of populated hexagons multiplied by 184 or 213 stations. The shortest distance is about 17 m, so no distance is zero, and the distance term can be log-transformed without recoding.
+
+To confirm that the pivot kept each distance with the right origin and station, one value from the long table is compared with a direct calculation.
+
+```{r}
+c(from_table = si_existing %>%
+    filter(hex_id == origins$hex_id[1], station == dest_existing$station[1]) %>%
+    pull(distance),
+  direct = as.numeric(st_distance(origins[1, ], dest_existing[1, ])))
+```
+
+The two values are identical.
+
+#### 4.10.2 How far residents are from a station
+
+The distance from each populated hexagon to its nearest existing station shows how far residents typically are from the network. It also informs whether residents should be able to choose among every station on the island or only nearby ones.
+
+```{r}
+si_existing %>%
+  group_by(hex_id) %>%
+  summarise(nearest_m = min(distance)) %>%
+  pull(nearest_m) %>%
+  quantile(c(0.5, 0.9, 0.95, 0.99, 1)) %>%
+  round()
+```
+
+Half of the populated hexagons have a station within about 620 m, 95% within 1.6 km, and all within 3.8 km. Under the Huff model, a station 15 km away receives a very small probability because of distance decay, so keeping every station in each resident's choice set has little effect on the results.
+
+#### 4.10.3 Origin and destination data frames
+
+An origin data frame and a destination data frame whose identifier columns use the same names as the spatial interaction data frames. Both are prepared without geometry.
+
+```{r}
+origin_df <- origins %>%
+  st_drop_geometry() %>%
+  select(hex_id, pop_hdb, pop_private, pop_total)
+
+dest_df <- dest_existing %>%
+  st_drop_geometry() %>%
+  select(station, am_tapins, mode, lines, all_of(attr_vars))
+
+dest_future_df <- dest_future %>%
+  st_drop_geometry() %>%
+  select(station, status, am_tapins, mode, lines, all_of(attr_vars))
+
+glimpse(origin_df)
+glimpse(dest_df)
+```
+
+These four data frames complete the inputs for the model:
+
+- **`origin_df`:** one row per populated hexagon, with its market potential.
+- **`dest_df` and `dest_future_df`:** one row per station, with observed ridership for existing stations and the attractiveness variables.
+- **`si_existing` and `si_future`:** one row per origin–station pair, with distance and attractiveness.
 
 ## References
 

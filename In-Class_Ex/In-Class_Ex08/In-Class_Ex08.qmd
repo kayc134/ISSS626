@@ -306,7 +306,7 @@ ggscatterstats(
   y = Total_Sales)
 ```
 
-The final code chunk reshapes the long-format interaction probabilities into a wide-format table with villages as rows and stores as columns. 
+The final code chunk reshapes the long-format interaction probabilities into a wide-format table with villages as rows and stores as columns.
 
 ```{r}
 huff_share_wider <- huff_share %>%
@@ -336,7 +336,7 @@ huff_TA <- huff_share_wider %>%
   )
 ```
 
-Next, we will select only `VILLCODE` and `TA` from `huff_TA`, and join it with `village` to create `village_TA`. 
+Next, we will select only `VILLCODE` and `TA` from `huff_TA`, and join it with `village` to create `village_TA`.
 
 ```{r}
 huff_TA_tidied <- huff_TA %>%

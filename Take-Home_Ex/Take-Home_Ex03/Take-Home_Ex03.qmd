@@ -23,6 +23,8 @@ Two new lines will add 36 stations by 2030: the Jurong Region Line (JRL, 24 stat
 
 Probabilistic spatial interaction models address this question directly. The Huff model estimates the probability that a resident at a given location uses each station, based on the station's attractiveness and the distance to it, relative to all competing stations (Huff, 1964). Zhu et al. (2021) applied an improved Huff model to estimate URT station catchments in Xi'an, measuring station attractiveness through walkability, public transport accessibility and service quality. However, they adopted the distance-decay and attractiveness parameters from the literature and from expert ratings rather than calibrating them, and noted this as their main limitation. This exercise calibrates the model parameters against observed station ridership in Singapore, using the Multiplicative Competitive Interaction (MCI) model, the calibratable form of the Huff model (Nakanishi & Cooper, 1974).
 
+Please refer to the [Executive Summary](https://kay-geohub.vercel.app/Take-Home_Ex/Take-Home_Ex03/Take-Home_Ex03_ExSum.html#/title-slide) for the key analysis and recommendations.
+
 ## 2. Research Objectives and Questions
 
 ### 2.1 Research Objectives
@@ -828,13 +830,33 @@ The future network has 213 destinations: the 184 existing stations, seven of whi
 The market potential of each hexagon is the number of residents aged 15 to 64 who live in it. SingStat publishes population only by subzone, so residents are spread within each subzone to where they actually live:
 
 - **HDB residents** are spread across HDB residential blocks in proportion to the number of flats in each block.
-- **Residents of private housing** (condominiums, landed homes and other non-HDB dwellings) are spread across private residential land parcels in proportion to their estimated floor area.
+- **Residents of private housing** (condominiums, landed homes and other non-HDB dwellings) are spread across private residential land parcels in proportion to each parcel's land area.
 
-Spreading population this way, rather than evenly across a subzone's area, is known as dasymetric mapping. It prevents residents from being placed in parks, industrial estates or reservoirs that share a subzone with housing.
+Spreading population this way, rather than evenly across a subzone's area, is known as dasymetric mapping: population is removed from uninhabited areas and reassigned to the areas where people live (Eicher & Brewer, 2001; Mennis, 2003). It prevents residents from being placed in parks, industrial estates or reservoirs that share a subzone with housing.
+
+No population values are created or estimated in this process. Each subzone's residents are taken exactly from SingStat, and only their location within the subzone is determined.
 
 #### 4.7.1 Residents aged 15 to 64 by subzone
 
-The population table is filtered to the ten five-year age groups from 15-19 to 60-64 and summed for each subzone. HDB residents are the `Total HDB^` rows. Private residents are the subzone total minus HDB residents. `-` values were read as missing in Section 3.6.4, and are treated as zero here.
+The SingStat table gives residents for every combination of subzone, age group and type of dwelling. Two dwelling-type rows are used:
+
+- **`Total`**: all residents of the subzone, in every type of dwelling.
+- **`Total HDB^`**: residents of HDB flats of all sizes. The footnote to the table states that this also includes non-privatised Housing and Urban Development Company flats.
+
+SingStat does not publish a separate total for private housing. Private-housing residents are therefore obtained by subtraction:
+
+$$
+\text{private residents} = \text{Total} - \text{Total HDB}
+$$
+
+This covers condominiums and other apartments, landed properties and other types of dwelling, which together make up every resident not living in an HDB flat.
+
+For each subzone, the table is filtered to the ten five-year age groups from `15 - 19` to `60 - 64` and to the two dwelling-type rows, and the population is summed. *pivot_wider()* then places the two totals side by side so that the subtraction can be done row by row.
+
+Two details of the SingStat data are handled explicitly:
+
+- **`-` values.** The table footnote defines `-` as nil or negligible. These were read as missing in Section 3.6.4, and are set to 0 here in line with that definition.
+- **Rounding.** SingStat rounds each figure to the nearest 10. In a subzone with almost no private housing, the rounded total can be slightly smaller than the rounded HDB figure, which would give a small negative count. *pmax()* sets any such value to 0.
 
 ```{r}
 age_15_64 <- c("15 - 19", "20 - 24", "25 - 29", "30 - 34", "35 - 39",
@@ -846,7 +868,7 @@ pop_sz <- pop_raw %>%
          `Type of Dwelling` %in% c("Total", "Total HDB^")) %>%
   mutate(PLN_AREA_N = str_squish(str_to_upper(`Planning Area`)),
          SUBZONE_N  = str_squish(str_to_upper(Subzone)),
-         pop        = replace_na(`2026`, 0)) %>%
+         pop        = replace_na(`2026`, 0)) %>%    # "-" is nil or negligible from SingStat footnote
   group_by(PLN_AREA_N, SUBZONE_N, `Type of Dwelling`) %>%
   summarise(pop = sum(pop), .groups = "drop") %>%
   pivot_wider(names_from = `Type of Dwelling`, values_from = pop) %>%
@@ -857,7 +879,7 @@ pop_sz <- pop_raw %>%
 colSums(pop_sz[, c("pop_hdb", "pop_private")])
 ```
 
-Singapore has 2,128,360 HDB residents and 714,300 private-housing residents aged 15 to 64. *pmax()* guards against a negative private count, which could otherwise arise because SingStat rounds each figure to the nearest 10.
+Singapore has `r scales::comma(sum(pop_sz$pop_hdb))` HDB residents and `r scales::comma(sum(pop_sz$pop_private))` private-housing residents aged 15 to 64. Private-housing residents are therefore about a quarter of the market potential, so leaving them out would under-predict stations in condominium and landed-housing areas.
 
 The subzone codes are then attached by joining to the study-area subzones. Residents of the excluded offshore islands, mainly Sentosa, drop out at this step.
 
@@ -998,19 +1020,26 @@ Every block falls inside a study-area subzone and has a population record, and e
 
 #### 4.7.4 Allocating private-housing residents to land parcels
 
-The Master Plan 2019 land use layer identifies residential parcels. Four land-use types are treated as residential: `RESIDENTIAL`, `RESIDENTIAL WITH COMMERCIAL AT 1ST STOREY`, `COMMERCIAL & RESIDENTIAL` and `RESIDENTIAL / INSTITUTION`. HDB estates are also zoned residential, so any parcel that contains an HDB building is removed. The remaining parcels are private housing.
+Private-housing residents are placed using the Master Plan 2019 land use layer, in three steps.
 
-Within a subzone, a large condominium houses more people than a terrace house on the same land area. Residents are therefore spread in proportion to each parcel's estimated floor area: its land area multiplied by its gross plot ratio (`GPR`), the ratio of permitted floor area to land area. Some parcels have no numeric plot ratio:
+**Step 1: identify private residential land.** Four land-use types are treated as residential: `RESIDENTIAL`, `RESIDENTIAL WITH COMMERCIAL AT 1ST STOREY`, `COMMERCIAL & RESIDENTIAL` and `RESIDENTIAL / INSTITUTION`. HDB estates are also zoned residential, so any parcel that contains an HDB building is removed. The remaining parcels are private housing.
 
-- **Landed housing (`LND`)** has no plot ratio. A value of 1.0 is assumed, reflecting two- to three-storey houses covering part of their plot.
-- **Other codes, such as `EVA` and `SDP`, and missing values** are assigned 1.4, the most common plot ratio among residential parcels.
+**Step 2: weight each parcel by its land area.** Within each subzone, private-housing residents are spread across these parcels in proportion to land area. This is the areametric approach of Lwin and Murayama (2009), which needs no information on building height or floor area. A weighting by floor area, using each parcel's gross plot ratio (`GPR`), was considered but not used. Most private residential parcels are landed housing (`LND`) or carry codes with no numeric plot ratio, so it would require assumed values. Land area is measured for every parcel, so no values need to be assumed.
 
-These assumptions only affect how residents are spread within a subzone, since each subzone's total comes from SingStat.
+**Step 3: share each subzone's residents among its parcels.** Each parcel is represented by a point with *st_point_on_surface()* and assigned to its subzone with *st_join()*. A parcel's residents are its share of the subzone's private residential land multiplied by the subzone's private-housing residents from Section 4.7.1:
+
+$$
+\text{residents}_p = \frac{\text{land area}_p}{\sum_{q \in s} \text{land area}_q} \times \text{private residents}_s
+$$
+
+Where parcel $p$ lies in subzone $s$. The shares within each subzone sum to 1, so each subzone's total matches SingStat exactly.
+
+The weighting only affects where residents are placed within a subzone. Its main limitation is that a condominium receives the same weight per square metre as landed housing, although it houses more people. Large residential parcels that are not yet fully developed also receive a share in proportion to their size. As each subzone's total is fixed, these effects are confined to a single subzone and mostly to neighbouring 500 m hexagons.
 
 ::: callout-note
 ### AI Use Disclosure
 
-AI tools were used to draft the R code that weights private residential parcels by estimated floor area, using *case_when()* to assign plot ratios to the `LND` and non-numeric `GPR` codes. The output was reviewed and run by the author to verify correctness against the study data.
+AI tools were used to draft the R code that spreads private-housing residents across private residential parcels in proportion to land area. The output was reviewed and run by the author to verify correctness against the study data.
 :::
 
 ```{r}
@@ -1019,40 +1048,37 @@ res_types <- c("RESIDENTIAL", "RESIDENTIAL WITH COMMERCIAL AT 1ST STOREY",
 
 res_parcels <- landuse %>%
   filter(LU_DESC %in% res_types) %>%
-  select(LU_DESC, GPR)
+  select(LU_DESC)
 
 hdb_parcel <- lengths(st_intersects(res_parcels, hdb_pts)) > 0
 table(hdb_parcel)
+```
 
+```{r}
 private_pts <- res_parcels[!hdb_parcel, ] %>%
-  mutate(gpr_num    = suppressWarnings(as.numeric(GPR)),
-         gpr_used   = case_when(GPR == "LND"     ~ 1.0,
-                                !is.na(gpr_num)  ~ gpr_num,
-                                TRUE             ~ 1.4),
-         floor_area = as.numeric(st_area(geometry)) * gpr_used) %>%
+  mutate(land_area = as.numeric(st_area(geometry))) %>%
   st_point_on_surface() %>%
   st_join(mpsz_study %>% select(SUBZONE_C), join = st_intersects) %>%
   filter(!is.na(SUBZONE_C))
 
-private_pts %>%
-  st_drop_geometry() %>%
-  count(gpr_type = case_when(GPR == "LND"    ~ "Landed (LND)",
-                             is.na(gpr_num)  ~ "Other or missing",
-                             TRUE            ~ "Numeric plot ratio"))
+nrow(private_pts)
+summary(private_pts$land_area)
+```
 
+```{r}
 private_pop <- private_pts %>%
   group_by(SUBZONE_C) %>%
-  mutate(fa_share = floor_area / sum(floor_area)) %>%
+  mutate(area_share = land_area / sum(land_area)) %>%
   ungroup() %>%
   left_join(pop_sz %>% select(SUBZONE_C, pop_private), by = "SUBZONE_C") %>%
-  mutate(pop = replace_na(pop_private, 0) * fa_share, source = "Private")
+  mutate(pop = replace_na(pop_private, 0) * area_share, source = "Private")
 
-pop_sz %>% # subzones with private residents but no private residential parcel
+pop_sz %>%   # subzones with private residents but no private residential parcel
   filter(pop_private > 0, !SUBZONE_C %in% private_pop$SUBZONE_C) %>%
   select(PLN_AREA_N, SUBZONE_N, pop_private)
 ```
 
-1,981 residential parcels contain an HDB building and are excluded as HDB land. Fourteen subzones, with 3,640 private-housing residents aged 15-64 in total, have residents but no private residential parcel. Most are in the city centre, such as Central Subzone, City Hall and Boat Quay. The rest are areas whose housing sits on land zoned for other uses, such as university hostels at the National University of Singapore and housing on land zoned for institutional or special uses at Murai and Seletar. These residents cannot be placed and are left out. They are about 0.5% of private-housing residents, so the effect on the model is negligible.
+`r scales::comma(sum(hdb_parcel))` residential parcels contain an HDB building and are excluded as HDB land, leaving `r scales::comma(nrow(private_pts))` private residential parcels. Fourteen subzones, with 3,640 private-housing residents aged 15-64 in total, have residents but no private residential parcel. Most are in the city centre, such as Central Subzone, City Hall and Boat Quay. The rest are areas whose housing sits on land zoned for other uses, such as university hostels at the National University of Singapore and housing on land zoned for institutional or special uses at Murai and Seletar. These residents cannot be placed and are left out rather than assigned to an assumed location. They are about 0.5% of private-housing residents, so the effect on the model is negligible.
 
 The HDB block points and private parcel points are combined into one layer of population points. The total placed is compared with the subzone total.
 
@@ -1068,7 +1094,7 @@ pop_pts %>%
 c(placed = sum(pop_pts$pop), subzone_total = sum(pop_sz$pop_hdb + pop_sz$pop_private))
 ```
 
-The shortfall of 3,640 between the subzone total and the total placed equals the private-housing residents that could not be placed.
+The shortfall of `r scales::comma(sum(pop_sz$pop_hdb + pop_sz$pop_private) - sum(pop_pts$pop))` between the subzone total and the total placed equals the private-housing residents that could not be placed.
 
 ### 4.8 Creating the Hexagon Grid
 
@@ -1834,7 +1860,7 @@ The implication for Objective 2 is important. **Predictions for the JRL and CRL 
 
 ## 6. Predicting Ridership at the JRL and CRL Stations
 
-## 6.1 Predicted Ridership and Sensitivity to Distance Decay
+### 6.1 Predicted Ridership and Sensitivity to Distance Decay
 
 The calibrated M2 parameters are applied to the future network of 213 stations. The attractiveness of the new stations is computed from their own attributes (Section 4.9), with the same exponents as the existing stations. Market potential is held at its June 2026 level.
 
@@ -2047,7 +2073,7 @@ impact %>%
 
 The impact clearly fades with distance. The median change is largest within 2 km of a new station, and levels off beyond about 3 km. Only one reliably fitted station that is not an interchange lies within 1 km of a new station, so that group should not be read on its own.
 
-The two largest losses need caution: Joo Koon (-67.0%) and Gul Circle (-62.6%), the outlier in the 3-5 km band.. Few residents live near either station, so the model attributes most of their riders to residents of Jurong West several kilometres away, who are exactly the residents predicted to switch to the JRL. As with the Tuas stations (Section 5.7), their actual morning riders are largely workers in the western industrial estates, so these losses are likely to be overstated.
+The two largest losses need caution. Joo Koon (`r round(impact$change_pct[impact$station == "JOO KOON"], 1)`%) and Gul Circle (`r round(impact$change_pct[impact$station == "GUL CIRCLE"], 1)`%), the outlier in the 3-5 km band. Few residents live near either station, so the model attributes most of their riders to residents of Jurong West several kilometres away, who are exactly the residents predicted to switch to the JRL. As with the Tuas stations (Section 5.7), their actual morning riders are largely workers in the western industrial estates, so these losses are likely to be overstated.
 
 Beyond 5 km, the median change does not reach zero but stays at about `r round(background, 1)`%. This is a property of the model rather than a real effect, and it has two causes:
 
@@ -2130,7 +2156,7 @@ m_impact <- tm_shape(hex_land) +
 m_impact
 ```
 
-The losses form two clusters, one along each new line. In the west, the JRL draws riders from the East-West Line, North-South Line and Bukit Panjang LRT stations around Jurong, Bukit Batok and Choa Chu Kang. In the north-east and east, the CRL draws riders from stations around Kovan and Serangoon and around Tampines and Pasir Ris. Further west, the Thomson–East Coast Line stations at Mayflower and Upper Thomson also lose riders (`r round(impact$change_pct[impact$station == "MAYFLOWER"])`% and `r round(impact$change_pct[impact$station == "UPPER THOMSON"])`%) to the new Teck Ghee station and the Bright Hill interchange. The CRL interchanges at Hougang, Ang Mo Kio and Bright Hill stand out as the main gainers. Elsewhere, changes stay close to the background level.
+The losses form two clusters, one along each new line. In the west, the JRL draws riders from the East-West Line, North-South Line and Bukit Panjang LRT stations around Jurong, Bukit Batok and Choa Chu Kang. In the north-east and east, the CRL draws riders from stations around Kovan and Serangoon and around Tampines and Pasir Ris. Further west, the Thomson-East Coast Line stations at Mayflower and Upper Thomson also lose riders (`r round(impact$change_pct[impact$station == "MAYFLOWER"])`% and `r round(impact$change_pct[impact$station == "UPPER THOMSON"])`%) to the new Teck Ghee station and the Bright Hill interchange. The CRL interchanges at Hougang, Ang Mo Kio and Bright Hill stand out as the main gainers. Elsewhere, changes stay close to the background level.
 
 ### 6.3 Impact on Market Areas
 
@@ -2293,11 +2319,11 @@ Across the whole island the two effects largely cancel, which is why the two map
 
 **Objective 3: impact on existing stations.** The impact is concentrated along the new lines and fades within about 3 km. The largest losses are on the East-West Line between Jurong East and Joo Koon and on the North-South Line around Bukit Batok. Among the interchanges that gain a line, the CRL interchanges at Hougang, Ang Mo Kio and Bright Hill gain riders. The JRL interchanges at Boon Lay, Jurong East and Choa Chu Kang lose tap-ins, but they will carry new transfer traffic that tap-ins do not measure. Beyond the new corridors, the predicted changes reflect a small background loss that comes from the model's structure rather than real competition.
 
-# 7. Value-Added Analysis: Change in Access to Rail
+# 7. Value-Added Analysis: Change in Access to MRT/LRT
 
 Sections 5 and 6 view the new lines from the stations' side: how many riders each station gains or loses. This section views them from the residents' side: how much rail service each hexagon can reach, after accounting for the other residents competing for the same stations. This links the exercise to urban sustainability, as it shows which communities gain access to rail and whether the new lines reach areas that were poorly served. It also relates to the government's target of 8 in 10 households being within a 10-minute walk of a train station by the 2030s (Ministry of Transport, 2024).
 
-## 7.1 Method
+### 7.1 Method
 
 Access is measured with the two-step floating catchment area (2SFCA) method (Luo & Wang, 2003). Each station's supply is first divided among the residents within its catchment. Each hexagon's accessibility is then the sum of the shares of the stations it can reach.
 
@@ -2317,7 +2343,7 @@ $P^*_{ij}$ is the Huff probability rescaled so that it sums to 1 across the stat
 | Component | Choice | Reason |
 |---|---|---|
 | Supply $S_j$ | Number of lines at the station (`n_lines`) | In 2SFCA, supply is a capacity measure (Luo & Wang, 2003), and each line adds trains and seats. Service frequency and train capacity are not available. |
-| Demand $C_i$ | Residents aged 15–64 in each hexagon | The same market potential as in the model (Section 4.7) |
+| Demand $C_i$ | Residents aged 15-64 in each hexagon | The same market potential as in the model (Section 4.7) |
 | Selection probability $P_{ij}$ | M2 Huff probabilities | Shares each resident's demand among reachable stations (Luo, 2014) |
 | Catchment $d_0$ | 800 m, with 1 km as a sensitivity check | About a 10-minute walk, the basis of the government's target. In a Singapore survey, about 60% of MRT passengers walked to their station, over 608 m on average (Olszewski & Wibowo, 2005). |
 
@@ -2325,9 +2351,9 @@ The 800 m catchment differs from the 400 m radius used for the attractiveness va
 
 Two caveats apply. First, distances are straight-line. Olszewski and Wibowo (2005) found that the effort of walking to Singapore stations is 20% to 39% greater than the straight-line distance suggests, so an 800 m straight-line catchment corresponds to somewhat more than a 10-minute walk. The coverage figures below should therefore be read as an upper bound. Second, an LRT line counts the same as an MRT line, although LRT trains carry far fewer passengers.
 
-Accessibility is expressed in rail lines per 100,000 residents aged 15–64.
+Accessibility is expressed in rail lines per 100,000 residents aged 15-64.
 
-## 7.2 Computing Accessibility
+### 7.2 Computing Accessibility
 
 ::: callout-note
 ### AI Use Disclosure
@@ -2343,7 +2369,7 @@ fca_access <- function(P, D, supply, cutoff) {
   W <- W / rowSums(W)               # rescaled to sum to 1 across the reachable stations
   W[is.na(W)] <- 0                  # hexagons with no station within the cutoff
   demand <- as.vector(crossprod(W, C_i))             # step 1: residents expected at each station
-  ratio  <- if_else(demand > 0, supply / demand, 0)  #         lines per resident at each station
+  ratio  <- if_else(demand > 0, supply / demand, 0)  # lines per resident at each station
   as.vector(W %*% ratio)                             # step 2: accessibility of each hexagon
 }
 
@@ -2365,7 +2391,7 @@ c(lines_reached      = sum(dest_df$n_lines[colSums(D_exist <= cutoff) > 0]),
 
 The two values are equal, which confirms that the function shares supply correctly.
 
-## 7.3 Overall Change
+### 7.3 Overall Change
 
 ```{r}
 acc_summary <- access %>%
@@ -2391,11 +2417,11 @@ access %>%
             lower        = sum(change < -0.01))
 ```
 
-The share of residents aged 15–64 within 800 m of a station rises from `r round(acc_summary$share_within[1], 1)`% to `r round(acc_summary$share_within[2], 1)`%, an additional `r scales::comma(round(diff(acc_summary$residents_within)))` residents. `r sum(access$before == 0 & access$after > 0)` hexagons that currently have no station within 800 m gain one.
+The share of residents aged 15-64 within 800 m of a station rises from `r round(acc_summary$share_within[1], 1)`% to `r round(acc_summary$share_within[2], 1)`%, an additional `r scales::comma(round(diff(acc_summary$residents_within)))` residents. In all, `r sum(access$before == 0 & access$after > 0)` hexagons that currently have no station within 800 m gain one.
 
 Most hexagons are unaffected. Unlike Section 6.2, where every station lost a small share of riders, accessibility changes only where a new station or an added line lies within 800 m. The catchment limits competition between stations to residents who can actually reach them, so the 2SFCA measure has no background effect.
 
-## 7.4 Mapping Accessibility
+### 7.4 Mapping Accessibility
 
 The before and after maps use the same classes, so they can be compared directly.
 
@@ -2405,12 +2431,12 @@ The before and after maps use the same classes, so they can be compared directly
 access_map <- bind_rows(
   hex_land %>% select(hex_id) %>%
     left_join(access %>% select(hex_id, access = before), by = "hex_id") %>%
-    mutate(network = "Before: existing network"),
+    mutate(network = "Before: Existing network"),
   hex_land %>% select(hex_id) %>%
     left_join(access %>% select(hex_id, access = after), by = "hex_id") %>%
-    mutate(network = "After: with JRL and CRL")) %>%
-  mutate(network = factor(network, levels = c("Before: existing network",
-                                              "After: with JRL and CRL")))
+    mutate(network = "After: With JRL and CRL")) %>%
+  mutate(network = factor(network, levels = c("Before: Existing network",
+                                              "After: With JRL and CRL")))
 
 m_access <- tm_shape(access_map) +
   tm_polygons(fill = "access",
@@ -2418,17 +2444,17 @@ m_access <- tm_shape(access_map) +
                 breaks = c(0, 0.001, 3, 5, 10, 20, 50, Inf),
                 labels = c("No station within 800 m", "Under 3", "3 to 5", "5 to 10",
                            "10 to 20", "20 to 50", "50 or more"),
-                values = c("grey75", "#feedde", "#fdbe85", "#fd8d3c",
-                           "#e6550d", "#a63603", "#7f2704"),
+                values = c("grey75", "#fdd49e", "#fdbb84", "#fc8d59", "#e34a33", "#b30000", "#7f0000"),
                 value.na = "grey97", label.na = "No residents"),
               fill.legend = tm_legend(title = "Rail lines per\n100,000 residents"),
               col = "white", lwd = 0.1) +
+  tm_title("Rail accessibility before and after the JRL and CRL open") +
   tm_facets(by = "network", ncol = 2) +
   tm_layout(frame = TRUE, legend.outside = TRUE, legend.outside.position = "right")
 m_access
 ```
 
-Accessibility is highest in the city centre, where interchanges with several lines serve relatively few residents, and lowest in large housing estates far from an interchange. ⚠ Before the new lines open, the main grey gaps with no station within 800 m are in Jurong West, Tengah, Pasir Ris and parts of Hougang and Serangoon. In the after map, the gaps along the JRL and CRL corridors largely fill in.
+Accessibility is highest in the city centre, where interchanges with several lines serve relatively few residents, and lowest in large housing estates far from an interchange. Before the new lines open, the largest grey gaps with no station within 800 m are in the west, in Tengah, Jurong West and Jurong East, and in the north-east and east, in Serangoon, Hougang and Pasir Ris (Section 7.5). In the after map, most of these gaps fill in along the JRL and CRL corridors. The grey areas that remain lie away from both lines, which these two lines were not designed to serve.
 
 ```{r}
 #| fig-width: 11
@@ -2460,13 +2486,20 @@ m_change <- tm_shape(access_change) +
 m_change
 ```
 
-The gains form two corridors: the JRL in the west, around Tengah, Jurong West and Jurong East, and the CRL in the north-east, from Ang Mo Kio to Pasir Ris. Hexagons newly within 800 m of a station lie closest to the new stations. Hexagons with higher accessibility surround them, where residents already had a station and gain a second option or an interchange with an extra line.
+The gains form two corridors: the JRL in the west, around Tengah, Jurong West and Jurong East, and  the CRL in the north-east, from Ang Mo Kio to Pasir Ris. Hexagons newly within 800 m of a station lie closest to the new stations. Hexagons with higher accessibility surround them, where residents already had a station and gain a second option or an interchange with an extra line.
 
-`r sum(access$change < -0.01)` hexagons have lower accessibility. ⚠ These lie next to an existing station with few users, such as South View LRT, that gains a busy new neighbour, such as Choa Chu Kang West. Part of their residents' demand moves to the new station, which is shared by many more residents, so their average supply per resident falls. These residents gain an extra option, so a lower score here does not mean worse service. It is a known property of supply-to-demand measures such as 2SFCA.
+```{r}
+no_residents_800 <- dest_future_df$station[new_idx][colSums(D_future[, new_idx] <= cutoff) == 0]
+str_to_title(no_residents_800)
+```
 
-## 7.5 Change by Planning Area
+Of the 29 new stations, `r length(no_residents_800)` have no populated hexagon within 800 m, and `r if (all(str_to_title(no_residents_800) %in% new_pred$station[new_pred$at_risk])) "all of them are" else paste(sum(str_to_title(no_residents_800) %in% new_pred$station[new_pred$at_risk]), "are")` among the `r sum(new_pred$at_risk)` stations predicted below the benchmark in Section 6.1. This confirms, from the residents' side, why their predicted morning ridership is low: they serve industrial estates, the university campus and the airport area, where demand comes from workers and students rather than from residents nearby.
 
-To summarise the change for planning, each hexagon is assigned to the planning area its representative point lies in, using *st_join()*. Accessibility is then averaged across each planning area's hexagons, weighted by residents. Planning areas with fewer than 5,000 residents aged 15–64 are left out, as a few hexagons would dominate their averages.
+Only `r sum(access$change < -0.01)` hexagons have lower accessibility. These lie next to an existing station with few users, such as South View LRT, that gains a busy new neighbour, such as Choa Chu Kang West. Part of their residents' demand moves to the new station, which is shared by many more residents, so their average supply per resident falls. These residents gain an extra option, so a lower score here does not mean worse service. It is a known property of supply-to-demand measures such as 2SFCA.
+
+### 7.5 Change by Planning Area
+
+To summarise the change for planning, each hexagon is assigned to the planning area its representative point lies in, using *st_join()*. Accessibility is then averaged across each planning area's hexagons, weighted by residents. Planning areas with fewer than 5,000 residents aged 15-64 are left out, as a few hexagons would dominate their averages.
 
 ```{r}
 hex_pa <- origins %>%
@@ -2498,9 +2531,13 @@ pa_access %>%
                       "Accessibility before", "Accessibility after", "Change"))
 ```
 
-⚠ Tengah gains the most, as it currently has no station within 800 m of most of its residents. Jurong West and Pasir Ris follow: both have large populations, and the share of their residents within 800 m of a station rises sharply. Jurong East gains mainly from the added JRL line at its interchange. On the CRL, Ang Mo Kio, Bishan, Hougang and Serangoon gain from the new stations at Teck Ghee, Tavistock and Serangoon North and from the added lines at their interchanges.
+Jurong East has the largest gain in accessibility. It benefits in two ways: its interchange gains a third line, and new JRL stations such as Toh Guan and Jurong Town Hall bring more of its residents within 800 m of a station (`r round(pa_access$within_before[pa_access$PLN_AREA_N == "JURONG EAST"])`% before, `r round(pa_access$within_after[pa_access$PLN_AREA_N == "JURONG EAST"])`% after).
 
-## 7.6 Sensitivity to the Catchment Distance
+Tengah has the largest gain in coverage. None of its residents currently live within 800 m of a station, against `r round(pa_access$within_after[pa_access$PLN_AREA_N == "TENGAH"])`% once the JRL opens. Its accessibility rises less than Jurong East's because its new stations each serve one line and are shared among a large, growing population. Its level after the JRL opens (`r round(pa_access$access_after[pa_access$PLN_AREA_N == "TENGAH"], 1)` lines per 100,000 residents) is close to the island-wide average (`r round(acc_summary$mean_access[2], 1)`).
+
+Jurong West and Pasir Ris follow. Both have large populations that are currently poorly served: about half of Jurong West's residents and a third of Pasir Ris's live within 800 m of a station. On the CRL, Ang Mo Kio, Bishan, Hougang and Serangoon gain from the new stations at Teck Ghee, Tavistock and Serangoon North and from the added line at their interchanges. Tampines gains in coverage (`r round(pa_access$within_before[pa_access$PLN_AREA_N == "TAMPINES"])`% to `r round(pa_access$within_after[pa_access$PLN_AREA_N == "TAMPINES"])`%) but little in accessibility. Tampines North station mainly serves new residents who had no station within reach, so the supply per resident across the planning area barely changes.
+
+### 7.6 Sensitivity to the Catchment Distance
 
 The analysis is repeated with a 1 km catchment, and the five planning areas with the largest gains are compared.
 
@@ -2531,13 +2568,76 @@ bind_rows(access     %>% mutate(cutoff = "800 m"),
   kable(col.names = c("Rank", "800 m catchment", "1 km catchment"))
 ```
 
-With a 1 km catchment, the share of residents within reach of a station rises from `r round(within_1km[1], 1)`% to `r round(within_1km[2], 1)`%. The levels are higher than at 800 m, as expected, but the increase is of a similar size. ⚠ The same five planning areas gain the most under both catchments, with at most a change in order. The conclusions therefore do not depend on the choice of catchment distance.
+With a 1 km catchment, the share of residents within reach of a station rises from `r round(within_1km[1], 1)`% to `r round(within_1km[2], 1)`%. The levels are higher than at 800 m, as expected, but the increase is of a similar size. The five planning areas with the largest gains are the same under both catchments, in the same order. The conclusions therefore do not depend on the choice of catchment distance.
 
-## References
+## 8. Limitations
+
+The results should be read with the following limitations in mind. Most have been noted where they arise. They are brought together here, grouped by what they affect.
+
+### 8.1 Who is modelled
+
+- **Residents only.** The SingStat population covers citizens and permanent residents. Foreign workers in dormitories, students in campus hostels and cross-border commuters are not included. This explains why the Tuas stations and Kranji are strongly under-predicted (Section 5.7), and why new stations serving industrial estates and the university campus are likely to be under-predicted (Section 6.1).
+- **Population is held at June 2026.** New housing completed after this date, notably in Tengah and the future Jurong Lake District, is not included, so predictions for stations in these areas are conservative.
+- **Locating residents.** The 51 HDB blocks completed in 2026 are not yet in the building layer (Section 4.7.2). Private-housing residents are spread by land area, so condominiums are weighted the same per square metre as landed housing, and large residential parcels that are not yet developed receive residents in proportion to their size (Section 4.7.4). 3,640 private-housing residents could not be placed. All of these effects are confined within a subzone, as each subzone's total is fixed.
+
+### 8.2 What is measured
+
+- **Morning tap-ins only.** Tap-ins measure where trips start. They miss a station's role as a destination, which is why destination stations such as Expo and Keppel are over-predicted. They also miss transfers between lines, so the predicted losses at the JRL interchanges do not mean fewer passengers pass through them (Section 6.2.2).
+- **A short observation period.** Ridership is averaged over three months. For the Circle Line Stage 6 stations, which were still building up ridership, only September is used.
+
+### 8.3 How the model works
+
+- **Calibration from station totals.** Origin-to-station flows are not available, so the model is calibrated on station totals: 184 observations for 10 parameters (Section 5.1.1). The standard errors are approximate, and strongly correlated variables, such as `shopping` and `food`, cannot be fully separated (Section 5.5).
+- **Independence of irrelevant alternatives.** A new station draws riders proportionally from every station, producing a background loss of about `r abs(round(background, 1))`% at stations far from the new lines (Section 6.2.3). Only losses well beyond this level should be read as genuine competition.
+- **Straight-line distance.** Walking routes, barriers such as expressways and feeder bus services are not modelled. Actual walking effort in Singapore is 20% to 39% greater than straight-line distance suggests (Olszewski & Wibowo, 2005).
+- **Immediate adjustment.** The model assumes residents switch to a more attractive station at once. The holdout test shows that recently opened stations are over-predicted by a median factor of `r round(median(T_ho[is_test] / T_obs[is_test]), 1)` (Section 5.8), so the predictions describe ridership after travel habits have adjusted.
+- **Areal units.** Results may change with the size of the hexagons (the modifiable areal unit problem). The 500 m cell size is finer than station spacing, but was not varied.
+- **Points of interest.** OpenStreetMap coverage varies between areas, which affects the attractiveness variables.
+- **Accessibility measure.** The 2SFCA analysis uses the number of lines as supply, so an LRT line counts the same as an MRT line, and service frequency is not represented (Section 7.1).
+
+## 9. Conclusion and Recommendations
+
+### 9.1 Conclusion
+
+This exercise calibrated a probabilistic spatial interaction model of station choice for Singapore's MRT and LRT network and used it to assess the Jurong Region Line and Cross Island Line Phase 1.
+
+**RQ1: How well does the model explain ridership, and what matters beyond distance?** The MCI model explains most of the variation in weekday morning-peak tap-ins at the 184 existing stations (pseudo-R² of `r round(cor(T_m2, T_obs)^2, 2)`, against `r round(cor(T_m0, T_obs)^2, 2)` for distance alone). Residents strongly prefer nearby stations ($\lambda$ = `r round(lambda_m2, 2)`, steeper than the conventional -2). Beyond distance, the number of lines, MRT rather than LRT service and feeder bus access make a station more attractive. The model's largest errors point to riders it does not represent: non-resident workers and passengers arriving at destinations.
+
+**RQ2: What ridership can the new stations expect?** The 29 new stations are predicted to carry `r round(100 * sum(T_future[-(1:n_exist)]) / sum(T_future), 1)`% of morning-peak tap-ins once travel habits have adjusted. Stations in established housing areas, such as Serangoon North, Pasir Ris East and Choa Chu Kang West, are predicted to be the busiest. `r sum(new_pred$at_risk)` stations are predicted below the lower quartile of existing MRT stations. Most of them serve industrial estates, the university campus or the airport area, where demand from workers and students is not captured by a residential model.
+
+**RQ3: How will the new lines affect existing stations and market areas?** The impact is local. The largest losses are at East-West Line stations between Jurong East and Joo Koon and around Bukit Batok, and the effect fades within about 3 km of the new lines. The CRL interchanges at Bright Hill, Hougang and Ang Mo Kio gain riders, while the JRL interchanges lose tap-ins but will carry transfer traffic. `r sum(hex_change$top_now != hex_change$top_future)` hexagons change their most likely station.
+
+**Access to rail.** The share of residents aged 15–64 within 800 m of a station rises from `r round(acc_summary$share_within[1], 1)`% to `r round(acc_summary$share_within[2], 1)`%, with the largest gains in Tengah, Jurong East, Jurong West and Pasir Ris, areas that are currently among the least served.
+
+### 9.2 Recommendations
+
+1. **Treat low predictions as a prompt for further data, not as a verdict.** Before decisions on the timing of opening or service levels at the `r sum(new_pred$at_risk)` low-ridership stations, their demand should be estimated with employment, student and dormitory populations, which this model does not include.
+2. **Plan for a ramp-up period.** Based on the holdout test, ridership in the first months after opening may be well below the predictions. Service levels can be phased in and adjusted as observed ridership builds up.
+3. **Review feeder bus services around the stations that lose riders.** East-West Line stations between Jurong East and Joo Koon are predicted to lose a large share of their morning tap-ins to the JRL. Feeder services into these stations can be reviewed as residents switch to stations nearer home.
+4. **Prepare the interchanges for transfer traffic.** Bright Hill and Hougang are predicted to gain substantially in tap-ins, while Boon Lay, Jurong East and Choa Chu Kang will carry transfers between the JRL and the existing lines. Platform and concourse capacity at these stations should account for both.
+
+### 9.3 Future Work
+
+- Calibrate with origin-level data, such as anonymised fare-card records linked to home locations, so that the standard MCI estimation on market shares can be used.
+- Add employment and student populations as a second source of demand, and model the evening peak to capture the destination role of stations.
+- Replace straight-line distance with walking-network distance, and include feeder bus access time.
+- Use projected population for the opening years of the JRL and CRL rather than current population.
+- Test the sensitivity of the results to the hexagon size.
+
+::: callout-note
+### AI Use Disclosure
+
+AI tools were used to provide language assistance during the preparation of this report. AI support was limited to improving the clarity, structure and fluency of written content, including refinement of sentence construction, grammar and academic writing style. All analysis, interpretations, conclusions, insights, hypotheses, business recommendations and managerial implications presented in this report were independently developed by the author based on the dataset, statistical outputs and domain knowledge. AI did not generate the underlying analytical findings or determine the conclusions reached in this study.
+
+:::
+
+## 10 References
 
 Buangkok MRT station. (n.d.). In Wikipedia. Retrieved November 10, 2026, from https://en.wikipedia.org/wiki/Buangkok_MRT_station
 
 De Beule, M., Van den Poel, D., & Van de Weghe, N. (2014). An extended Huff-model for robustly benchmarking and predicting retail network performance. *Applied Geography, 46*, 80-89. https://doi.org/10.1016/j.apgeog.2013.09.026
+
+Eicher, C. L., & Brewer, C. A. (2001). Dasymetric mapping and areal interpolation: Implementation and evaluation. Cartography and Geographic Information Science, 28(2), 125-138. https://doi.org/10.1559/152304001782173727
 
 Huff, D. L. (1964). Defining and estimating a trading area. *Journal of Marketing, 28*(3), 34-38. https://doi.org/10.2307/1249154
 
@@ -2549,7 +2649,19 @@ Land Transport Authority. (n.d.). Rail network. Retrieved November 10, 2026, fro
 
 Land Transport Authority. (2025, January 24). Hume station to open on 28 February 2025 [Press release]. https://www.lta.gov.sg/content/ltagov/en/newsroom/2025/1/news-releases/hume_station_to_open.html
 
+Luo, J. (2014). Integrating the Huff model and floating catchment area methods to analyze spatial access to healthcare services. Transactions in GIS, 18(3), 436-448. https://doi.org/10.1111/tgis.12096
+
+Luo, W., & Wang, F. (2003). Measures of spatial accessibility to health care in a GIS environment: Synthesis and a case study in the Chicago region. Environment and Planning B: Planning and Design, 30(6), 865-884. https://doi.org/10.1068/b29120
+
+Lwin, K. K., & Murayama, Y. (2009). A GIS approach to estimation of building population for micro-spatial analysis. Transactions in GIS, 13(4), 401-414. https://doi.org/10.1111/j.1467-9671.2009.01171.x
+
+Mennis, J. (2003). Generating surface models of population using dasymetric mapping. The Professional Geographer, 55(1), 31-42. https://doi.org/10.1111/0033-0124.10042
+
+Ministry of Transport. (2024, October 15). Response by Senior Minister of State for Transport Dr Amy Khor to adjournment motion on realising the vision of a 45-minute city under the Land Transport Master Plan 2040 in the West of Singapore [Speech]. https://www.mot.gov.sg/news/details/response-by-senior-minister-of-state-for-transport--dr-amy-khor-to-adjournment-motion-on--realising-the-vision-of-a-45-minute-city-under-the-land-transport-master-plan-2040-in-the-west-of-singapore 
+
 Nakanishi, M., & Cooper, L. G. (1974). Parameter estimation for a multiplicative competitive interaction model: Least squares approach. *Journal of Marketing Research, 11*(3), 303-311. https://doi.org/10.2307/3151146
+
+Olszewski, P., & Wibowo, S. S. (2005). Using equivalent walking distance to assess pedestrian accessibility to transit stations in Singapore. Transportation Research Record, 1927(1), 38-45. https://doi.org/10.1177/0361198105192700105
 
 Orpana, T., & Lampinen, J. (2003). Building spatial choice models from aggregate data. *Journal of Regional Science, 43*(2), 319-348. https://doi.org/10.1111/1467-9787.00301
 

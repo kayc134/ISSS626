@@ -2319,7 +2319,7 @@ Across the whole island the two effects largely cancel, which is why the two map
 
 **Objective 3: impact on existing stations.** The impact is concentrated along the new lines and fades within about 3 km. The largest losses are on the East-West Line between Jurong East and Joo Koon and on the North-South Line around Bukit Batok. Among the interchanges that gain a line, the CRL interchanges at Hougang, Ang Mo Kio and Bright Hill gain riders. The JRL interchanges at Boon Lay, Jurong East and Choa Chu Kang lose tap-ins, but they will carry new transfer traffic that tap-ins do not measure. Beyond the new corridors, the predicted changes reflect a small background loss that comes from the model's structure rather than real competition.
 
-# 7. Value-Added Analysis: Change in Access to MRT/LRT
+## 7. Value-Added Analysis: Change in Access to MRT/LRT
 
 Sections 5 and 6 view the new lines from the stations' side: how many riders each station gains or loses. This section views them from the residents' side: how much rail service each hexagon can reach, after accounting for the other residents competing for the same stations. This links the exercise to urban sustainability, as it shows which communities gain access to rail and whether the new lines reach areas that were poorly served. It also relates to the government's target of 8 in 10 households being within a 10-minute walk of a train station by the 2030s (Ministry of Transport, 2024).
 

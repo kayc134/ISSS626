@@ -140,7 +140,7 @@
 
 <section id="title-slide" class="quarto-title-block center">
   <h1 class="title">Executive Summary: Geospatial Analytics for Urban Sustainability</h1>
-  <p class="subtitle">Predicting Ridership on the Jurong Region Line and Cross Island Line Phase 1</p>
+  <p class="subtitle">Predicting Ridership on the Jurong Region Line and Cross Island Line</p>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -152,20 +152,60 @@ Chia Ka Ying
 
   <p class="date">2026-11-14</p>
 </section>
+<section id="contents" class="slide level2 smaller scrollable">
+<h2>Contents</h2>
+<ol type="1">
+<li><a href="#/context">Context &amp; Research Questions</a></li>
+<li><a href="#/data">Study Area &amp; Data</a></li>
+<li><a href="#/approach">Analytical Approach</a></li>
+<li><a href="#/model">Calibrating the Model</a></li>
+<li><a href="#/new-stations">Ridership at the New Stations</a></li>
+<li><a href="#/impact">Impact on Existing Stations &amp; Market Areas</a></li>
+<li><a href="#/access">Value-Added: Who Gains Access to Rail</a></li>
+<li><a href="#/gaps">Value-Added: Where Gaps Remain</a></li>
+<li><a href="#/implications">Implications &amp; Recommendations</a></li>
+<li><a href="#/limitations">Limitations &amp; Key References</a></li>
+</ol>
+</section>
 <section id="context" class="slide level2 smaller">
 <h2>1. Context &amp; Research Questions</h2>
-<p>By 2030, the <strong>Jurong Region Line (JRL, 24 stations)</strong> and <strong>Cross Island Line Phase 1 (CRL, 12 stations)</strong> will add 36 stations to Singapore’s rail network. Stations built ahead of demand carry operating costs with few riders: Hume station stood unopened for a decade because projected ridership did not justify it. New stations also compete with existing ones for the same residents.</p>
+<p>By 2030, the <strong>Jurong Region Line (JRL, 24 stations)</strong> and <strong>Cross Island Line Phase 1 (CRL, 12 stations)</strong> will add 36 stations to Singapore’s rail network. Stations built ahead of demand carry operating costs with few riders: Hume station stood unopened for a decade because projected ridership did not justify it. New stations also compete with existing ones, and the government aims for <strong>8 in 10 households to be within a 10-minute walk of a train station by the 2030s</strong>.</p>
 <ul>
 <li><strong>RQ1:</strong> How well does a calibrated probabilistic spatial interaction model explain weekday morning-peak ridership at existing stations, and which station attributes matter beyond distance?</li>
-<li><strong>RQ2:</strong> What ridership can be expected at the 36 JRL and CRL stations, and which are at risk of low ridership?</li>
+<li><strong>RQ2:</strong> What ridership can be expected at the JRL and CRL Phase 1 stations, and which are at risk of low ridership?</li>
 <li><strong>RQ3:</strong> How will the new stations redistribute the ridership and market areas of existing stations?</li>
-<li><strong>Value-added:</strong> Which communities gain access to rail, and does the expansion reach the areas that are least served today?</li>
+<li><strong>RQ4 (value-added):</strong> How will the new lines change residents’ access to stations within walking distance, where will residents remain beyond walking distance, and do the new stations open ahead of the populations they serve?</li>
 </ul>
 </section>
+<section id="data" class="slide level2 smaller">
+<h2>2. Study Area &amp; Data</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>Study area</strong></p>
+<ul>
+<li><strong>Mainland Singapore</strong>: offshore islands excluded, as they have no HDB flats and no MRT/LRT stations.</li>
+<li><strong>500 m hexagons</strong> as origins: <strong>1,211 populated hexagons</strong> of 3,318.</li>
+</ul>
+<p><strong>Data</strong></p>
+<ul>
+<li><strong>Residents aged 15–64</strong> (SingStat, June 2026): about 2.84 million, placed on HDB blocks by flats and on private housing land by area. No values imputed; subzone totals kept exactly.</li>
+<li><strong>Ridership:</strong> average weekday <strong>7–9am tap-ins</strong>, July–September 2026 (LTA DataMall).</li>
+<li><strong>Stations:</strong> <strong>184 existing</strong>, <strong>29 new</strong>; 7 existing stations gain a JRL or CRL line.</li>
+<li><strong>Attractiveness:</strong> lines, MRT or LRT, bus stops and interchanges, and shops, food, schools, healthcare and community facilities within 400 m (LTA, OpenStreetMap).</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/m_stations.png" style="width:95.0%"></p>
+<figcaption>The JRL serves the west, the CRL the north-east and east; seven existing stations become interchanges</figcaption>
+</figure>
+</div>
+</div></div>
+</section>
 <section id="approach" class="slide level2 smaller">
-<h2>2. Data &amp; Approach</h2>
+<h2>3. Analytical Approach</h2>
 <div class="panel-tabset">
-<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Workflow</a></li><li><a href="#tabset-1-2">Data</a></li><li><a href="#tabset-1-3">Methods</a></li></ul>
+<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Workflow</a></li><li><a href="#tabset-1-2">Methods</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1">
 <div class="cell" data-reveal="true" data-fig-width="12" data-layout-align="default">
@@ -175,14 +215,14 @@ Chia Ka Ying
 <div>
 <pre class="mermaid mermaid-js">%%{init: {"theme": "neutral", "themeVariables": {"fontSize": "20px"}, "flowchart": {"nodeSpacing": 15, "rankSpacing": 20}}}%%
 flowchart LR
-  P1["SingStat residents&lt;br/&gt;aged 15-64&lt;br/&gt;by subzone"] --&gt; P2["Placed on HDB blocks&lt;br/&gt;and private housing&lt;br/&gt;land (dasymetric)"]
+  P1["SingStat residents&lt;br/&gt;aged 15–64&lt;br/&gt;by subzone"] --&gt; P2["Placed on HDB blocks&lt;br/&gt;and private housing&lt;br/&gt;land (dasymetric)"]
   P2 --&gt; P3["500 m hexagons&lt;br/&gt;1,211 populated&lt;br/&gt;origins"]
-  T1["LTA passenger volume&lt;br/&gt;Jul-Sep 2026"] --&gt; T2["Weekday 7-9am&lt;br/&gt;tap-ins at&lt;br/&gt;184 stations"]
+  T1["LTA passenger volume&lt;br/&gt;Jul–Sep 2026"] --&gt; T2["Weekday 7–9am&lt;br/&gt;tap-ins at&lt;br/&gt;184 stations"]
   P3 --&gt; M["Huff / MCI model&lt;br/&gt;calibrated on&lt;br/&gt;station totals"]
   T2 --&gt; M
-  M --&gt; O1["Predict 29 new&lt;br/&gt;stations (213 in total)"]
+  M --&gt; O1["Predict 29 new&lt;br/&gt;stations"]
   M --&gt; O2["Impact on existing&lt;br/&gt;stations and&lt;br/&gt;market areas"]
-  M --&gt; O3["Change in access&lt;br/&gt;to rail (Huff-2SFCA)"]
+  M --&gt; O3["Huff-2SFCA access,&lt;br/&gt;remaining gaps,&lt;br/&gt;opening timing"]
   classDef data fill:#dbe9f6,stroke:#2c7bb6,color:#000
   classDef model fill:#e3f1df,stroke:#4d9221,color:#000
   classDef out fill:#fde0c5,stroke:#e66101,color:#000
@@ -197,24 +237,6 @@ flowchart LR
 </div>
 </div>
 <div id="tabset-1-2">
-<div class="columns">
-<div class="column" style="width:50%;">
-<ul>
-<li><strong>Origins:</strong> 2.84 million residents aged 15-64 (June 2026), spread onto HDB blocks by flats and onto private housing land by area, then summed into <strong>1,211 populated hexagons</strong>.</li>
-<li><strong>Destinations:</strong> <strong>184 existing</strong> MRT/LRT stations, plus <strong>29 new</strong> stations; 7 existing stations gain a JRL or CRL line.</li>
-<li><strong>Observed ridership:</strong> average weekday <strong>7-9am tap-ins</strong>, July-September 2026.</li>
-<li><strong>Attractiveness:</strong> lines served, MRT or LRT, bus stops and bus interchanges, and nearby shops, food, schools, healthcare and community facilities within 400 m.</li>
-</ul>
-</div><div class="column" style="width:50%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="images/m_stations.png" style="width:95.0%"></p>
-<figcaption>Existing stations, the seven interchanges gaining a line, and the 29 new stations</figcaption>
-</figure>
-</div>
-</div></div>
-</div>
-<div id="tabset-1-3">
 <table class="caption-top">
 <colgroup>
 <col style="width: 50%">
@@ -232,20 +254,24 @@ flowchart LR
 <td>Probability that residents of each hexagon use each station, from distance and station attractiveness</td>
 </tr>
 <tr class="even">
+<td><strong>Null model (M0)</strong></td>
+<td>Distance alone, with the conventional decay of −2, as a reference</td>
+</tr>
+<tr class="odd">
 <td><strong>Calibration on station totals</strong></td>
 <td>Distance decay and attribute exponents fitted to observed tap-ins, as origin-to-station flows are not available</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><strong>Holdout validation</strong></td>
-<td>12 recently opened stations predicted as if new, to test predictions before opening</td>
+<td>12 recently opened stations predicted as if new</td>
+</tr>
+<tr class="odd">
+<td><strong>Before-and-after comparison</strong></td>
+<td>Same model and population with the existing and future networks</td>
 </tr>
 <tr class="even">
-<td><strong>Before-and-after comparison</strong></td>
-<td>Same model and population with the existing and future networks, so changes are due only to the new stations</td>
-</tr>
-<tr class="odd">
-<td><strong>Huff-2SFCA</strong></td>
-<td>Rail lines per resident reachable within 800 m, before and after</td>
+<td><strong>Huff-2SFCA (value-added)</strong></td>
+<td>Rail lines per resident within 800 m, before and after; remaining gaps against the 8-in-10 target</td>
 </tr>
 </tbody>
 </table>
@@ -254,7 +280,7 @@ flowchart LR
 </div>
 </section>
 <section id="model" class="slide level2 smaller">
-<h2>3. Calibrating the Model</h2>
+<h2>4. Calibrating the Model</h2>
 <div class="panel-tabset">
 <ul id="tabset-2" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-2-1">Model comparison</a></li><li><a href="#tabset-2-2">What attracts residents</a></li><li><a href="#tabset-2-3">Holdout test</a></li></ul>
 <div class="tab-content">
@@ -343,8 +369,8 @@ flowchart LR
 </div><div class="column" style="width:50%;">
 <ul>
 <li>Residents keep strongly to their <strong>nearest station</strong> (λ = −2.52, 95% CI −2.74 to −2.29).</li>
-<li>Beyond distance, residents choose a station for <strong>how well it connects them onward</strong>, not for what lies around it.</li>
-<li>Largest errors: stations used mainly by <strong>non-residents</strong> (Tuas, Kranji) and <strong>destination</strong> stations (Expo, Keppel).</li>
+<li>Beyond distance, residents choose a station for <strong>how well it connects them onward</strong>.</li>
+<li>Largest errors: stations used by <strong>non-residents</strong> (Tuas, Kranji, Changi Airport) and <strong>destination</strong> stations (Expo, Keppel).</li>
 </ul>
 </div></div>
 </div>
@@ -360,7 +386,11 @@ flowchart LR
 </div>
 </section>
 <section id="new-stations" class="slide level2 smaller">
-<h2>4. Ridership at the New Stations</h2>
+<h2>5. Ridership at the New Stations</h2>
+<div class="panel-tabset">
+<ul id="tabset-3" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-3-1">Predictions</a></li><li><a href="#tabset-3-2">By opening stage</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1">
 <div class="columns">
 <div class="column" style="width:55%;">
 <div class="quarto-figure quarto-figure-center">
@@ -373,18 +403,72 @@ flowchart LR
 <ul>
 <li>The 29 new stations are predicted to carry about <strong>69,000</strong> morning tap-ins a day, <strong>12.1%</strong> of the network.</li>
 <li><strong>Busiest:</strong> Serangoon North (≈7,000), Pasir Ris East (≈6,400) and Choa Chu Kang West (≈6,100), all in established housing areas.</li>
-<li><strong>9 stations</strong> fall below the benchmark of <strong>844 tap-ins</strong>, almost exactly Hume’s ridership: Aviation Park, Jurong Pier, Peng Kang Hill, Jurong Hill, Nanyang Gateway, Nanyang Crescent, Tawas, Tukang and Tengah.</li>
-<li>Most serve <strong>industrial estates, NTU or the airport area</strong>, where riders are workers and students who are not in the resident data. <strong>Six have no residents within 800 m.</strong></li>
-<li>The list barely changes when distance decay is varied (rank correlation ≥ 0.98).</li>
+<li><strong>Nine stations</strong> fall below the benchmark of <strong>844 tap-ins</strong>, almost exactly Hume’s ridership.</li>
+<li>Most serve <strong>industrial estates, NTU or the airport area</strong>, where riders are workers and students not in the resident data.</li>
+<li>The ranking barely changes when distance decay is varied (rank correlation ≥ 0.97).</li>
 </ul>
 </div></div>
+</div>
+<div id="tabset-3-2">
+<table class="caption-top">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Stage</th>
+<th>Opens</th>
+<th>New stations</th>
+<th>Below benchmark</th>
+<th>Median predicted</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>JRL Stage 1</td>
+<td>2028</td>
+<td>8</td>
+<td>2 (Tawas, Tengah)</td>
+<td>2,714</td>
+</tr>
+<tr class="even">
+<td>JRL Stage 2</td>
+<td>2028</td>
+<td>6</td>
+<td>0</td>
+<td>2,799</td>
+</tr>
+<tr class="odd">
+<td><strong>JRL Stage 3</strong></td>
+<td><strong>2029</strong></td>
+<td><strong>7</strong></td>
+<td><strong>6</strong></td>
+<td><strong>327</strong></td>
+</tr>
+<tr class="even">
+<td>CRL Phase 1</td>
+<td>2030</td>
+<td>8</td>
+<td>1 (Aviation Park)</td>
+<td>3,111</td>
+</tr>
+</tbody>
+</table>
+<p><strong>JRL Stage 3 opens ahead of its demand.</strong> Six of its seven stations serve NTU and Jurong’s industrial estates, and five have <strong>no residents within 800 m</strong>. Tengah also opens while its new town is still filling, and Aviation Park opens in 2030, before Changi Terminal 5 in the mid-2030s.</p>
+</div>
+</div>
+</div>
 </section>
 <section id="impact" class="slide level2 smaller">
-<h2>5. Impact on Existing Stations</h2>
+<h2>6. Impact on Existing Stations &amp; Market Areas</h2>
 <div class="panel-tabset">
-<ul id="tabset-3" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-3-1">Map</a></li><li><a href="#tabset-3-2">Interchanges</a></li><li><a href="#tabset-3-3">By distance</a></li></ul>
+<ul id="tabset-4" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-4-1">Station impact</a></li><li><a href="#tabset-4-2">Interchanges</a></li><li><a href="#tabset-4-3">Market areas</a></li></ul>
 <div class="tab-content">
-<div id="tabset-3-1">
+<div id="tabset-4-1">
 <div class="columns">
 <div class="column" style="width:55%;">
 <div class="quarto-figure quarto-figure-center">
@@ -395,13 +479,13 @@ flowchart LR
 </div>
 </div><div class="column" style="width:45%;">
 <ul>
-<li>Largest losses on the <strong>East-West Line in Jurong</strong>: Chinese Garden (−58%), Lakeside (−56%) and Pioneer (−55%), whose residents gain a JRL station closer to home.</li>
-<li>On the CRL, losses at <strong>Kovan, Tampines East, Mayflower and Upper Thomson</strong> (−23% to −29%).</li>
-<li>Joo Koon and Gul Circle show the largest losses, but their riders are mostly workers the model does not represent.</li>
+<li>Largest losses on the <strong>East-West Line in Jurong</strong>: Chinese Garden (−58%), Lakeside (−56%) and Pioneer (−55%).</li>
+<li>On the CRL corridor: Kovan, Tampines East, Mayflower and Upper Thomson (−23% to −29%).</li>
+<li>The impact <strong>fades within about 3 km</strong>. Beyond 5 km, a <strong>−6% background</strong> loss is a property of the model, not real competition.</li>
 </ul>
 </div></div>
 </div>
-<div id="tabset-3-2">
+<div id="tabset-4-2">
 <table class="caption-top">
 <colgroup>
 <col style="width: 20%">
@@ -471,56 +555,9 @@ flowchart LR
 </tr>
 </tbody>
 </table>
-<p><strong>CRL interchanges gain</strong> riders from the extra line. <strong>JRL interchanges lose tap-ins</strong> because their riders can board closer to home, but they will carry new <strong>transfer traffic</strong>, which tap-ins do not measure.</p>
+<p><strong>CRL interchanges gain</strong> riders from the extra line. <strong>JRL interchanges lose tap-ins</strong> but will carry new <strong>transfer traffic</strong>, which tap-ins do not measure.</p>
 </div>
-<div id="tabset-3-3">
-<div class="columns">
-<div class="column" style="width:55%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="images/p_dist.png" style="width:95.0%"></p>
-<figcaption>The impact fades within about 3 km of a new station</figcaption>
-</figure>
-</div>
-</div><div class="column" style="width:45%;">
-<table class="caption-top">
-<thead>
-<tr class="header">
-<th>Distance to new station</th>
-<th>Median change</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>1-2 km</td>
-<td>−25.6%</td>
-</tr>
-<tr class="even">
-<td>2-3 km</td>
-<td>−12.9%</td>
-</tr>
-<tr class="odd">
-<td>3-5 km</td>
-<td>−6.5%</td>
-</tr>
-<tr class="even">
-<td>Over 5 km</td>
-<td>−6.1%</td>
-</tr>
-</tbody>
-</table>
-<p>The <strong>−6% background</strong> beyond 5 km is a property of the model: a new station draws proportionally from every station. Only losses well beyond it reflect real competition.</p>
-</div></div>
-</div>
-</div>
-</div>
-</section>
-<section id="market-areas" class="slide level2 smaller">
-<h2>6. Shifting Market Areas</h2>
-<div class="panel-tabset">
-<ul id="tabset-4" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-4-1">Share to new stations</a></li><li><a href="#tabset-4-2">Most likely station</a></li></ul>
-<div class="tab-content">
-<div id="tabset-4-1">
+<div id="tabset-4-3">
 <div class="columns">
 <div class="column" style="width:55%;">
 <div class="quarto-figure quarto-figure-center">
@@ -532,25 +569,8 @@ flowchart LR
 </div><div class="column" style="width:45%;">
 <ul>
 <li><strong>87 hexagons</strong> are predicted to send more than half of their morning trips to a new station, and <strong>162</strong> more than a quarter.</li>
-<li>They are concentrated in <strong>Tengah and Jurong West</strong> on the JRL, and around <strong>Serangoon North, Tavistock, Tampines North and Pasir Ris East</strong> on the CRL.</li>
-<li>Away from the new lines, the share is under 5%.</li>
-</ul>
-</div></div>
-</div>
-<div id="tabset-4-2">
-<div class="columns">
-<div class="column" style="width:55%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="images/m_area.png" style="width:95.0%"></p>
-<figcaption>147 hexagons change their most likely station</figcaption>
-</figure>
-</div>
-</div><div class="column" style="width:45%;">
-<ul>
-<li><strong>112 hexagons</strong> are taken over by a new station.</li>
-<li><strong>35</strong> switch to another existing station, and <strong>every one</strong> switches to one of the seven interchanges gaining a line. An extra line extends an interchange’s market area into its neighbours’.</li>
-<li>Where a new station takes most trips, residents gain a clear nearest station. Where it takes a partial share, residents become more evenly split between stations.</li>
+<li><strong>147 hexagons</strong> change their most likely station: <strong>112</strong> to a new station, and <strong>35</strong> to one of the seven interchanges gaining a line.</li>
+<li>Concentrated in <strong>Tengah and Jurong West</strong> on the JRL, and around <strong>Serangoon North, Tavistock, Tampines North and Pasir Ris East</strong> on the CRL.</li>
 </ul>
 </div></div>
 </div>
@@ -558,9 +578,9 @@ flowchart LR
 </div>
 </section>
 <section id="access" class="slide level2 smaller">
-<h2>7. Value-Added: Access to Rail</h2>
+<h2>7. Value-Added: Who Gains Access to Rail</h2>
 <div class="panel-tabset">
-<ul id="tabset-5" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-5-1">Change in access</a></li><li><a href="#tabset-5-2">Before and after</a></li><li><a href="#tabset-5-3">Planning areas</a></li></ul>
+<ul id="tabset-5" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-5-1">Change in access</a></li><li><a href="#tabset-5-2">Planning areas</a></li></ul>
 <div class="tab-content">
 <div id="tabset-5-1">
 <div class="columns">
@@ -573,22 +593,14 @@ flowchart LR
 </div>
 </div><div class="column" style="width:45%;">
 <ul>
-<li>Residents within <strong>800 m</strong> of a station: <strong>71.6% → 79.7%</strong>, about <strong>229,000</strong> more people.</li>
+<li><strong>Huff-2SFCA:</strong> rail lines per resident within <strong>800 m</strong>, sharing each resident’s demand among reachable stations using the calibrated Huff probabilities.</li>
+<li>Residents within 800 m of a station: <strong>71.6% → 79.7%</strong>, about <strong>229,000</strong> more people.</li>
 <li><strong>80 hexagons</strong> gain a station within 800 m for the first time.</li>
-<li>Areas away from the new lines are unchanged. Unlike the ridership model, this measure has <strong>no background effect</strong>.</li>
-<li>Related target: 8 in 10 households within a 10-minute walk of a station by the 2030s (Ministry of Transport, 2024).</li>
+<li>Areas away from the new lines are unchanged: unlike the ridership model, this measure has <strong>no background effect</strong>.</li>
 </ul>
 </div></div>
 </div>
 <div id="tabset-5-2">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="images/m_access.png" style="width:100.0%"></p>
-<figcaption>Grey gaps with no station within 800 m fill in along the JRL and CRL corridors</figcaption>
-</figure>
-</div>
-</div>
-<div id="tabset-5-3">
 <table class="caption-top">
 <colgroup>
 <col style="width: 25%">
@@ -637,13 +649,61 @@ flowchart LR
 </tr>
 </tbody>
 </table>
-<p>Access in rail lines per 100,000 residents aged 15-64. The <strong>same five planning areas</strong> gain most with a 1 km catchment, in the same order.</p>
+<p>Access in rail lines per 100,000 residents aged 15–64. With a <strong>1 km</strong> catchment, the same five areas gain most, <strong>in the same order</strong>.</p>
 </div>
 </div>
 </div>
 </section>
+<section id="gaps" class="slide level2 smaller">
+<h2>8. Value-Added: Where Gaps Remain</h2>
+<div class="columns">
+<div class="column" style="width:55%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/m_gaps.png" style="width:95.0%"></p>
+<figcaption>Dense HDB towns away from the new lines remain beyond walking distance</figcaption>
+</figure>
+</div>
+</div><div class="column" style="width:45%;">
+<ul>
+<li><strong>79.7%</strong> of residents are within 800 m <em>in a straight line</em>. Walking distances are longer, so the network reaches the <strong>8-in-10 target</strong> rather than clearly passing it.</li>
+<li><strong>576,000 residents</strong> remain beyond 800 m, in three groups:</li>
+</ul>
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Group</th>
+<th>Where</th>
+<th>Residents beyond 800 m</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Dense HDB towns, no new line</strong></td>
+<td>Yishun (62% of residents), Hougang, Woodlands, Tampines</td>
+<td><strong>423,800 (74%)</strong></td>
+</tr>
+<tr class="even">
+<td><strong>Reached by 2032</strong></td>
+<td>Clementi, Pasir Ris, Bukit Timah, Punggol (CRL Phase 2, Punggol Extension)</td>
+<td>94,100</td>
+</tr>
+<tr class="odd">
+<td><strong>Low-density private estates</strong></td>
+<td>Serangoon, Ang Mo Kio, Queenstown</td>
+<td>Few per hexagon</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+</section>
 <section id="implications" class="slide level2 smaller">
-<h2>8. Implications &amp; Recommendations</h2>
+<h2>9. Implications &amp; Recommendations</h2>
 <table class="caption-top">
 <colgroup>
 <col style="width: 33%">
@@ -659,35 +719,36 @@ flowchart LR
 </thead>
 <tbody>
 <tr class="odd">
-<td><strong>Verify low demand before deciding</strong></td>
-<td>9 low-ridership stations (Aviation Park, Jurong Pier, Jurong Hill, Nanyang Gateway, Nanyang Crescent, Peng Kang Hill, Tawas, Tukang, Tengah)</td>
-<td>Estimate worker, student and dormitory demand, which this model omits, before decisions on opening dates or service levels</td>
+<td><strong>1. Close the largest remaining gaps</strong></td>
+<td>Yishun, Hougang, Woodlands, Tampines: dense HDB towns that no new line reaches</td>
+<td>Covered linkways to 800 m and direct feeder buses now; candidates for infill stations or future line alignments</td>
 </tr>
 <tr class="even">
-<td><strong>Plan for ramp-up</strong></td>
-<td>All new stations</td>
-<td>Expect ridership well below predictions in the first months; phase in service levels as ridership builds up</td>
+<td><strong>2. Bridge until 2032</strong></td>
+<td>Clementi, Pasir Ris, Bukit Timah, Punggol</td>
+<td>Interim feeder services until CRL Phase 2 and the Punggol Extension open; no further rail planning needed</td>
 </tr>
 <tr class="odd">
-<td><strong>Feeder bus review</strong></td>
-<td>Jurong East-West Line stations (Chinese Garden, Lakeside, Pioneer) and Bukit Batok</td>
-<td>Adjust feeder services as residents switch to JRL stations nearer home</td>
+<td><strong>3. Right mode, not rail everywhere</strong></td>
+<td>Serangoon, Ang Mo Kio, Queenstown: low-density private estates</td>
+<td>Buses, cycling paths and sheltered walkways; a station would fall below the ridership benchmark</td>
 </tr>
 <tr class="even">
-<td><strong>Interchange capacity</strong></td>
-<td>Bright Hill, Hougang, Ang Mo Kio (tap-in growth); Boon Lay, Jurong East, Choa Chu Kang (transfers)</td>
+<td><strong>4. Match service to development</strong></td>
+<td>JRL Stage 3 (6 of 7 below benchmark), Tengah, Aviation Park</td>
+<td>Estimate student and worker demand; start with lower frequencies and raise them as development completes; time future infill stations to housing completions</td>
+</tr>
+<tr class="odd">
+<td><strong>5. Prepare interchanges</strong></td>
+<td>Bright Hill, Hougang (tap-ins); Boon Lay, Jurong East, Choa Chu Kang (transfers)</td>
 <td>Size platforms and concourses for both tap-ins and transfer flows</td>
-</tr>
-<tr class="odd">
-<td><strong>Prioritise the least served</strong></td>
-<td>Tengah, Jurong West, Pasir Ris</td>
-<td>Rail access improves most here; align walking and cycling links to the new stations so residents can reach them</td>
 </tr>
 </tbody>
 </table>
+<p>Keppel (41 morning tap-ins a day) and Hume (843) show how slowly ridership builds where stations open ahead of development.</p>
 </section>
 <section id="limitations" class="slide level2 smaller">
-<h2>9. Limitations &amp; Key References</h2>
+<h2>10. Limitations &amp; Key References</h2>
 <div class="panel-tabset">
 <ul id="tabset-6" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-6-1">Limitations</a></li><li><a href="#tabset-6-2">Key References</a></li></ul>
 <div class="tab-content">
@@ -695,23 +756,25 @@ flowchart LR
 <ul>
 <li><strong>Residents only:</strong> foreign workers, students in hostels and cross-border commuters are not in the SingStat data, so industrial and campus stations are likely under-predicted.</li>
 <li><strong>Morning tap-ins only:</strong> transfers between lines and a station’s role as a destination are not measured.</li>
-<li><strong>Population fixed at June 2026:</strong> future housing in Tengah and Jurong Lake District is not included, so predictions there are conservative.</li>
+<li><strong>Population fixed at June 2026:</strong> future housing in Tengah and Jurong Lake District is not included.</li>
 <li><strong>Calibrated on station totals:</strong> 184 stations for 10 parameters, with straight-line distances and no walking network or feeder buses.</li>
 <li><strong>Immediate switching assumed:</strong> the holdout test shows real ridership builds up gradually.</li>
 <li><strong>Background loss:</strong> the model spreads a new station’s riders across every station, so small losses far from the new lines are not real.</li>
+<li><strong>Access measure:</strong> an LRT line counts as much as an MRT line; gaps are matched to lines under construction by planning area.</li>
 </ul>
 </div>
 <div id="tabset-6-2">
 <ul>
-<li>De Beule, M., Van den Poel, D., &amp; Van de Weghe, N. (2014). An extended Huff-model for robustly benchmarking and predicting retail network performance. <em>Applied Geography, 46</em>, 80-89. https://doi.org/10.1016/j.apgeog.2013.09.026</li>
-<li>Huff, D. L. (1964). Defining and estimating a trading area. <em>Journal of Marketing, 28</em>(3), 34-38. https://doi.org/10.2307/1249154</li>
+<li>De Beule, M., Van den Poel, D., &amp; Van de Weghe, N. (2014). An extended Huff-model for robustly benchmarking and predicting retail network performance. <em>Applied Geography, 46</em>, 80–89. https://doi.org/10.1016/j.apgeog.2013.09.026</li>
+<li>Huff, D. L. (1964). Defining and estimating a trading area. <em>Journal of Marketing, 28</em>(3), 34–38. https://doi.org/10.2307/1249154</li>
 <li>Kam, T. S. (2026). <em>R for geospatial data science and analytics</em>. https://r4gdsa.netlify.app/</li>
-<li>Luo, J. (2014). Integrating the Huff model and floating catchment area methods to analyze spatial access to healthcare services. <em>Transactions in GIS, 18</em>(3), 436-448. https://doi.org/10.1111/tgis.12096</li>
-<li>Ministry of Transport. (2024, October 15). <em>Response by Senior Minister of State for Transport Dr Amy Khor to adjournment motion on realising the vision of a 45-minute city under the Land Transport Master Plan 2040 in the West of Singapore</em> [Speech].</li>
-<li>Nakanishi, M., &amp; Cooper, L. G. (1974). Parameter estimation for a multiplicative competitive interaction model: Least squares approach. <em>Journal of Marketing Research, 11</em>(3), 303-311. https://doi.org/10.2307/3151146</li>
-<li>Olszewski, P., &amp; Wibowo, S. S. (2005). Using equivalent walking distance to assess pedestrian accessibility to transit stations in Singapore. <em>Transportation Research Record, 1927</em>(1), 38-45. https://doi.org/10.1177/0361198105192700105</li>
-<li>Orpana, T., &amp; Lampinen, J. (2003). Building spatial choice models from aggregate data. <em>Journal of Regional Science, 43</em>(2), 319-348. https://doi.org/10.1111/1467-9787.00301</li>
-<li>Wieland, T. (2017). Market area analysis for retail and service locations with MCI. <em>The R Journal, 9</em>(1), 298-323. https://doi.org/10.32614/RJ-2017-020</li>
+<li>Land Transport Authority. (n.d.). <em>Cross Island Line</em>. https://www.lta.gov.sg/content/ltagov/en/upcoming_projects/rail_expansion/cross_island_line.html</li>
+<li>Luo, J. (2014). Integrating the Huff model and floating catchment area methods to analyze spatial access to healthcare services. <em>Transactions in GIS, 18</em>(3), 436–448. https://doi.org/10.1111/tgis.12096</li>
+<li>Nakanishi, M., &amp; Cooper, L. G. (1974). Parameter estimation for a multiplicative competitive interaction model: Least squares approach. <em>Journal of Marketing Research, 11</em>(3), 303–311. https://doi.org/10.2307/3151146</li>
+<li>Olszewski, P., &amp; Wibowo, S. S. (2005). Using equivalent walking distance to assess pedestrian accessibility to transit stations in Singapore. <em>Transportation Research Record, 1927</em>(1), 38–45. https://doi.org/10.1177/0361198105192700105</li>
+<li>Orpana, T., &amp; Lampinen, J. (2003). Building spatial choice models from aggregate data. <em>Journal of Regional Science, 43</em>(2), 319–348. https://doi.org/10.1111/1467-9787.00301</li>
+<li>Urban Redevelopment Authority. (n.d.). <em>Convenient &amp; people-centric journeys</em> [Master Plan 2025]. https://www.ura.gov.sg/land-planning/master-plan/master-plan-2025/themes/shaping-a-happy-healthy-city/convenient-and-people-centric-journeys/</li>
+<li>Wieland, T. (2017). Market area analysis for retail and service locations with MCI. <em>The R Journal, 9</em>(1), 298–323. https://doi.org/10.32614/RJ-2017-020</li>
 <li>Zhu, Z., He, Y., Guo, X., Zhang, Y., &amp; Chen, J. (2021). Improved Huff model for estimating urban rail transit station catchment areas considering station choices. <em>Journal of Advanced Transportation, 2021</em>, Article 6374724. https://doi.org/10.1155/2021/6374724</li>
 </ul>
 </div>

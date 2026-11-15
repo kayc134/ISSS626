@@ -34,12 +34,14 @@ This exercise develops an analytical framework for station-level ridership predi
 - Calibrate a probabilistic spatial interaction model for station-level ridership estimation.
 - Predict the potential ridership of the proposed JRL and CRL Phase 1 stations.
 - Evaluate the potential impact of the new stations on the ridership and market areas of existing stations.
+- Assess how the new lines change residents' access to stations within walking distance, and where gaps remain against the government's target.
 
 ### 2.2 Research Questions
 
 - **RQ1:** How well does a calibrated probabilistic spatial interaction model explain the observed weekday morning-peak ridership of existing MRT and LRT stations, and which station attributes matter beyond distance?
 - **RQ2:** What ridership can be expected at the 36 proposed JRL and CRL Phase 1 stations, and which stations are at risk of low ridership?
 - **RQ3:** How will the new stations redistribute the market areas and ridership of existing stations?
+- **RQ4 (value-added):** How will the new lines change residents' access to stations within walking distance, where will residents remain beyond walking distance, and do the new stations open ahead of the populations they serve?
 
 ### 2.3 Model Components
 
@@ -1790,12 +1792,11 @@ resid_m2 %>% st_drop_geometry() %>% arrange(desc(ratio)) %>% head(6)
 
 Most stations are predicted within a factor of two. The largest errors form clear groups, each with a plausible explanation outside the model:
 
-- **Strongly under-predicted: the Tuas stations and Kranji.** These record far more morning tap-ins than their resident population can explain. The Tuas stations serve industrial estates with foreign-worker dormitories, and Kranji is the first station for many workers crossing from Johor Bahru by bus. Neither group is in the SingStat resident population, which covers citizens and permanent residents only.
-- **Also under-predicted: Changi Airport and Newton.** Changi Airport's morning tap-ins come largely from airport workers and travellers rather than nearby residents. Newton's may include residents not captured in the population data, such as non-residents renting nearby condominiums.
-- **Strongly over-predicted: Expo, Keppel and Labrador Park.** These are mainly destination stations, for an exhibition centre, a port and business park area, and a waterfront park. Nearby residents tend to board elsewhere, and the model has no way to represent a station's role as a destination.
-- **Over-predicted: some LRT stations, such as Teck Lee and Renjong.** Even with the `mrt` variable, the model cannot fully capture how little some LRT stations are used, for example where residents can walk directly to an MRT station instead.
+- **Under-predicted: the Tuas stations, Kranji, Changi Airport and Newton.** These record far more morning tap-ins than their residents can explain. The Tuas stations serve industrial estates with foreign-worker dormitories, Kranji is the first station for many workers crossing from Johor Bahru, and Changi Airport serves airport workers and travellers. None of these groups is in the SingStat resident population, which covers citizens and permanent residents only. Newton's riders may include non-residents renting nearby condominiums.
+- **Over-predicted: Expo, Keppel and Labrador Park.** These are mainly destinations, for an exhibition centre, a port and business park area, and a waterfront park. The model cannot represent a station's role as a destination.
+- **Over-predicted: some LRT stations, such as Teck Lee and Renjong.** Even with the `mrt` variable, the model cannot fully capture how little some LRT stations are used where residents can walk directly to an MRT station.
 
-These patterns point to two limitations: **non-resident populations are missing**, and **morning tap-ins measure only one direction of travel**. Both matter for the new stations in Section 6.
+These patterns point to two limitations: non-resident populations are missing, and morning tap-ins measure only one direction of travel. Both matter for the new stations in Section 6.
 
 ### 5.8 Holdout Validation: Predicting Recently Opened Stations
 
@@ -1941,15 +1942,15 @@ p_new <- ggplot(new_pred, aes(y = reorder(station, central))) +
 p_new
 ```
 
-Of the 29 new stations, `r sum(new_pred$at_risk)` are predicted below the benchmark: `r combine_words(new_pred$station[new_pred$at_risk], oxford_comma = FALSE)`. The ranking of the new stations is almost identical across the three values of $\lambda$ (Spearman correlation of at least `r round(min(rank_cor), 3)`). Only `r combine_words(crosses$station, oxford_comma = FALSE)` `r if (nrow(crosses) == 1) "has a bar that crosses" else "have bars that cross"` the benchmark, so the list is largely unaffected by the choice of $\lambda$.
+Of the 29 new stations, `r sum(new_pred$at_risk)` are predicted below the benchmark, as marked in the table above. Their ranking barely changes with $\lambda$ (Spearman correlation of at least `r round(min(rank_cor), 3)`), and only `r nrow(crosses)` stations have bars that cross the benchmark, so the list is largely unaffected by the choice of $\lambda$.
 
-Low predicted morning tap-ins do not by themselves mean a station is not worth opening. They must be read together with the limitations identified in Sections 5.7 and 5.8:
+Low predicted morning tap-ins do not by themselves mean a station is not worth opening. Read with the limitations in Sections 5.7 and 5.8, three explanations stand out:
 
-- **Several low-ridership stations are destinations, not origins.** Nanyang Gateway and Nanyang Crescent serve Nanyang Technological University, and Tukang, Jurong Hill and Jurong Pier serve industrial estates. Their main role in the morning is to receive arriving passengers, which morning tap-ins do not measure. Many of their users, such as students in campus hostels and foreign workers in dormitories, are also not in the resident population.
-- **Some catchments are still growing.** Population is held at June 2026, while Tengah's new town is still being built and occupied. Predictions for the Tengah stations are therefore conservative.
-- **Aviation Park** serves Changi Aviation Park and the wider Changi East area, where demand comes from workplaces rather than residents, which a residential model cannot capture.
+- **Destinations, not origins.** Nanyang Gateway and Nanyang Crescent serve Nanyang Technological University, and Tukang, Jurong Hill and Jurong Pier serve industrial estates. Their morning role is to receive passengers, and many of their users, such as students in campus hostels and workers in dormitories, are not in the resident population.
+- **Growing catchments.** Population is held at June 2026, while Tengah's new town is still being occupied, so predictions for the Tengah stations are conservative.
+- **Workplace demand.** Aviation Park serves Changi Aviation Park and the wider Changi East area, where demand comes from workplaces rather than residents.
 
-The stations predicted to have low ridership are therefore candidates for closer examination, for example of employment and student populations, rather than automatic candidates for delayed opening.
+These stations are therefore candidates for closer examination with employment and student data, rather than automatic candidates for delayed opening.
 
 ### 6.2 Impact on the Ridership of Existing Stations
 
@@ -2071,16 +2072,11 @@ impact %>%
             largest_loss = round(min(change_pct), 1))
 ```
 
-The impact clearly fades with distance. The median change is largest within 2 km of a new station, and levels off beyond about 3 km. Only one reliably fitted station that is not an interchange lies within 1 km of a new station, so that group should not be read on its own.
+The impact clearly fades with distance. The median change is largest within 2 km of a new station and levels off beyond about 3 km. Only one reliably fitted station that is not an interchange lies within 1 km of a new station, so that group should not be read on its own.
 
-The two largest losses need caution. Joo Koon (`r round(impact$change_pct[impact$station == "JOO KOON"], 1)`%) and Gul Circle (`r round(impact$change_pct[impact$station == "GUL CIRCLE"], 1)`%), the outlier in the 3-5 km band. Few residents live near either station, so the model attributes most of their riders to residents of Jurong West several kilometres away, who are exactly the residents predicted to switch to the JRL. As with the Tuas stations (Section 5.7), their actual morning riders are largely workers in the western industrial estates, so these losses are likely to be overstated.
+The two largest losses need caution: Joo Koon (`r round(impact$change_pct[impact$station == "JOO KOON"], 1)`%) and Gul Circle (`r round(impact$change_pct[impact$station == "GUL CIRCLE"], 1)`%), the outlier in the 3–5 km band. Few residents live near either station, so the model attributes most of their riders to Jurong West residents several kilometres away, who are exactly those predicted to switch to the JRL. As with the Tuas stations (Section 5.7), their actual riders are largely workers in the western industrial estates, so these losses are likely overstated.
 
-Beyond 5 km, the median change does not reach zero but stays at about `r round(background, 1)`%. This is a property of the model rather than a real effect, and it has two causes:
-
-1. **The total number of trips is held constant.** The `r round(100 * sum(T_future[-(1:n_exist)]) / sum(T_future), 1)`% of trips taken by the new stations must therefore come from existing ones.
-2. **New options draw proportionally from all stations.** In the Huff and MCI models, a new alternative takes its share proportionally from every station a resident might use, however unlikely. This is the independence-of-irrelevant-alternatives property of these models. So a resident in Jurong who switches to a JRL station slightly reduces the predicted ridership of every station in the network, including those in the CBD.
-
-The background loss of about `r abs(round(background))`% should therefore be read as the baseline. Only losses well beyond it reflect genuine local competition.
+Beyond 5 km, the median change stays at about `r round(background, 1)`% rather than zero. This background loss is a property of the model, not real competition: total trips are held constant, and a new station draws riders proportionally from every station, however distant, which is the independence of irrelevant alternatives (Section 8.3). Only losses well beyond this baseline reflect genuine local competition.
 
 #### 6.2.4 Checking an alternative choice set
 
@@ -2202,7 +2198,7 @@ hex_change %>%
             over_50pct = sum(share_to_new > 50))
 ```
 
-`r sum(hex_change$share_to_new > 50)` hexagons are predicted to send more than half of their morning trips to a new station, and `r sum(hex_change$share_to_new > 25)` more than a quarter. They are concentrated around the new stations: along the JRL in Tengah and Jurong West, which currently lie between existing stations, and around the CRL stations at Serangoon North, Tavistock, Tampines North and Pasir Ris East. Away from the new lines, the share is under 5%.
+`r sum(hex_change$share_to_new > 50)` hexagons are predicted to send more than half of their morning trips to a new station, and `r sum(hex_change$share_to_new > 25)` more than a quarter. They are concentrated around the new stations, i.e., along the JRL in Tengah and Jurong West, which currently lie between existing stations, and around the CRL stations at Serangoon North, Tavistock, Tampines North and Pasir Ris East. Away from the new lines, the share is under 5%.
 
 #### 6.3.2 Changes in station market areas
 
@@ -2321,7 +2317,9 @@ Across the whole island the two effects largely cancel, which is why the two map
 
 ## 7. Value-Added Analysis: Change in Access to MRT/LRT
 
-Sections 5 and 6 view the new lines from the stations' side: how many riders each station gains or loses. This section views them from the residents' side: how much rail service each hexagon can reach, after accounting for the other residents competing for the same stations. This links the exercise to urban sustainability, as it shows which communities gain access to rail and whether the new lines reach areas that were poorly served. It also relates to the government's target of 8 in 10 households being within a 10-minute walk of a train station by the 2030s (Ministry of Transport, 2024).
+Sections 5 and 6 view the new lines from the stations' side, i.e., how many riders each station gains or loses. This section views them from the residents' side, i.e., how much rail service each hexagon can reach, after accounting for the other residents competing for the same stations. This links the exercise to urban sustainability, as it shows which communities gain access to rail and whether the new lines reach areas that were poorly served. It also relates to the government's target of 8 in 10 households being within a 10-minute walk of a train station by the 2030s (Ministry of Transport, 2024). 
+
+This analysis identifies where residents remain beyond walking distance of a station, and whether the new stations open ahead of the populations they serve.
 
 ### 7.1 Method
 
@@ -2409,52 +2407,15 @@ acc_summary %>%
   kable(col.names = c("Network", "Residents within 800 m", "Share of residents (%)",
                       "Populated hexagons with no station",
                       "Mean accessibility (lines per 100,000)"))
-
-access %>%
-  summarise(newly_within = sum(before == 0 & after > 0),
-            higher       = sum(before > 0 & change > 0.01),
-            unchanged    = sum(abs(change) <= 0.01),
-            lower        = sum(change < -0.01))
 ```
 
 The share of residents aged 15-64 within 800 m of a station rises from `r round(acc_summary$share_within[1], 1)`% to `r round(acc_summary$share_within[2], 1)`%, an additional `r scales::comma(round(diff(acc_summary$residents_within)))` residents. In all, `r sum(access$before == 0 & access$after > 0)` hexagons that currently have no station within 800 m gain one.
 
 Most hexagons are unaffected. Unlike Section 6.2, where every station lost a small share of riders, accessibility changes only where a new station or an added line lies within 800 m. The catchment limits competition between stations to residents who can actually reach them, so the 2SFCA measure has no background effect.
 
-### 7.4 Mapping Accessibility
+### 7.4 Mapping the Change in Access
 
-The before and after maps use the same classes, so they can be compared directly.
-
-```{r}
-#| fig-width: 12
-#| fig-height: 6
-access_map <- bind_rows(
-  hex_land %>% select(hex_id) %>%
-    left_join(access %>% select(hex_id, access = before), by = "hex_id") %>%
-    mutate(network = "Before: Existing network"),
-  hex_land %>% select(hex_id) %>%
-    left_join(access %>% select(hex_id, access = after), by = "hex_id") %>%
-    mutate(network = "After: With JRL and CRL")) %>%
-  mutate(network = factor(network, levels = c("Before: Existing network",
-                                              "After: With JRL and CRL")))
-
-m_access <- tm_shape(access_map) +
-  tm_polygons(fill = "access",
-              fill.scale = tm_scale_intervals(
-                breaks = c(0, 0.001, 3, 5, 10, 20, 50, Inf),
-                labels = c("No station within 800 m", "Under 3", "3 to 5", "5 to 10",
-                           "10 to 20", "20 to 50", "50 or more"),
-                values = c("grey75", "#fdd49e", "#fdbb84", "#fc8d59", "#e34a33", "#b30000", "#7f0000"),
-                value.na = "grey97", label.na = "No residents"),
-              fill.legend = tm_legend(title = "Rail lines per\n100,000 residents"),
-              col = "white", lwd = 0.1) +
-  tm_title("Rail accessibility before and after the JRL and CRL open") +
-  tm_facets(by = "network", ncol = 2) +
-  tm_layout(frame = TRUE, legend.outside = TRUE, legend.outside.position = "right")
-m_access
-```
-
-Accessibility is highest in the city centre, where interchanges with several lines serve relatively few residents, and lowest in large housing estates far from an interchange. Before the new lines open, the largest grey gaps with no station within 800 m are in the west, in Tengah, Jurong West and Jurong East, and in the north-east and east, in Serangoon, Hougang and Pasir Ris (Section 7.5). In the after map, most of these gaps fill in along the JRL and CRL corridors. The grey areas that remain lie away from both lines, which these two lines were not designed to serve.
+The map below shows how each populated hexagon's access changes when the JRL and CRL open. Hexagons are grouped by whether they gain a station within 800 m for the first time, gain access to more rail service, see no change, or see a lower score.
 
 ```{r}
 #| fig-width: 11
@@ -2486,16 +2447,9 @@ m_change <- tm_shape(access_change) +
 m_change
 ```
 
-The gains form two corridors: the JRL in the west, around Tengah, Jurong West and Jurong East, and  the CRL in the north-east, from Ang Mo Kio to Pasir Ris. Hexagons newly within 800 m of a station lie closest to the new stations. Hexagons with higher accessibility surround them, where residents already had a station and gain a second option or an interchange with an extra line.
+The gains form two corridors: the JRL in the west, around Tengah, Jurong West and Jurong East, and the CRL in the north-east, from Ang Mo Kio to Pasir Ris. Hexagons newly within 800 m of a station lie closest to the new stations. Hexagons with higher accessibility surround them, where residents already had a station and gain a second option or an interchange with an extra line.
 
-```{r}
-no_residents_800 <- dest_future_df$station[new_idx][colSums(D_future[, new_idx] <= cutoff) == 0]
-str_to_title(no_residents_800)
-```
-
-Of the 29 new stations, `r length(no_residents_800)` have no populated hexagon within 800 m, and `r if (all(str_to_title(no_residents_800) %in% new_pred$station[new_pred$at_risk])) "all of them are" else paste(sum(str_to_title(no_residents_800) %in% new_pred$station[new_pred$at_risk]), "are")` among the `r sum(new_pred$at_risk)` stations predicted below the benchmark in Section 6.1. This confirms, from the residents' side, why their predicted morning ridership is low: they serve industrial estates, the university campus and the airport area, where demand comes from workers and students rather than from residents nearby.
-
-Only `r sum(access$change < -0.01)` hexagons have lower accessibility. These lie next to an existing station with few users, such as South View LRT, that gains a busy new neighbour, such as Choa Chu Kang West. Part of their residents' demand moves to the new station, which is shared by many more residents, so their average supply per resident falls. These residents gain an extra option, so a lower score here does not mean worse service. It is a known property of supply-to-demand measures such as 2SFCA.
+Only `r sum(access$change < -0.01)` hexagons have lower accessibility. They lie next to a lightly used station, such as South View LRT, that gains a busy new neighbour. Their residents gain an extra option, so the lower score is a property of supply-to-demand measures such as 2SFCA rather than worse service.
 
 ### 7.5 Change by Planning Area
 
@@ -2535,7 +2489,7 @@ Jurong East has the largest gain in accessibility. It benefits in two ways: its 
 
 Tengah has the largest gain in coverage. None of its residents currently live within 800 m of a station, against `r round(pa_access$within_after[pa_access$PLN_AREA_N == "TENGAH"])`% once the JRL opens. Its accessibility rises less than Jurong East's because its new stations each serve one line and are shared among a large, growing population. Its level after the JRL opens (`r round(pa_access$access_after[pa_access$PLN_AREA_N == "TENGAH"], 1)` lines per 100,000 residents) is close to the island-wide average (`r round(acc_summary$mean_access[2], 1)`).
 
-Jurong West and Pasir Ris follow. Both have large populations that are currently poorly served: about half of Jurong West's residents and a third of Pasir Ris's live within 800 m of a station. On the CRL, Ang Mo Kio, Bishan, Hougang and Serangoon gain from the new stations at Teck Ghee, Tavistock and Serangoon North and from the added line at their interchanges. Tampines gains in coverage (`r round(pa_access$within_before[pa_access$PLN_AREA_N == "TAMPINES"])`% to `r round(pa_access$within_after[pa_access$PLN_AREA_N == "TAMPINES"])`%) but little in accessibility. Tampines North station mainly serves new residents who had no station within reach, so the supply per resident across the planning area barely changes.
+Jurong West and Pasir Ris follow. Both have large populations that are currently poorly served: about half of Jurong West's residents and a third of Pasir Ris's live within 800 m of a station. On the CRL, Ang Mo Kio, Bishan, Hougang and Serangoon gain from the new stations at Teck Ghee, Tavistock and Serangoon North and from the added line at their interchanges. 
 
 ### 7.6 Sensitivity to the Catchment Distance
 
@@ -2570,6 +2524,152 @@ bind_rows(access     %>% mutate(cutoff = "800 m"),
 
 With a 1 km catchment, the share of residents within reach of a station rises from `r round(within_1km[1], 1)`% to `r round(within_1km[2], 1)`%. The levels are higher than at 800 m, as expected, but the increase is of a similar size. The five planning areas with the largest gains are the same under both catchments, in the same order. The conclusions therefore do not depend on the choice of catchment distance.
 
+### 7.7 Remaining Gaps Against the Government's Target
+
+The government aims for 8 in 10 households to be within a 10-minute walk of a train station by the 2030s (Urban Redevelopment Authority, n.d.). After the JRL and CRL Phase 1 open, `r round(acc_summary$share_within[2], 1)`% of residents aged 15-64 live within 800 m of a station. The two measures are not directly comparable: the target counts households and walking time, whereas this analysis counts residents and straight-line distance. As walking effort in Singapore is 20% to 39% greater than straight-line distance suggests (Olszewski & Wibowo, 2005), the share within an actual 10-minute walk is likely to be lower. On this evidence, the two lines bring the network to about the level of the target rather than clearly beyond it.
+
+The question for planning is therefore where the remaining `r scales::comma(round(sum(access$pop[access$after == 0])))` residents live, and whether rail is the right way to serve them. For each planning area, the residents still beyond 800 m are counted and divided into those in HDB flats and those in private housing. A gap made up mainly of HDB residents is dense, and an added station would serve many people. A gap made up mainly of private housing, often landed estates, is low-density, and a station there would serve few people.
+
+Some gaps will be closed by lines already under construction. CRL Phase 2 adds stations at Turf City, King Albert Park, Maju, Clementi, West Coast and Jurong Lake District, and the CRL Punggol Extension adds stations at Elias and Riviera, both by 2032 (Land Transport Authority, n.d.). These are recorded below by planning area. Stations that have been announced but are not yet under construction are not included.
+
+::: callout-note
+### AI Use Disclosure
+
+AI tools were used to draft the R code that summarises the residents beyond 800 m by planning area and housing type, and maps the remaining gaps. The output was reviewed and run by the author to verify correctness against the study data.
+:::
+
+```{r}
+gap_pa <- access %>%
+  left_join(origin_df %>% select(hex_id, pop_hdb), by = "hex_id") %>%
+  left_join(hex_pa, by = "hex_id") %>%
+  group_by(PLN_AREA_N) %>%
+  summarise(residents = sum(pop),
+            beyond    = sum(pop[after == 0]),
+            share     = 100 * beyond / residents,
+            hdb_share = 100 * sum(pop_hdb[after == 0]) / beyond,
+            .groups = "drop") %>%
+  filter(beyond > 0)
+
+committed <- tribble(
+  ~PLN_AREA_N,   ~committed_line,
+  "CLEMENTI",    "CRL Phase 2 (2032)",
+  "BUKIT TIMAH", "CRL Phase 2 (2032)",
+  "PASIR RIS",   "CRL Punggol Extension (2032)",
+  "PUNGGOL",     "CRL Punggol Extension (2032)")
+
+gap_tab <- gap_pa %>%
+  left_join(committed, by = "PLN_AREA_N") %>%
+  mutate(committed_line = replace_na(committed_line, "None under construction"),
+         gap_type = if_else(hdb_share >= 50, "Mainly HDB", "Mainly private housing")) %>%
+  arrange(desc(beyond))
+
+gap_tab %>%
+  slice_head(n = 12) %>%
+  mutate(PLN_AREA_N = str_to_title(PLN_AREA_N),
+         across(c(residents, beyond), \(x) scales::comma(round(x))),
+         across(c(share, hdb_share), \(x) round(x))) %>%
+  select(PLN_AREA_N, residents, beyond, share, gap_type, hdb_share, committed_line) %>%
+  kable(col.names = c("Planning area", "Residents aged 15-64", "Beyond 800 m after JRL and CRL",
+                      "Share beyond (%)", "Housing type of gap", "HDB share of gap (%)",
+                      "Rail line under construction"))
+```
+
+```{r}
+#| fig-width: 11
+#| fig-height: 7
+gap_hex <- hex_land %>%
+  select(hex_id) %>%
+  inner_join(access %>% filter(after == 0), by = "hex_id")
+
+m_gaps <- tm_shape(hex_land) +
+  tm_polygons(fill = "grey95", col = "grey85", lwd = 0.2) +
+  tm_shape(gap_hex) +
+  tm_polygons(fill = "pop",
+              fill.scale = tm_scale_intervals(
+                breaks = c(0, 500, 1000, 2000, 4000, Inf),
+                labels = c("Under 500", "500 to 999", "1,000 to 1,999",
+                           "2,000 to 3,999", "4,000 or more"),
+                values = "brewer.reds"),
+              fill.legend = tm_legend(title = "Residents aged 15-64\nwith no station within 800 m"),
+              col = "white", lwd = 0.2) +
+  tm_shape(dest_future) +
+  tm_dots(fill = "grey20", size = 0.15) +
+  tm_title("Residents still beyond 800 m of a station after the JRL and CRL open") +
+  tm_compass(type = "8star", size = 2, position = c("right", "top")) +
+  tm_scalebar(position = c("left", "bottom")) +
+  tm_layout(frame = TRUE, legend.position = c("right", "bottom"))
+m_gaps
+```
+
+```{r}
+hdb_no_line <- gap_tab %>%
+  filter(gap_type == "Mainly HDB", committed_line == "None under construction")
+private_gaps <- gap_tab %>%
+  filter(gap_type == "Mainly private housing", committed_line == "None under construction")
+committed_gaps <- gap_tab %>%
+  filter(committed_line != "None under construction")
+```
+
+The remaining gaps fall into three groups, each calling for a different response:
+
+- **Dense HDB towns with no new line under construction.** The largest are `r combine_words(str_to_title(head(hdb_no_line$PLN_AREA_N, 4)), oxford_comma = FALSE)`. Together, the HDB-dominated planning areas with no new line under construction account for `r scales::comma(round(sum(hdb_no_line$beyond)))` residents beyond 800 m, `r round(100 * sum(hdb_no_line$beyond) / sum(gap_tab$beyond))`% of all residents still beyond 800 m. The map shows these gaps as solid blocks of densely populated hexagons on the edges of towns, between existing stations.
+- **Areas that lines under construction will reach.** `r combine_words(str_to_title(committed_gaps$PLN_AREA_N), oxford_comma = FALSE)` will gain stations on CRL Phase 2 or the CRL Punggol Extension by 2032. These `r scales::comma(round(sum(committed_gaps$beyond)))` residents need interim measures, not new lines.
+- **Low-density private estates.** In `r combine_words(str_to_title(head(private_gaps$PLN_AREA_N, 3)), oxford_comma = FALSE)`, the gap consists mainly of private housing. These areas have few residents per hexagon. Their access to rail is limited as much by density as by distance, and in some cases also by nature reserves, the airport or industrial land nearby.
+
+### 7.8 Matching Station Openings to Development
+
+The JRL opens in three stages, in 2028 and 2029, and CRL Phase 1 in 2030 (Land Transport Authority, n.d.). Grouping the predictions from Section 6.1 by opening stage shows whether each stage opens into an existing population or ahead of it.
+
+::: callout-note
+### AI Use Disclosure
+
+AI tools were used to draft the R code that groups the predicted ridership of the new stations by opening stage and identifies new stations with no residents within 800 m. The output was reviewed and run by the author to verify correctness against the study data.
+:::
+
+```{r}
+opening <- tribble(
+  ~stage,        ~opens, ~station,
+  "JRL Stage 1", "2028", c("Choa Chu Kang West", "Tengah", "Hong Kah", "Corporation",
+                           "Jurong West", "Bahar Junction", "Gek Poh", "Tawas"),
+  "JRL Stage 2", "2028", c("Tengah Plantation", "Tengah Park", "Bukit Batok West",
+                           "Toh Guan", "Jurong Town Hall", "Pandan Reservoir"),
+  "JRL Stage 3", "2029", c("Enterprise", "Tukang", "Jurong Hill", "Jurong Pier",
+                           "Nanyang Gateway", "Nanyang Crescent", "Peng Kang Hill"),
+  "CRL Phase 1", "2030", c("Aviation Park", "Loyang", "Pasir Ris East", "Tampines North",
+                           "Defu", "Serangoon North", "Tavistock", "Teck Ghee")) %>%
+  unnest(station)
+
+stopifnot(setequal(opening$station, new_pred$station))   # every new station has a stage
+
+stage_tab <- new_pred %>%
+  left_join(opening, by = "station") %>%
+  group_by(stage, opens) %>%
+  summarise(stations    = n(),
+            below       = sum(at_risk),
+            median_pred = median(central),
+            low         = paste(station[at_risk], collapse = ", "),
+            .groups = "drop") %>%
+  arrange(opens, stage)
+
+stage_tab %>%
+  mutate(median_pred = scales::comma(round(median_pred))) %>%
+  kable(col.names = c("Stage", "Opens", "New stations", "Below benchmark",
+                      "Median predicted tap-ins", "Stations below benchmark"))
+```
+
+JRL Stage 3 stands apart: `r stage_tab$below[stage_tab$stage == "JRL Stage 3"]` of its `r stage_tab$stations[stage_tab$stage == "JRL Stage 3"]` stations are predicted below the benchmark, and its median prediction is `r scales::comma(round(stage_tab$median_pred[stage_tab$stage == "JRL Stage 3"]))` tap-ins, against `r scales::comma(round(min(stage_tab$median_pred[stage_tab$stage != "JRL Stage 3"])))` or more for every other stage. Its stations serve Nanyang Technological University and the industrial estates of Jurong, so their demand depends on students and workers rather than residents nearby.
+
+Two other stations open ahead of the development that will drive their demand. Tengah station opens in 2028 while Tengah's new town is still being built and occupied, so its low prediction partly reflects the June 2026 population. Aviation Park opens with CRL Phase 1 in 2030 to serve the Changi Airfreight Centre and Changi East Industrial Zone, next to Changi Airport Terminal 5, which is due in the mid-2030s (Yeow, 2025).
+
+The observed data show what happens when stations open ahead of demand. Keppel, which opened in July 2026 to serve a port area, recorded `r round(dest_df$am_tapins[dest_df$station == "KEPPEL"])` morning tap-ins per weekday in September, the second-lowest of any MRT station. Hume, whose structure was built a decade before it opened, records `r round(dest_df$am_tapins[dest_df$station == "HUME"])`.
+
+```{r}
+no_residents_800 <- dest_future_df$station[new_idx][colSums(D_future[, new_idx] <= cutoff) == 0]
+str_to_title(no_residents_800)
+```
+
+The same stations stand out from the residents' side. Of the 29 new stations, `r length(no_residents_800)` have no populated hexagon within 800 m: `r combine_words(str_to_title(no_residents_800), oxford_comma = FALSE)`. `r sum(str_to_title(no_residents_800) %in% opening$station[opening$stage == "JRL Stage 3"])` of them open in JRL Stage 3. Their predicted ridership depends almost entirely on workers and students travelling to them, not on residents nearby.
+
 ## 8. Limitations
 
 The results should be read with the following limitations in mind. Most have been noted where they arise. They are brought together here, grouped by what they affect.
@@ -2594,6 +2694,7 @@ The results should be read with the following limitations in mind. Most have bee
 - **Areal units.** Results may change with the size of the hexagons (the modifiable areal unit problem). The 500 m cell size is finer than station spacing, but was not varied.
 - **Points of interest.** OpenStreetMap coverage varies between areas, which affects the attractiveness variables.
 - **Accessibility measure.** The 2SFCA analysis uses the number of lines as supply, so an LRT line counts the same as an MRT line, and service frequency is not represented (Section 7.1).
+- **Gap classification.** Lines under construction are matched by planning area, so not every resident in Clementi, Pasir Ris, Bukit Timah or Punggol will be within 800 m of the new stations. Housing type is classified at a 50% threshold.
 
 ## 9. Conclusion and Recommendations
 
@@ -2601,20 +2702,27 @@ The results should be read with the following limitations in mind. Most have bee
 
 This exercise calibrated a probabilistic spatial interaction model of station choice for Singapore's MRT and LRT network and used it to assess the Jurong Region Line and Cross Island Line Phase 1.
 
-**RQ1: How well does the model explain ridership, and what matters beyond distance?** The MCI model explains most of the variation in weekday morning-peak tap-ins at the 184 existing stations (pseudo-R² of `r round(cor(T_m2, T_obs)^2, 2)`, against `r round(cor(T_m0, T_obs)^2, 2)` for distance alone). Residents strongly prefer nearby stations ($\lambda$ = `r round(lambda_m2, 2)`, steeper than the conventional -2). Beyond distance, the number of lines, MRT rather than LRT service and feeder bus access make a station more attractive. The model's largest errors point to riders it does not represent: non-resident workers and passengers arriving at destinations.
+**RQ1: How well does the model explain ridership, and what matters beyond distance?** The MCI model explains most of the variation in weekday morning-peak tap-ins at the 184 existing stations (pseudo-R² of `r round(cor(T_m2, T_obs)^2, 2)`, against `r round(cor(T_m0, T_obs)^2, 2)` for distance alone). Residents strongly prefer nearby stations ($\lambda$ = `r round(lambda_m2, 2)`, steeper than the conventional −2). Beyond distance, the number of lines, MRT rather than LRT service, feeder bus access and, to a lesser extent, shopping around the station make a station more attractive. The model's largest errors point to riders it does not represent, i.e., non-resident workers and passengers arriving at destinations.
 
 **RQ2: What ridership can the new stations expect?** The 29 new stations are predicted to carry `r round(100 * sum(T_future[-(1:n_exist)]) / sum(T_future), 1)`% of morning-peak tap-ins once travel habits have adjusted. Stations in established housing areas, such as Serangoon North, Pasir Ris East and Choa Chu Kang West, are predicted to be the busiest. `r sum(new_pred$at_risk)` stations are predicted below the lower quartile of existing MRT stations. Most of them serve industrial estates, the university campus or the airport area, where demand from workers and students is not captured by a residential model.
 
 **RQ3: How will the new lines affect existing stations and market areas?** The impact is local. The largest losses are at East-West Line stations between Jurong East and Joo Koon and around Bukit Batok, and the effect fades within about 3 km of the new lines. The CRL interchanges at Bright Hill, Hougang and Ang Mo Kio gain riders, while the JRL interchanges lose tap-ins but will carry transfer traffic. `r sum(hex_change$top_now != hex_change$top_future)` hexagons change their most likely station.
 
-**Access to rail.** The share of residents aged 15–64 within 800 m of a station rises from `r round(acc_summary$share_within[1], 1)`% to `r round(acc_summary$share_within[2], 1)`%, with the largest gains in Tengah, Jurong East, Jurong West and Pasir Ris, areas that are currently among the least served.
+**RQ4: Who gains access to rail, and who is still left out?** The share of residents aged 15–64 within 800 m of a station rises from `r round(acc_summary$share_within[1], 1)`% to `r round(acc_summary$share_within[2], 1)`%, with the largest gains in Tengah, Jurong East, Jurong West and Pasir Ris, areas that are currently among the least served. About `r round(100 - acc_summary$share_within[2])`% of residents remain beyond 800 m of a station, mainly in dense HDB towns that no new line will serve, such as `r combine_words(str_to_title(head(hdb_no_line$PLN_AREA_N, 3)), oxford_comma = FALSE)`, and in low-density private estates (Section 7.7). JRL Stage 3 opens ahead of its demand: `r stage_tab$below[stage_tab$stage == "JRL Stage 3"]` of its `r stage_tab$stations[stage_tab$stage == "JRL Stage 3"]` stations are predicted below the ridership benchmark (Section 7.8).
 
-### 9.2 Recommendations
+### 9.2 Implications and Recommendations
 
-1. **Treat low predictions as a prompt for further data, not as a verdict.** Before decisions on the timing of opening or service levels at the `r sum(new_pred$at_risk)` low-ridership stations, their demand should be estimated with employment, student and dormitory populations, which this model does not include.
-2. **Plan for a ramp-up period.** Based on the holdout test, ridership in the first months after opening may be well below the predictions. Service levels can be phased in and adjusted as observed ridership builds up.
-3. **Review feeder bus services around the stations that lose riders.** East-West Line stations between Jurong East and Joo Koon are predicted to lose a large share of their morning tap-ins to the JRL. Feeder services into these stations can be reviewed as residents switch to stations nearer home.
-4. **Prepare the interchanges for transfer traffic.** Bright Hill and Hougang are predicted to gain substantially in tap-ins, while Boon Lay, Jurong East and Choa Chu Kang will carry transfers between the JRL and the existing lines. Platform and concourse capacity at these stations should account for both.
+The recommendations are ordered by the government's target of 8 in 10 households within a 10-minute walk of a train station by the 2030s. First where access can be improved, then how the new stations should be opened.
+
+1. **Prioritise the dense HDB towns that no new line will reach.** `r combine_words(str_to_title(head(hdb_no_line$PLN_AREA_N, 4)), oxford_comma = FALSE)` hold the largest numbers of residents still beyond 800 m of a station after the JRL and CRL open, and no line under construction serves them (Section 7.7). Because predicted ridership rises with the number of residents nearby (Section 5), these are the places where added rail access would serve the most people. In the near term, covered linkways, which LTA now extends to 800 m at selected locations (Ministry of Transport, 2026), and direct feeder buses can shorten residents' trips to the nearest station. In the longer term, these towns are candidates for infill stations or future line alignments.
+
+2. **Bridge the gaps that committed lines will close.** `r combine_words(str_to_title(committed_gaps$PLN_AREA_N), oxford_comma = FALSE)` will gain stations on CRL Phase 2 or the CRL Punggol Extension by 2032. Until then, feeder bus services to the nearest station can serve these residents, without the need for further rail planning.
+
+3. **Serve low-density estates by bus and active mobility rather than rail.** In `r combine_words(str_to_title(head(private_gaps$PLN_AREA_N, 3)), oxford_comma = FALSE)`, the residents beyond 800 m live mainly in private, often landed, housing, and in some places next to nature reserves or industrial land. A station there would serve few residents and, like the industrial JRL stations, would fall below the ridership benchmark. Bus services, cycling paths and sheltered walkways are more realistic ways to close these gaps.
+
+4. **Match service levels to development, especially on JRL Stage 3.** `r stage_tab$below[stage_tab$stage == "JRL Stage 3"]` of the `r stage_tab$stations[stage_tab$stage == "JRL Stage 3"]` Stage 3 stations, due in 2029, are predicted below the benchmark, and Tengah (2028) and Aviation Park (2030) open ahead of the developments they serve (Section 7.8). The stations are already under construction, so the choice is how to operate them. Their demand should first be estimated with student, worker and dormitory populations, which this model omits. Service frequencies can then start lower and rise with occupancy, as Keppel and Hume show how slowly ridership builds where development lags. Infill stations not yet built, such as further stations in Tengah, can be timed to housing completions.
+
+5. **Prepare the interchanges for transfer traffic.** Bright Hill and Hougang are predicted to gain substantially in tap-ins, while Boon Lay, Jurong East and Choa Chu Kang will carry transfers between the JRL and the existing lines (Section 6.2.2). Platform and concourse capacity should account for both.
 
 ### 9.3 Future Work
 
@@ -2627,7 +2735,7 @@ This exercise calibrated a probabilistic spatial interaction model of station ch
 ::: callout-note
 ### AI Use Disclosure
 
-AI tools were used to provide language assistance during the preparation of this report. AI support was limited to improving the clarity, structure and fluency of written content, including refinement of sentence construction, grammar and academic writing style. All analysis, interpretations, conclusions, insights, hypotheses, business recommendations and managerial implications presented in this report were independently developed by the author based on the dataset, statistical outputs and domain knowledge. AI did not generate the underlying analytical findings or determine the conclusions reached in this study.
+AI tools were used to provide language assistance during the preparation of this report. AI support was used to improve the clarity, structure and fluency of written content, including refinement of sentence construction, grammar and academic writing style, as well as suggest relevant literature for analytical approaches. All analysis, interpretations, conclusions, insights, hypotheses and recommendations presented in this report were independently developed by the author based on the dataset, statistical outputs and domain knowledge. AI did not generate the underlying analytical findings or determine the conclusions reached in this study.
 
 :::
 
@@ -2647,6 +2755,10 @@ Kam, T. S. (2026). *R for geospatial data science and analytics*. https://r4gdsa
 
 Land Transport Authority. (n.d.). Rail network. Retrieved November 10, 2026, from https://lta.gov.sg/content/ltaweb/en/public-transport/mrt-and-lrt-trains/train-system-map.html
 
+Land Transport Authority. (n.d.). Jurong Region Line. Retrieved November 14, 2026, from https://www.lta.gov.sg/content/ltagov/en/upcoming_projects/rail_expansion/jurong_region_line.html
+
+Land Transport Authority. (n.d.). Cross Island Line. Retrieved November 14, 2026, from https://www.lta.gov.sg/content/ltagov/en/upcoming_projects/rail_expansion/cross_island_line.html
+
 Land Transport Authority. (2025, January 24). Hume station to open on 28 February 2025 [Press release]. https://www.lta.gov.sg/content/ltagov/en/newsroom/2025/1/news-releases/hume_station_to_open.html
 
 Luo, J. (2014). Integrating the Huff model and floating catchment area methods to analyze spatial access to healthcare services. Transactions in GIS, 18(3), 436-448. https://doi.org/10.1111/tgis.12096
@@ -2657,7 +2769,9 @@ Lwin, K. K., & Murayama, Y. (2009). A GIS approach to estimation of building pop
 
 Mennis, J. (2003). Generating surface models of population using dasymetric mapping. The Professional Geographer, 55(1), 31-42. https://doi.org/10.1111/0033-0124.10042
 
-Ministry of Transport. (2024, October 15). Response by Senior Minister of State for Transport Dr Amy Khor to adjournment motion on realising the vision of a 45-minute city under the Land Transport Master Plan 2040 in the West of Singapore [Speech]. https://www.mot.gov.sg/news/details/response-by-senior-minister-of-state-for-transport--dr-amy-khor-to-adjournment-motion-on--realising-the-vision-of-a-45-minute-city-under-the-land-transport-master-plan-2040-in-the-west-of-singapore 
+Ministry of Transport. (2024, October 15). Response by Senior Minister of State for Transport Dr Amy Khor to adjournment motion on realising the vision of a 45-minute city under the Land Transport Master Plan 2040 in the West of Singapore [Speech]. https://www.mot.gov.sg/news/details/response-by-senior-minister-of-state-for-transport--dr-amy-khor-to-adjournment-motion-on--realising-the-vision-of-a-45-minute-city-under-the-land-transport-master-plan-2040-in-the-west-of-singapore
+
+Ministry of Transport. (2026, March 4). Speech by Minister of State for Transport Mr Baey Yam Keng at Ministry of Transport’s Committee of Supply Debate 2026 [Speech]. https://www.mot.gov.sg/news-resources/newsroom/speech-by-minister-of-state-for-transport-mr-baey-yam-keng-at-ministry-of-transport-s-committee-of-supply-debate-2026/
 
 Nakanishi, M., & Cooper, L. G. (1974). Parameter estimation for a multiplicative competitive interaction model: Least squares approach. *Journal of Marketing Research, 11*(3), 303-311. https://doi.org/10.2307/3151146
 
@@ -2667,10 +2781,14 @@ Orpana, T., & Lampinen, J. (2003). Building spatial choice models from aggregate
 
 Singapore’s MRT, LRT ridership surpasses pre-Covid-19 levels for first time in 2024. (2025, February 1). The Star (from The Straits Times). https://www.thestar.com.my/aseanplus/aseanplus-news/2025/02/01/singapore039s-mrt-lrt-ridership-surpasses-pre-covid-19-levels-for-first-time-in-2024
 
+Urban Redevelopment Authority. (n.d.). Convenient & people-centric journeys [Master Plan 2025]. Retrieved November 14, 2026, from https://www.ura.gov.sg/land-planning/master-plan/master-plan-2025/themes/shaping-a-happy-healthy-city/convenient-and-people-centric-journeys/
+
 Wieland, T. (2017). Market area analysis for retail and service locations with MCI. *The R Journal, 9*(1), 298-323. https://doi.org/10.32614/RJ-2017-020
 
 Wieland, T. (2026). *huff: A Python package for market area analysis* (arXiv:2602.17640). arXiv. https://doi.org/10.48550/arXiv.2602.17640
 
 Woodleigh MRT station. (n.d.). In Wikipedia. Retrieved November 10, 2026, from https://en.wikipedia.org/wiki/Woodleigh_MRT_station
+
+Yeow, J. (2025, May 15). Singapore Changi Airport’s new Terminal 5 is slated to open in the mid-2030s, works have already begun. Time Out Singapore. https://www.timeout.com/singapore/news/singapore-changi-airports-new-terminal-5-is-slated-to-open-in-the-mid-2030s-works-have-already-begun-051525
 
 Zhu, Z., He, Y., Guo, X., Zhang, Y., & Chen, J. (2021). Improved Huff model for estimating urban rail transit station catchment areas considering station choices. *Journal of Advanced Transportation, 2021*, Article 6374724. https://doi.org/10.1155/2021/6374724

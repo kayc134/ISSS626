@@ -346,9 +346,11 @@ window.Quarto = {
   <li><a href="#method" id="toc-method" class="nav-link" data-scroll-target="#method">7.1 Method</a></li>
   <li><a href="#computing-accessibility" id="toc-computing-accessibility" class="nav-link" data-scroll-target="#computing-accessibility">7.2 Computing Accessibility</a></li>
   <li><a href="#overall-change" id="toc-overall-change" class="nav-link" data-scroll-target="#overall-change">7.3 Overall Change</a></li>
-  <li><a href="#mapping-accessibility" id="toc-mapping-accessibility" class="nav-link" data-scroll-target="#mapping-accessibility">7.4 Mapping Accessibility</a></li>
+  <li><a href="#mapping-the-change-in-access" id="toc-mapping-the-change-in-access" class="nav-link" data-scroll-target="#mapping-the-change-in-access">7.4 Mapping the Change in Access</a></li>
   <li><a href="#change-by-planning-area" id="toc-change-by-planning-area" class="nav-link" data-scroll-target="#change-by-planning-area">7.5 Change by Planning Area</a></li>
   <li><a href="#sensitivity-to-the-catchment-distance" id="toc-sensitivity-to-the-catchment-distance" class="nav-link" data-scroll-target="#sensitivity-to-the-catchment-distance">7.6 Sensitivity to the Catchment Distance</a></li>
+  <li><a href="#remaining-gaps-against-the-governments-target" id="toc-remaining-gaps-against-the-governments-target" class="nav-link" data-scroll-target="#remaining-gaps-against-the-governments-target">7.7 Remaining Gaps Against the Government’s Target</a></li>
+  <li><a href="#matching-station-openings-to-development" id="toc-matching-station-openings-to-development" class="nav-link" data-scroll-target="#matching-station-openings-to-development">7.8 Matching Station Openings to Development</a></li>
   </ul></li>
   <li><a href="#limitations" id="toc-limitations" class="nav-link" data-scroll-target="#limitations">8. Limitations</a>
   <ul class="collapse">
@@ -359,7 +361,7 @@ window.Quarto = {
   <li><a href="#conclusion-and-recommendations" id="toc-conclusion-and-recommendations" class="nav-link" data-scroll-target="#conclusion-and-recommendations">9. Conclusion and Recommendations</a>
   <ul class="collapse">
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">9.1 Conclusion</a></li>
-  <li><a href="#recommendations" id="toc-recommendations" class="nav-link" data-scroll-target="#recommendations">9.2 Recommendations</a></li>
+  <li><a href="#implications-and-recommendations" id="toc-implications-and-recommendations" class="nav-link" data-scroll-target="#implications-and-recommendations">9.2 Implications and Recommendations</a></li>
   <li><a href="#future-work" id="toc-future-work" class="nav-link" data-scroll-target="#future-work">9.3 Future Work</a></li>
   </ul></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">10 References</a></li>
@@ -395,7 +397,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">November 14, 2026</p>
+      <p class="date-modified">November 15, 2026</p>
     </div>
   </div>
     
@@ -423,6 +425,7 @@ window.Quarto = {
 <li>Calibrate a probabilistic spatial interaction model for station-level ridership estimation.</li>
 <li>Predict the potential ridership of the proposed JRL and CRL Phase 1 stations.</li>
 <li>Evaluate the potential impact of the new stations on the ridership and market areas of existing stations.</li>
+<li>Assess how the new lines change residents’ access to stations within walking distance, and where gaps remain against the government’s target.</li>
 </ul>
 </section>
 <section id="research-questions" class="level3">
@@ -431,6 +434,7 @@ window.Quarto = {
 <li><strong>RQ1:</strong> How well does a calibrated probabilistic spatial interaction model explain the observed weekday morning-peak ridership of existing MRT and LRT stations, and which station attributes matter beyond distance?</li>
 <li><strong>RQ2:</strong> What ridership can be expected at the 36 proposed JRL and CRL Phase 1 stations, and which stations are at risk of low ridership?</li>
 <li><strong>RQ3:</strong> How will the new stations redistribute the market areas and ridership of existing stations?</li>
+<li><strong>RQ4 (value-added):</strong> How will the new lines change residents’ access to stations within walking distance, where will residents remain beyond walking distance, and do the new stations open ahead of the populations they serve?</li>
 </ul>
 </section>
 <section id="model-components" class="level3">
@@ -3173,12 +3177,11 @@ A_j = \prod_{m} X_{mj}^{\gamma_m}
 </div>
 <p>Most stations are predicted within a factor of two. The largest errors form clear groups, each with a plausible explanation outside the model:</p>
 <ul>
-<li><strong>Strongly under-predicted: the Tuas stations and Kranji.</strong> These record far more morning tap-ins than their resident population can explain. The Tuas stations serve industrial estates with foreign-worker dormitories, and Kranji is the first station for many workers crossing from Johor Bahru by bus. Neither group is in the SingStat resident population, which covers citizens and permanent residents only.</li>
-<li><strong>Also under-predicted: Changi Airport and Newton.</strong> Changi Airport’s morning tap-ins come largely from airport workers and travellers rather than nearby residents. Newton’s may include residents not captured in the population data, such as non-residents renting nearby condominiums.</li>
-<li><strong>Strongly over-predicted: Expo, Keppel and Labrador Park.</strong> These are mainly destination stations, for an exhibition centre, a port and business park area, and a waterfront park. Nearby residents tend to board elsewhere, and the model has no way to represent a station’s role as a destination.</li>
-<li><strong>Over-predicted: some LRT stations, such as Teck Lee and Renjong.</strong> Even with the <code>mrt</code> variable, the model cannot fully capture how little some LRT stations are used, for example where residents can walk directly to an MRT station instead.</li>
+<li><strong>Under-predicted: the Tuas stations, Kranji, Changi Airport and Newton.</strong> These record far more morning tap-ins than their residents can explain. The Tuas stations serve industrial estates with foreign-worker dormitories, Kranji is the first station for many workers crossing from Johor Bahru, and Changi Airport serves airport workers and travellers. None of these groups is in the SingStat resident population, which covers citizens and permanent residents only. Newton’s riders may include non-residents renting nearby condominiums.</li>
+<li><strong>Over-predicted: Expo, Keppel and Labrador Park.</strong> These are mainly destinations, for an exhibition centre, a port and business park area, and a waterfront park. The model cannot represent a station’s role as a destination.</li>
+<li><strong>Over-predicted: some LRT stations, such as Teck Lee and Renjong.</strong> Even with the <code>mrt</code> variable, the model cannot fully capture how little some LRT stations are used where residents can walk directly to an MRT station.</li>
 </ul>
-<p>These patterns point to two limitations: <strong>non-resident populations are missing</strong>, and <strong>morning tap-ins measure only one direction of travel</strong>. Both matter for the new stations in Section 6.</p>
+<p>These patterns point to two limitations: non-resident populations are missing, and morning tap-ins measure only one direction of travel. Both matter for the new stations in Section 6.</p>
 </section>
 <section id="holdout-validation-predicting-recently-opened-stations" class="level3">
 <h3 class="anchored" data-anchor-id="holdout-validation-predicting-recently-opened-stations">5.8 Holdout Validation: Predicting Recently Opened Stations</h3>
@@ -3785,14 +3788,14 @@ flatter   0.977   0.986   1.000</code></pre>
 </div>
 </div>
 </div>
-<p>Of the 29 new stations, 9 are predicted below the benchmark: Aviation Park, Jurong Pier, Peng Kang Hill, Jurong Hill, Nanyang Gateway, Nanyang Crescent, Tawas, Tukang and Tengah. The ranking of the new stations is almost identical across the three values of <span class="math inline">\(\lambda\)</span> (Spearman correlation of at least 0.977). Only Tukang, Loyang, Enterprise and Jurong Town Hall have bars that cross the benchmark, so the list is largely unaffected by the choice of <span class="math inline">\(\lambda\)</span>.</p>
-<p>Low predicted morning tap-ins do not by themselves mean a station is not worth opening. They must be read together with the limitations identified in Sections 5.7 and 5.8:</p>
+<p>Of the 29 new stations, 9 are predicted below the benchmark, as marked in the table above. Their ranking barely changes with <span class="math inline">\(\lambda\)</span> (Spearman correlation of at least 0.977), and only 4 stations have bars that cross the benchmark, so the list is largely unaffected by the choice of <span class="math inline">\(\lambda\)</span>.</p>
+<p>Low predicted morning tap-ins do not by themselves mean a station is not worth opening. Read with the limitations in Sections 5.7 and 5.8, three explanations stand out:</p>
 <ul>
-<li><strong>Several low-ridership stations are destinations, not origins.</strong> Nanyang Gateway and Nanyang Crescent serve Nanyang Technological University, and Tukang, Jurong Hill and Jurong Pier serve industrial estates. Their main role in the morning is to receive arriving passengers, which morning tap-ins do not measure. Many of their users, such as students in campus hostels and foreign workers in dormitories, are also not in the resident population.</li>
-<li><strong>Some catchments are still growing.</strong> Population is held at June 2026, while Tengah’s new town is still being built and occupied. Predictions for the Tengah stations are therefore conservative.</li>
-<li><strong>Aviation Park</strong> serves Changi Aviation Park and the wider Changi East area, where demand comes from workplaces rather than residents, which a residential model cannot capture.</li>
+<li><strong>Destinations, not origins.</strong> Nanyang Gateway and Nanyang Crescent serve Nanyang Technological University, and Tukang, Jurong Hill and Jurong Pier serve industrial estates. Their morning role is to receive passengers, and many of their users, such as students in campus hostels and workers in dormitories, are not in the resident population.</li>
+<li><strong>Growing catchments.</strong> Population is held at June 2026, while Tengah’s new town is still being occupied, so predictions for the Tengah stations are conservative.</li>
+<li><strong>Workplace demand.</strong> Aviation Park serves Changi Aviation Park and the wider Changi East area, where demand comes from workplaces rather than residents.</li>
 </ul>
-<p>The stations predicted to have low ridership are therefore candidates for closer examination, for example of employment and student populations, rather than automatic candidates for delayed opening.</p>
+<p>These stations are therefore candidates for closer examination with employment and student data, rather than automatic candidates for delayed opening.</p>
 </section>
 <section id="impact-on-the-ridership-of-existing-stations" class="level3">
 <h3 class="anchored" data-anchor-id="impact-on-the-ridership-of-existing-stations">6.2 Impact on the Ridership of Existing Stations</h3>
@@ -4170,14 +4173,9 @@ flatter   0.977   0.986   1.000</code></pre>
 5 Over 5 km        64          -6.1        -13.9</code></pre>
 </div>
 </div>
-<p>The impact clearly fades with distance. The median change is largest within 2 km of a new station, and levels off beyond about 3 km. Only one reliably fitted station that is not an interchange lies within 1 km of a new station, so that group should not be read on its own.</p>
-<p>The two largest losses need caution. Joo Koon (-66.8%) and Gul Circle (-62.5%), the outlier in the 3-5 km band. Few residents live near either station, so the model attributes most of their riders to residents of Jurong West several kilometres away, who are exactly the residents predicted to switch to the JRL. As with the Tuas stations (Section 5.7), their actual morning riders are largely workers in the western industrial estates, so these losses are likely to be overstated.</p>
-<p>Beyond 5 km, the median change does not reach zero but stays at about -6.1%. This is a property of the model rather than a real effect, and it has two causes:</p>
-<ol type="1">
-<li><strong>The total number of trips is held constant.</strong> The 12.1% of trips taken by the new stations must therefore come from existing ones.</li>
-<li><strong>New options draw proportionally from all stations.</strong> In the Huff and MCI models, a new alternative takes its share proportionally from every station a resident might use, however unlikely. This is the independence-of-irrelevant-alternatives property of these models. So a resident in Jurong who switches to a JRL station slightly reduces the predicted ridership of every station in the network, including those in the CBD.</li>
-</ol>
-<p>The background loss of about 6% should therefore be read as the baseline. Only losses well beyond it reflect genuine local competition.</p>
+<p>The impact clearly fades with distance. The median change is largest within 2 km of a new station and levels off beyond about 3 km. Only one reliably fitted station that is not an interchange lies within 1 km of a new station, so that group should not be read on its own.</p>
+<p>The two largest losses need caution: Joo Koon (-66.8%) and Gul Circle (-62.5%), the outlier in the 3–5 km band. Few residents live near either station, so the model attributes most of their riders to Jurong West residents several kilometres away, who are exactly those predicted to switch to the JRL. As with the Tuas stations (Section 5.7), their actual riders are largely workers in the western industrial estates, so these losses are likely overstated.</p>
+<p>Beyond 5 km, the median change stays at about -6.1% rather than zero. This background loss is a property of the model, not real competition: total trips are held constant, and a new station draws riders proportionally from every station, however distant, which is the independence of irrelevant alternatives (Section 8.3). Only losses well beyond this baseline reflect genuine local competition.</p>
 </section>
 <section id="checking-an-alternative-choice-set" class="level4">
 <h4 class="anchored" data-anchor-id="checking-an-alternative-choice-set">6.2.4 Checking an alternative choice set</h4>
@@ -4352,7 +4350,7 @@ flatter   0.977   0.986   1.000</code></pre>
 1               1211        162         87</code></pre>
 </div>
 </div>
-<p>87 hexagons are predicted to send more than half of their morning trips to a new station, and 162 more than a quarter. They are concentrated around the new stations: along the JRL in Tengah and Jurong West, which currently lie between existing stations, and around the CRL stations at Serangoon North, Tavistock, Tampines North and Pasir Ris East. Away from the new lines, the share is under 5%.</p>
+<p>87 hexagons are predicted to send more than half of their morning trips to a new station, and 162 more than a quarter. They are concentrated around the new stations, i.e., along the JRL in Tengah and Jurong West, which currently lie between existing stations, and around the CRL stations at Serangoon North, Tavistock, Tampines North and Pasir Ris East. Away from the new lines, the share is under 5%.</p>
 </section>
 <section id="changes-in-station-market-areas" class="level4">
 <h4 class="anchored" data-anchor-id="changes-in-station-market-areas">6.3.2 Changes in station market areas</h4>
@@ -4504,7 +4502,8 @@ flatter   0.977   0.986   1.000</code></pre>
 </section>
 <section id="value-added-analysis-change-in-access-to-mrtlrt" class="level2">
 <h2 class="anchored" data-anchor-id="value-added-analysis-change-in-access-to-mrtlrt">7. Value-Added Analysis: Change in Access to MRT/LRT</h2>
-<p>Sections 5 and 6 view the new lines from the stations’ side: how many riders each station gains or loses. This section views them from the residents’ side: how much rail service each hexagon can reach, after accounting for the other residents competing for the same stations. This links the exercise to urban sustainability, as it shows which communities gain access to rail and whether the new lines reach areas that were poorly served. It also relates to the government’s target of 8 in 10 households being within a 10-minute walk of a train station by the 2030s (Ministry of Transport, 2024).</p>
+<p>Sections 5 and 6 view the new lines from the stations’ side, i.e., how many riders each station gains or loses. This section views them from the residents’ side, i.e., how much rail service each hexagon can reach, after accounting for the other residents competing for the same stations. This links the exercise to urban sustainability, as it shows which communities gain access to rail and whether the new lines reach areas that were poorly served. It also relates to the government’s target of 8 in 10 households being within a 10-minute walk of a train station by the 2030s (Ministry of Transport, 2024).</p>
+<p>This analysis identifies where residents remain beyond walking distance of a station, and whether the new stations open ahead of the populations they serve.</p>
 <section id="method" class="level3">
 <h3 class="anchored" data-anchor-id="method">7.1 Method</h3>
 <p>Access is measured with the two-step floating catchment area (2SFCA) method (Luo &amp; Wang, 2003). Each station’s supply is first divided among the residents within its catchment. Each hexagon’s accessibility is then the sum of the shares of the stations it can reach.</p>
@@ -4656,137 +4655,83 @@ A_i = \sum_{j:\, d_{ij} \le d_0} P^*_{ij}\, R_j
 </tbody>
 </table>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb243"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb243-1"><a href="#cb243-1" aria-hidden="true" tabindex="-1"></a>access <span class="sc">%&gt;%</span></span>
-<span id="cb243-2"><a href="#cb243-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">newly_within =</span> <span class="fu">sum</span>(before <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> after <span class="sc">&gt;</span> <span class="dv">0</span>),</span>
-<span id="cb243-3"><a href="#cb243-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">higher       =</span> <span class="fu">sum</span>(before <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> change <span class="sc">&gt;</span> <span class="fl">0.01</span>),</span>
-<span id="cb243-4"><a href="#cb243-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">unchanged    =</span> <span class="fu">sum</span>(<span class="fu">abs</span>(change) <span class="sc">&lt;=</span> <span class="fl">0.01</span>),</span>
-<span id="cb243-5"><a href="#cb243-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">lower        =</span> <span class="fu">sum</span>(change <span class="sc">&lt;</span> <span class="sc">-</span><span class="fl">0.01</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1 × 4
-  newly_within higher unchanged lower
-         &lt;int&gt;  &lt;int&gt;     &lt;int&gt; &lt;int&gt;
-1           80    103      1025     3</code></pre>
-</div>
 </div>
 <p>The share of residents aged 15-64 within 800 m of a station rises from 71.6% to 79.7%, an additional 229,458 residents. In all, 80 hexagons that currently have no station within 800 m gain one.</p>
 <p>Most hexagons are unaffected. Unlike Section 6.2, where every station lost a small share of riders, accessibility changes only where a new station or an added line lies within 800 m. The catchment limits competition between stations to residents who can actually reach them, so the 2SFCA measure has no background effect.</p>
 </section>
-<section id="mapping-accessibility" class="level3">
-<h3 class="anchored" data-anchor-id="mapping-accessibility">7.4 Mapping Accessibility</h3>
-<p>The before and after maps use the same classes, so they can be compared directly.</p>
+<section id="mapping-the-change-in-access" class="level3">
+<h3 class="anchored" data-anchor-id="mapping-the-change-in-access">7.4 Mapping the Change in Access</h3>
+<p>The map below shows how each populated hexagon’s access changes when the JRL and CRL open. Hexagons are grouped by whether they gain a station within 800 m for the first time, gain access to more rail service, see no change, or see a lower score.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb245"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb245-1"><a href="#cb245-1" aria-hidden="true" tabindex="-1"></a>access_map <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
-<span id="cb245-2"><a href="#cb245-2" aria-hidden="true" tabindex="-1"></a>  hex_land <span class="sc">%&gt;%</span> <span class="fu">select</span>(hex_id) <span class="sc">%&gt;%</span></span>
-<span id="cb245-3"><a href="#cb245-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(access <span class="sc">%&gt;%</span> <span class="fu">select</span>(hex_id, <span class="at">access =</span> before), <span class="at">by =</span> <span class="st">"hex_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb245-4"><a href="#cb245-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">network =</span> <span class="st">"Before: Existing network"</span>),</span>
-<span id="cb245-5"><a href="#cb245-5" aria-hidden="true" tabindex="-1"></a>  hex_land <span class="sc">%&gt;%</span> <span class="fu">select</span>(hex_id) <span class="sc">%&gt;%</span></span>
-<span id="cb245-6"><a href="#cb245-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(access <span class="sc">%&gt;%</span> <span class="fu">select</span>(hex_id, <span class="at">access =</span> after), <span class="at">by =</span> <span class="st">"hex_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb245-7"><a href="#cb245-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">network =</span> <span class="st">"After: With JRL and CRL"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb245-8"><a href="#cb245-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">network =</span> <span class="fu">factor</span>(network, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Before: Existing network"</span>,</span>
-<span id="cb245-9"><a href="#cb245-9" aria-hidden="true" tabindex="-1"></a>                                              <span class="st">"After: With JRL and CRL"</span>)))</span>
-<span id="cb245-10"><a href="#cb245-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb245-11"><a href="#cb245-11" aria-hidden="true" tabindex="-1"></a>m_access <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(access_map) <span class="sc">+</span></span>
-<span id="cb245-12"><a href="#cb245-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">fill =</span> <span class="st">"access"</span>,</span>
-<span id="cb245-13"><a href="#cb245-13" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill.scale =</span> <span class="fu">tm_scale_intervals</span>(</span>
-<span id="cb245-14"><a href="#cb245-14" aria-hidden="true" tabindex="-1"></a>                <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.001</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">50</span>, <span class="cn">Inf</span>),</span>
-<span id="cb245-15"><a href="#cb245-15" aria-hidden="true" tabindex="-1"></a>                <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"No station within 800 m"</span>, <span class="st">"Under 3"</span>, <span class="st">"3 to 5"</span>, <span class="st">"5 to 10"</span>,</span>
-<span id="cb245-16"><a href="#cb245-16" aria-hidden="true" tabindex="-1"></a>                           <span class="st">"10 to 20"</span>, <span class="st">"20 to 50"</span>, <span class="st">"50 or more"</span>),</span>
-<span id="cb245-17"><a href="#cb245-17" aria-hidden="true" tabindex="-1"></a>                <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"grey75"</span>, <span class="st">"#fdd49e"</span>, <span class="st">"#fdbb84"</span>, <span class="st">"#fc8d59"</span>, <span class="st">"#e34a33"</span>, <span class="st">"#b30000"</span>, <span class="st">"#7f0000"</span>),</span>
-<span id="cb245-18"><a href="#cb245-18" aria-hidden="true" tabindex="-1"></a>                <span class="at">value.na =</span> <span class="st">"grey97"</span>, <span class="at">label.na =</span> <span class="st">"No residents"</span>),</span>
-<span id="cb245-19"><a href="#cb245-19" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill.legend =</span> <span class="fu">tm_legend</span>(<span class="at">title =</span> <span class="st">"Rail lines per</span><span class="sc">\n</span><span class="st">100,000 residents"</span>),</span>
-<span id="cb245-20"><a href="#cb245-20" aria-hidden="true" tabindex="-1"></a>              <span class="at">col =</span> <span class="st">"white"</span>, <span class="at">lwd =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
-<span id="cb245-21"><a href="#cb245-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_title</span>(<span class="st">"Rail accessibility before and after the JRL and CRL open"</span>) <span class="sc">+</span></span>
-<span id="cb245-22"><a href="#cb245-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_facets</span>(<span class="at">by =</span> <span class="st">"network"</span>, <span class="at">ncol =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb245-23"><a href="#cb245-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">frame =</span> <span class="cn">TRUE</span>, <span class="at">legend.outside =</span> <span class="cn">TRUE</span>, <span class="at">legend.outside.position =</span> <span class="st">"right"</span>)</span>
-<span id="cb245-24"><a href="#cb245-24" aria-hidden="true" tabindex="-1"></a>m_access</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb243"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb243-1"><a href="#cb243-1" aria-hidden="true" tabindex="-1"></a>access_change <span class="ot">&lt;-</span> hex_land <span class="sc">%&gt;%</span></span>
+<span id="cb243-2"><a href="#cb243-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(hex_id) <span class="sc">%&gt;%</span></span>
+<span id="cb243-3"><a href="#cb243-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(access, <span class="at">by =</span> <span class="st">"hex_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb243-4"><a href="#cb243-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">change_class =</span> <span class="fu">case_when</span>(</span>
+<span id="cb243-5"><a href="#cb243-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">is.na</span>(change)           <span class="sc">~</span> <span class="cn">NA_character_</span>,</span>
+<span id="cb243-6"><a href="#cb243-6" aria-hidden="true" tabindex="-1"></a>    before <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> after <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"Newly within 800 m of a station"</span>,</span>
+<span id="cb243-7"><a href="#cb243-7" aria-hidden="true" tabindex="-1"></a>    change <span class="sc">&gt;</span>  <span class="fl">0.01</span>          <span class="sc">~</span> <span class="st">"Higher"</span>,</span>
+<span id="cb243-8"><a href="#cb243-8" aria-hidden="true" tabindex="-1"></a>    change <span class="sc">&lt;</span> <span class="sc">-</span><span class="fl">0.01</span>          <span class="sc">~</span> <span class="st">"Lower"</span>,</span>
+<span id="cb243-9"><a href="#cb243-9" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span>                    <span class="sc">~</span> <span class="st">"No change"</span>))</span>
+<span id="cb243-10"><a href="#cb243-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb243-11"><a href="#cb243-11" aria-hidden="true" tabindex="-1"></a>m_change <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(access_change) <span class="sc">+</span></span>
+<span id="cb243-12"><a href="#cb243-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">fill =</span> <span class="st">"change_class"</span>,</span>
+<span id="cb243-13"><a href="#cb243-13" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill.scale =</span> <span class="fu">tm_scale_categorical</span>(</span>
+<span id="cb243-14"><a href="#cb243-14" aria-hidden="true" tabindex="-1"></a>                <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Newly within 800 m of a station"</span>, <span class="st">"Higher"</span>, <span class="st">"No change"</span>, <span class="st">"Lower"</span>),</span>
+<span id="cb243-15"><a href="#cb243-15" aria-hidden="true" tabindex="-1"></a>                <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"#6b46c1"</span>, <span class="st">"#b794f4"</span>, <span class="st">"grey85"</span>, <span class="st">"#dd6b20"</span>),</span>
+<span id="cb243-16"><a href="#cb243-16" aria-hidden="true" tabindex="-1"></a>                <span class="at">value.na =</span> <span class="st">"grey97"</span>, <span class="at">label.na =</span> <span class="st">"No residents"</span>),</span>
+<span id="cb243-17"><a href="#cb243-17" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill.legend =</span> <span class="fu">tm_legend</span>(<span class="at">title =</span> <span class="st">"Change in rail accessibility"</span>),</span>
+<span id="cb243-18"><a href="#cb243-18" aria-hidden="true" tabindex="-1"></a>              <span class="at">col =</span> <span class="st">"white"</span>, <span class="at">lwd =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb243-19"><a href="#cb243-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(new_stations) <span class="sc">+</span></span>
+<span id="cb243-20"><a href="#cb243-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_symbols</span>(<span class="at">fill =</span> <span class="st">"black"</span>, <span class="at">shape =</span> <span class="dv">17</span>, <span class="at">size =</span> <span class="fl">0.35</span>) <span class="sc">+</span></span>
+<span id="cb243-21"><a href="#cb243-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_title</span>(<span class="st">"Change in rail accessibility after the JRL and CRL open"</span>) <span class="sc">+</span></span>
+<span id="cb243-22"><a href="#cb243-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_compass</span>(<span class="at">type =</span> <span class="st">"8star"</span>, <span class="at">size =</span> <span class="dv">2</span>, <span class="at">position =</span> <span class="fu">c</span>(<span class="st">"right"</span>, <span class="st">"top"</span>)) <span class="sc">+</span></span>
+<span id="cb243-23"><a href="#cb243-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_scalebar</span>(<span class="at">position =</span> <span class="fu">c</span>(<span class="st">"left"</span>, <span class="st">"bottom"</span>)) <span class="sc">+</span></span>
+<span id="cb243-24"><a href="#cb243-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">frame =</span> <span class="cn">TRUE</span>, <span class="at">legend.position =</span> <span class="fu">c</span>(<span class="st">"right"</span>, <span class="st">"bottom"</span>))</span>
+<span id="cb243-25"><a href="#cb243-25" aria-hidden="true" tabindex="-1"></a>m_change</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Take-Home_Ex03_files/figure-html/unnamed-chunk-84-1.png" class="img-fluid figure-img" width="1152"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>Accessibility is highest in the city centre, where interchanges with several lines serve relatively few residents, and lowest in large housing estates far from an interchange. Before the new lines open, the largest grey gaps with no station within 800 m are in the west, in Tengah, Jurong West and Jurong East, and in the north-east and east, in Serangoon, Hougang and Pasir Ris (Section 7.5). In the after map, most of these gaps fill in along the JRL and CRL corridors. The grey areas that remain lie away from both lines, which these two lines were not designed to serve.</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb246"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb246-1"><a href="#cb246-1" aria-hidden="true" tabindex="-1"></a>access_change <span class="ot">&lt;-</span> hex_land <span class="sc">%&gt;%</span></span>
-<span id="cb246-2"><a href="#cb246-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(hex_id) <span class="sc">%&gt;%</span></span>
-<span id="cb246-3"><a href="#cb246-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(access, <span class="at">by =</span> <span class="st">"hex_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb246-4"><a href="#cb246-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">change_class =</span> <span class="fu">case_when</span>(</span>
-<span id="cb246-5"><a href="#cb246-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">is.na</span>(change)           <span class="sc">~</span> <span class="cn">NA_character_</span>,</span>
-<span id="cb246-6"><a href="#cb246-6" aria-hidden="true" tabindex="-1"></a>    before <span class="sc">==</span> <span class="dv">0</span> <span class="sc">&amp;</span> after <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"Newly within 800 m of a station"</span>,</span>
-<span id="cb246-7"><a href="#cb246-7" aria-hidden="true" tabindex="-1"></a>    change <span class="sc">&gt;</span>  <span class="fl">0.01</span>          <span class="sc">~</span> <span class="st">"Higher"</span>,</span>
-<span id="cb246-8"><a href="#cb246-8" aria-hidden="true" tabindex="-1"></a>    change <span class="sc">&lt;</span> <span class="sc">-</span><span class="fl">0.01</span>          <span class="sc">~</span> <span class="st">"Lower"</span>,</span>
-<span id="cb246-9"><a href="#cb246-9" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span>                    <span class="sc">~</span> <span class="st">"No change"</span>))</span>
-<span id="cb246-10"><a href="#cb246-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb246-11"><a href="#cb246-11" aria-hidden="true" tabindex="-1"></a>m_change <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(access_change) <span class="sc">+</span></span>
-<span id="cb246-12"><a href="#cb246-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">fill =</span> <span class="st">"change_class"</span>,</span>
-<span id="cb246-13"><a href="#cb246-13" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill.scale =</span> <span class="fu">tm_scale_categorical</span>(</span>
-<span id="cb246-14"><a href="#cb246-14" aria-hidden="true" tabindex="-1"></a>                <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Newly within 800 m of a station"</span>, <span class="st">"Higher"</span>, <span class="st">"No change"</span>, <span class="st">"Lower"</span>),</span>
-<span id="cb246-15"><a href="#cb246-15" aria-hidden="true" tabindex="-1"></a>                <span class="at">values =</span> <span class="fu">c</span>(<span class="st">"#6b46c1"</span>, <span class="st">"#b794f4"</span>, <span class="st">"grey85"</span>, <span class="st">"#dd6b20"</span>),</span>
-<span id="cb246-16"><a href="#cb246-16" aria-hidden="true" tabindex="-1"></a>                <span class="at">value.na =</span> <span class="st">"grey97"</span>, <span class="at">label.na =</span> <span class="st">"No residents"</span>),</span>
-<span id="cb246-17"><a href="#cb246-17" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill.legend =</span> <span class="fu">tm_legend</span>(<span class="at">title =</span> <span class="st">"Change in rail accessibility"</span>),</span>
-<span id="cb246-18"><a href="#cb246-18" aria-hidden="true" tabindex="-1"></a>              <span class="at">col =</span> <span class="st">"white"</span>, <span class="at">lwd =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
-<span id="cb246-19"><a href="#cb246-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(new_stations) <span class="sc">+</span></span>
-<span id="cb246-20"><a href="#cb246-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_symbols</span>(<span class="at">fill =</span> <span class="st">"black"</span>, <span class="at">shape =</span> <span class="dv">17</span>, <span class="at">size =</span> <span class="fl">0.35</span>) <span class="sc">+</span></span>
-<span id="cb246-21"><a href="#cb246-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_title</span>(<span class="st">"Change in rail accessibility after the JRL and CRL open"</span>) <span class="sc">+</span></span>
-<span id="cb246-22"><a href="#cb246-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_compass</span>(<span class="at">type =</span> <span class="st">"8star"</span>, <span class="at">size =</span> <span class="dv">2</span>, <span class="at">position =</span> <span class="fu">c</span>(<span class="st">"right"</span>, <span class="st">"top"</span>)) <span class="sc">+</span></span>
-<span id="cb246-23"><a href="#cb246-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_scalebar</span>(<span class="at">position =</span> <span class="fu">c</span>(<span class="st">"left"</span>, <span class="st">"bottom"</span>)) <span class="sc">+</span></span>
-<span id="cb246-24"><a href="#cb246-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">frame =</span> <span class="cn">TRUE</span>, <span class="at">legend.position =</span> <span class="fu">c</span>(<span class="st">"right"</span>, <span class="st">"bottom"</span>))</span>
-<span id="cb246-25"><a href="#cb246-25" aria-hidden="true" tabindex="-1"></a>m_change</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="Take-Home_Ex03_files/figure-html/unnamed-chunk-85-1.png" class="img-fluid figure-img" width="1056"></p>
+<p><img src="Take-Home_Ex03_files/figure-html/unnamed-chunk-84-1.png" class="img-fluid figure-img" width="1056"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>The gains form two corridors: the JRL in the west, around Tengah, Jurong West and Jurong East, and the CRL in the north-east, from Ang Mo Kio to Pasir Ris. Hexagons newly within 800 m of a station lie closest to the new stations. Hexagons with higher accessibility surround them, where residents already had a station and gain a second option or an interchange with an extra line.</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb247"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb247-1"><a href="#cb247-1" aria-hidden="true" tabindex="-1"></a>no_residents_800 <span class="ot">&lt;-</span> dest_future_df<span class="sc">$</span>station[new_idx][<span class="fu">colSums</span>(D_future[, new_idx] <span class="sc">&lt;=</span> cutoff) <span class="sc">==</span> <span class="dv">0</span>]</span>
-<span id="cb247-2"><a href="#cb247-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_to_title</span>(no_residents_800)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "Aviation Park"    "Jurong Hill"      "Jurong Pier"      "Nanyang Crescent"
-[5] "Nanyang Gateway"  "Tukang"          </code></pre>
-</div>
-</div>
-<p>Of the 29 new stations, 6 have no populated hexagon within 800 m, and all of them are among the 9 stations predicted below the benchmark in Section 6.1. This confirms, from the residents’ side, why their predicted morning ridership is low: they serve industrial estates, the university campus and the airport area, where demand comes from workers and students rather than from residents nearby.</p>
-<p>Only 3 hexagons have lower accessibility. These lie next to an existing station with few users, such as South View LRT, that gains a busy new neighbour, such as Choa Chu Kang West. Part of their residents’ demand moves to the new station, which is shared by many more residents, so their average supply per resident falls. These residents gain an extra option, so a lower score here does not mean worse service. It is a known property of supply-to-demand measures such as 2SFCA.</p>
+<p>Only 3 hexagons have lower accessibility. They lie next to a lightly used station, such as South View LRT, that gains a busy new neighbour. Their residents gain an extra option, so the lower score is a property of supply-to-demand measures such as 2SFCA rather than worse service.</p>
 </section>
 <section id="change-by-planning-area" class="level3">
 <h3 class="anchored" data-anchor-id="change-by-planning-area">7.5 Change by Planning Area</h3>
 <p>To summarise the change for planning, each hexagon is assigned to the planning area its representative point lies in, using <em>st_join()</em>. Accessibility is then averaged across each planning area’s hexagons, weighted by residents. Planning areas with fewer than 5,000 residents aged 15-64 are left out, as a few hexagons would dominate their averages.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb249"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb249-1"><a href="#cb249-1" aria-hidden="true" tabindex="-1"></a>hex_pa <span class="ot">&lt;-</span> origins <span class="sc">%&gt;%</span></span>
-<span id="cb249-2"><a href="#cb249-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(hex_id) <span class="sc">%&gt;%</span></span>
-<span id="cb249-3"><a href="#cb249-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_join</span>(mpsz_study <span class="sc">%&gt;%</span> <span class="fu">select</span>(PLN_AREA_N), <span class="at">join =</span> st_intersects) <span class="sc">%&gt;%</span></span>
-<span id="cb249-4"><a href="#cb249-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>()</span>
-<span id="cb249-5"><a href="#cb249-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb249-6"><a href="#cb249-6" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(hex_pa<span class="sc">$</span>PLN_AREA_N))   <span class="co"># hexagons not assigned to a planning area</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb244"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb244-1"><a href="#cb244-1" aria-hidden="true" tabindex="-1"></a>hex_pa <span class="ot">&lt;-</span> origins <span class="sc">%&gt;%</span></span>
+<span id="cb244-2"><a href="#cb244-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(hex_id) <span class="sc">%&gt;%</span></span>
+<span id="cb244-3"><a href="#cb244-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_join</span>(mpsz_study <span class="sc">%&gt;%</span> <span class="fu">select</span>(PLN_AREA_N), <span class="at">join =</span> st_intersects) <span class="sc">%&gt;%</span></span>
+<span id="cb244-4"><a href="#cb244-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>()</span>
+<span id="cb244-5"><a href="#cb244-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb244-6"><a href="#cb244-6" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">is.na</span>(hex_pa<span class="sc">$</span>PLN_AREA_N))   <span class="co"># hexagons not assigned to a planning area</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb251"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb251-1"><a href="#cb251-1" aria-hidden="true" tabindex="-1"></a>pa_access <span class="ot">&lt;-</span> access <span class="sc">%&gt;%</span></span>
-<span id="cb251-2"><a href="#cb251-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(hex_pa, <span class="at">by =</span> <span class="st">"hex_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb251-3"><a href="#cb251-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(PLN_AREA_N) <span class="sc">%&gt;%</span></span>
-<span id="cb251-4"><a href="#cb251-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">residents     =</span> <span class="fu">sum</span>(pop),</span>
-<span id="cb251-5"><a href="#cb251-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">within_before =</span> <span class="dv">100</span> <span class="sc">*</span> <span class="fu">sum</span>(pop[before <span class="sc">&gt;</span> <span class="dv">0</span>]) <span class="sc">/</span> residents,</span>
-<span id="cb251-6"><a href="#cb251-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">within_after  =</span> <span class="dv">100</span> <span class="sc">*</span> <span class="fu">sum</span>(pop[after <span class="sc">&gt;</span> <span class="dv">0</span>]) <span class="sc">/</span> residents,</span>
-<span id="cb251-7"><a href="#cb251-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">access_before =</span> <span class="fu">weighted.mean</span>(before, pop),</span>
-<span id="cb251-8"><a href="#cb251-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">access_after  =</span> <span class="fu">weighted.mean</span>(after, pop),</span>
-<span id="cb251-9"><a href="#cb251-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb251-10"><a href="#cb251-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">change =</span> access_after <span class="sc">-</span> access_before)</span>
-<span id="cb251-11"><a href="#cb251-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb251-12"><a href="#cb251-12" aria-hidden="true" tabindex="-1"></a>pa_access <span class="sc">%&gt;%</span></span>
-<span id="cb251-13"><a href="#cb251-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(residents <span class="sc">&gt;=</span> <span class="dv">5000</span>, change <span class="sc">&gt;</span> <span class="fl">0.01</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb251-14"><a href="#cb251-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(change)) <span class="sc">%&gt;%</span></span>
-<span id="cb251-15"><a href="#cb251-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">PLN_AREA_N =</span> <span class="fu">str_to_title</span>(PLN_AREA_N),</span>
-<span id="cb251-16"><a href="#cb251-16" aria-hidden="true" tabindex="-1"></a>         <span class="at">residents  =</span> scales<span class="sc">::</span><span class="fu">comma</span>(<span class="fu">round</span>(residents)),</span>
-<span id="cb251-17"><a href="#cb251-17" aria-hidden="true" tabindex="-1"></a>         <span class="fu">across</span>(<span class="fu">where</span>(is.numeric), \(x) <span class="fu">round</span>(x, <span class="dv">1</span>))) <span class="sc">%&gt;%</span></span>
-<span id="cb251-18"><a href="#cb251-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Planning area"</span>, <span class="st">"Residents aged 15-64"</span>,</span>
-<span id="cb251-19"><a href="#cb251-19" aria-hidden="true" tabindex="-1"></a>                      <span class="st">"Within 800 m before (%)"</span>, <span class="st">"Within 800 m after (%)"</span>,</span>
-<span id="cb251-20"><a href="#cb251-20" aria-hidden="true" tabindex="-1"></a>                      <span class="st">"Accessibility before"</span>, <span class="st">"Accessibility after"</span>, <span class="st">"Change"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb246"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb246-1"><a href="#cb246-1" aria-hidden="true" tabindex="-1"></a>pa_access <span class="ot">&lt;-</span> access <span class="sc">%&gt;%</span></span>
+<span id="cb246-2"><a href="#cb246-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(hex_pa, <span class="at">by =</span> <span class="st">"hex_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb246-3"><a href="#cb246-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(PLN_AREA_N) <span class="sc">%&gt;%</span></span>
+<span id="cb246-4"><a href="#cb246-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">residents     =</span> <span class="fu">sum</span>(pop),</span>
+<span id="cb246-5"><a href="#cb246-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">within_before =</span> <span class="dv">100</span> <span class="sc">*</span> <span class="fu">sum</span>(pop[before <span class="sc">&gt;</span> <span class="dv">0</span>]) <span class="sc">/</span> residents,</span>
+<span id="cb246-6"><a href="#cb246-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">within_after  =</span> <span class="dv">100</span> <span class="sc">*</span> <span class="fu">sum</span>(pop[after <span class="sc">&gt;</span> <span class="dv">0</span>]) <span class="sc">/</span> residents,</span>
+<span id="cb246-7"><a href="#cb246-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">access_before =</span> <span class="fu">weighted.mean</span>(before, pop),</span>
+<span id="cb246-8"><a href="#cb246-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">access_after  =</span> <span class="fu">weighted.mean</span>(after, pop),</span>
+<span id="cb246-9"><a href="#cb246-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb246-10"><a href="#cb246-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">change =</span> access_after <span class="sc">-</span> access_before)</span>
+<span id="cb246-11"><a href="#cb246-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb246-12"><a href="#cb246-12" aria-hidden="true" tabindex="-1"></a>pa_access <span class="sc">%&gt;%</span></span>
+<span id="cb246-13"><a href="#cb246-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(residents <span class="sc">&gt;=</span> <span class="dv">5000</span>, change <span class="sc">&gt;</span> <span class="fl">0.01</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb246-14"><a href="#cb246-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(change)) <span class="sc">%&gt;%</span></span>
+<span id="cb246-15"><a href="#cb246-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">PLN_AREA_N =</span> <span class="fu">str_to_title</span>(PLN_AREA_N),</span>
+<span id="cb246-16"><a href="#cb246-16" aria-hidden="true" tabindex="-1"></a>         <span class="at">residents  =</span> scales<span class="sc">::</span><span class="fu">comma</span>(<span class="fu">round</span>(residents)),</span>
+<span id="cb246-17"><a href="#cb246-17" aria-hidden="true" tabindex="-1"></a>         <span class="fu">across</span>(<span class="fu">where</span>(is.numeric), \(x) <span class="fu">round</span>(x, <span class="dv">1</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb246-18"><a href="#cb246-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Planning area"</span>, <span class="st">"Residents aged 15-64"</span>,</span>
+<span id="cb246-19"><a href="#cb246-19" aria-hidden="true" tabindex="-1"></a>                      <span class="st">"Within 800 m before (%)"</span>, <span class="st">"Within 800 m after (%)"</span>,</span>
+<span id="cb246-20"><a href="#cb246-20" aria-hidden="true" tabindex="-1"></a>                      <span class="st">"Accessibility before"</span>, <span class="st">"Accessibility after"</span>, <span class="st">"Change"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <colgroup>
@@ -4915,39 +4860,39 @@ A_i = \sum_{j:\, d_{ij} \le d_0} P^*_{ij}\, R_j
 </div>
 <p>Jurong East has the largest gain in accessibility. It benefits in two ways: its interchange gains a third line, and new JRL stations such as Toh Guan and Jurong Town Hall bring more of its residents within 800 m of a station (50% before, 90% after).</p>
 <p>Tengah has the largest gain in coverage. None of its residents currently live within 800 m of a station, against 84% once the JRL opens. Its accessibility rises less than Jurong East’s because its new stations each serve one line and are shared among a large, growing population. Its level after the JRL opens (8.3 lines per 100,000 residents) is close to the island-wide average (8.3).</p>
-<p>Jurong West and Pasir Ris follow. Both have large populations that are currently poorly served: about half of Jurong West’s residents and a third of Pasir Ris’s live within 800 m of a station. On the CRL, Ang Mo Kio, Bishan, Hougang and Serangoon gain from the new stations at Teck Ghee, Tavistock and Serangoon North and from the added line at their interchanges. Tampines gains in coverage (68% to 83%) but little in accessibility. Tampines North station mainly serves new residents who had no station within reach, so the supply per resident across the planning area barely changes.</p>
+<p>Jurong West and Pasir Ris follow. Both have large populations that are currently poorly served: about half of Jurong West’s residents and a third of Pasir Ris’s live within 800 m of a station. On the CRL, Ang Mo Kio, Bishan, Hougang and Serangoon gain from the new stations at Teck Ghee, Tavistock and Serangoon North and from the added line at their interchanges.</p>
 </section>
 <section id="sensitivity-to-the-catchment-distance" class="level3">
 <h3 class="anchored" data-anchor-id="sensitivity-to-the-catchment-distance">7.6 Sensitivity to the Catchment Distance</h3>
 <p>The analysis is repeated with a 1 km catchment, and the five planning areas with the largest gains are compared.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb252"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb252-1"><a href="#cb252-1" aria-hidden="true" tabindex="-1"></a>access_1km <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">hex_id =</span> hex_ids,</span>
-<span id="cb252-2"><a href="#cb252-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">pop    =</span> C_i,</span>
-<span id="cb252-3"><a href="#cb252-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">before =</span> <span class="fu">fca_access</span>(P_now,    D_exist,  dest_df<span class="sc">$</span>n_lines,        <span class="dv">1000</span>) <span class="sc">*</span> <span class="fl">1e5</span>,</span>
-<span id="cb252-4"><a href="#cb252-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">after  =</span> <span class="fu">fca_access</span>(P_future, D_future, dest_future_df<span class="sc">$</span>n_lines, <span class="dv">1000</span>) <span class="sc">*</span> <span class="fl">1e5</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb252-5"><a href="#cb252-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">change =</span> after <span class="sc">-</span> before)</span>
-<span id="cb252-6"><a href="#cb252-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb252-7"><a href="#cb252-7" aria-hidden="true" tabindex="-1"></a>within_1km <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">before =</span> <span class="dv">100</span> <span class="sc">*</span> <span class="fu">sum</span>(C_i[access_1km<span class="sc">$</span>before <span class="sc">&gt;</span> <span class="dv">0</span>]) <span class="sc">/</span> <span class="fu">sum</span>(C_i),</span>
-<span id="cb252-8"><a href="#cb252-8" aria-hidden="true" tabindex="-1"></a>                <span class="at">after  =</span> <span class="dv">100</span> <span class="sc">*</span> <span class="fu">sum</span>(C_i[access_1km<span class="sc">$</span>after <span class="sc">&gt;</span> <span class="dv">0</span>]) <span class="sc">/</span> <span class="fu">sum</span>(C_i))</span>
-<span id="cb252-9"><a href="#cb252-9" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(within_1km, <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb247"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb247-1"><a href="#cb247-1" aria-hidden="true" tabindex="-1"></a>access_1km <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">hex_id =</span> hex_ids,</span>
+<span id="cb247-2"><a href="#cb247-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">pop    =</span> C_i,</span>
+<span id="cb247-3"><a href="#cb247-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">before =</span> <span class="fu">fca_access</span>(P_now,    D_exist,  dest_df<span class="sc">$</span>n_lines,        <span class="dv">1000</span>) <span class="sc">*</span> <span class="fl">1e5</span>,</span>
+<span id="cb247-4"><a href="#cb247-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">after  =</span> <span class="fu">fca_access</span>(P_future, D_future, dest_future_df<span class="sc">$</span>n_lines, <span class="dv">1000</span>) <span class="sc">*</span> <span class="fl">1e5</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb247-5"><a href="#cb247-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">change =</span> after <span class="sc">-</span> before)</span>
+<span id="cb247-6"><a href="#cb247-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb247-7"><a href="#cb247-7" aria-hidden="true" tabindex="-1"></a>within_1km <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">before =</span> <span class="dv">100</span> <span class="sc">*</span> <span class="fu">sum</span>(C_i[access_1km<span class="sc">$</span>before <span class="sc">&gt;</span> <span class="dv">0</span>]) <span class="sc">/</span> <span class="fu">sum</span>(C_i),</span>
+<span id="cb247-8"><a href="#cb247-8" aria-hidden="true" tabindex="-1"></a>                <span class="at">after  =</span> <span class="dv">100</span> <span class="sc">*</span> <span class="fu">sum</span>(C_i[access_1km<span class="sc">$</span>after <span class="sc">&gt;</span> <span class="dv">0</span>]) <span class="sc">/</span> <span class="fu">sum</span>(C_i))</span>
+<span id="cb247-9"><a href="#cb247-9" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(within_1km, <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>before  after 
   83.5   90.8 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb254"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb254-1"><a href="#cb254-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_rows</span>(access     <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">cutoff =</span> <span class="st">"800 m"</span>),</span>
-<span id="cb254-2"><a href="#cb254-2" aria-hidden="true" tabindex="-1"></a>          access_1km <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">cutoff =</span> <span class="st">"1 km"</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb254-3"><a href="#cb254-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(hex_pa, <span class="at">by =</span> <span class="st">"hex_id"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb254-4"><a href="#cb254-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(cutoff, PLN_AREA_N) <span class="sc">%&gt;%</span></span>
-<span id="cb254-5"><a href="#cb254-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">residents =</span> <span class="fu">sum</span>(pop), <span class="at">change =</span> <span class="fu">weighted.mean</span>(change, pop), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb254-6"><a href="#cb254-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(residents <span class="sc">&gt;=</span> <span class="dv">5000</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb254-7"><a href="#cb254-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(cutoff) <span class="sc">%&gt;%</span></span>
-<span id="cb254-8"><a href="#cb254-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_max</span>(change, <span class="at">n =</span> <span class="dv">5</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb254-9"><a href="#cb254-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">rank =</span> <span class="fu">row_number</span>(), <span class="at">PLN_AREA_N =</span> <span class="fu">str_to_title</span>(PLN_AREA_N)) <span class="sc">%&gt;%</span></span>
-<span id="cb254-10"><a href="#cb254-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb254-11"><a href="#cb254-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(rank, cutoff, PLN_AREA_N) <span class="sc">%&gt;%</span></span>
-<span id="cb254-12"><a href="#cb254-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> cutoff, <span class="at">values_from =</span> PLN_AREA_N) <span class="sc">%&gt;%</span></span>
-<span id="cb254-13"><a href="#cb254-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(rank, <span class="st">`</span><span class="at">800 m</span><span class="st">`</span>, <span class="st">`</span><span class="at">1 km</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb254-14"><a href="#cb254-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Rank"</span>, <span class="st">"800 m catchment"</span>, <span class="st">"1 km catchment"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb249"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb249-1"><a href="#cb249-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_rows</span>(access     <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">cutoff =</span> <span class="st">"800 m"</span>),</span>
+<span id="cb249-2"><a href="#cb249-2" aria-hidden="true" tabindex="-1"></a>          access_1km <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">cutoff =</span> <span class="st">"1 km"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb249-3"><a href="#cb249-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(hex_pa, <span class="at">by =</span> <span class="st">"hex_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb249-4"><a href="#cb249-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(cutoff, PLN_AREA_N) <span class="sc">%&gt;%</span></span>
+<span id="cb249-5"><a href="#cb249-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">residents =</span> <span class="fu">sum</span>(pop), <span class="at">change =</span> <span class="fu">weighted.mean</span>(change, pop), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb249-6"><a href="#cb249-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(residents <span class="sc">&gt;=</span> <span class="dv">5000</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb249-7"><a href="#cb249-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(cutoff) <span class="sc">%&gt;%</span></span>
+<span id="cb249-8"><a href="#cb249-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_max</span>(change, <span class="at">n =</span> <span class="dv">5</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb249-9"><a href="#cb249-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">rank =</span> <span class="fu">row_number</span>(), <span class="at">PLN_AREA_N =</span> <span class="fu">str_to_title</span>(PLN_AREA_N)) <span class="sc">%&gt;%</span></span>
+<span id="cb249-10"><a href="#cb249-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb249-11"><a href="#cb249-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(rank, cutoff, PLN_AREA_N) <span class="sc">%&gt;%</span></span>
+<span id="cb249-12"><a href="#cb249-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> cutoff, <span class="at">values_from =</span> PLN_AREA_N) <span class="sc">%&gt;%</span></span>
+<span id="cb249-13"><a href="#cb249-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(rank, <span class="st">`</span><span class="at">800 m</span><span class="st">`</span>, <span class="st">`</span><span class="at">1 km</span><span class="st">`</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb249-14"><a href="#cb249-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Rank"</span>, <span class="st">"800 m catchment"</span>, <span class="st">"1 km catchment"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <thead>
@@ -4989,6 +4934,354 @@ A_i = \sum_{j:\, d_{ij} \le d_0} P^*_{ij}\, R_j
 </div>
 <p>With a 1 km catchment, the share of residents within reach of a station rises from 83.5% to 90.8%. The levels are higher than at 800 m, as expected, but the increase is of a similar size. The five planning areas with the largest gains are the same under both catchments, in the same order. The conclusions therefore do not depend on the choice of catchment distance.</p>
 </section>
+<section id="remaining-gaps-against-the-governments-target" class="level3">
+<h3 class="anchored" data-anchor-id="remaining-gaps-against-the-governments-target">7.7 Remaining Gaps Against the Government’s Target</h3>
+<p>The government aims for 8 in 10 households to be within a 10-minute walk of a train station by the 2030s (Urban Redevelopment Authority, n.d.). After the JRL and CRL Phase 1 open, 79.7% of residents aged 15-64 live within 800 m of a station. The two measures are not directly comparable: the target counts households and walking time, whereas this analysis counts residents and straight-line distance. As walking effort in Singapore is 20% to 39% greater than straight-line distance suggests (Olszewski &amp; Wibowo, 2005), the share within an actual 10-minute walk is likely to be lower. On this evidence, the two lines bring the network to about the level of the target rather than clearly beyond it.</p>
+<p>The question for planning is therefore where the remaining 576,024 residents live, and whether rail is the right way to serve them. For each planning area, the residents still beyond 800 m are counted and divided into those in HDB flats and those in private housing. A gap made up mainly of HDB residents is dense, and an added station would serve many people. A gap made up mainly of private housing, often landed estates, is low-density, and a station there would serve few people.</p>
+<p>Some gaps will be closed by lines already under construction. CRL Phase 2 adds stations at Turf City, King Albert Park, Maju, Clementi, West Coast and Jurong Lake District, and the CRL Punggol Extension adds stations at Elias and Riviera, both by 2032 (Land Transport Authority, n.d.). These are recorded below by planning area. Stations that have been announced but are not yet under construction are not included.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>AI Use Disclosure
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>AI tools were used to draft the R code that summarises the residents beyond 800 m by planning area and housing type, and maps the remaining gaps. The output was reviewed and run by the author to verify correctness against the study data.</p>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb250"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb250-1"><a href="#cb250-1" aria-hidden="true" tabindex="-1"></a>gap_pa <span class="ot">&lt;-</span> access <span class="sc">%&gt;%</span></span>
+<span id="cb250-2"><a href="#cb250-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(origin_df <span class="sc">%&gt;%</span> <span class="fu">select</span>(hex_id, pop_hdb), <span class="at">by =</span> <span class="st">"hex_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb250-3"><a href="#cb250-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(hex_pa, <span class="at">by =</span> <span class="st">"hex_id"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb250-4"><a href="#cb250-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(PLN_AREA_N) <span class="sc">%&gt;%</span></span>
+<span id="cb250-5"><a href="#cb250-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">residents =</span> <span class="fu">sum</span>(pop),</span>
+<span id="cb250-6"><a href="#cb250-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">beyond    =</span> <span class="fu">sum</span>(pop[after <span class="sc">==</span> <span class="dv">0</span>]),</span>
+<span id="cb250-7"><a href="#cb250-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">share     =</span> <span class="dv">100</span> <span class="sc">*</span> beyond <span class="sc">/</span> residents,</span>
+<span id="cb250-8"><a href="#cb250-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">hdb_share =</span> <span class="dv">100</span> <span class="sc">*</span> <span class="fu">sum</span>(pop_hdb[after <span class="sc">==</span> <span class="dv">0</span>]) <span class="sc">/</span> beyond,</span>
+<span id="cb250-9"><a href="#cb250-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb250-10"><a href="#cb250-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(beyond <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
+<span id="cb250-11"><a href="#cb250-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb250-12"><a href="#cb250-12" aria-hidden="true" tabindex="-1"></a>committed <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb250-13"><a href="#cb250-13" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>PLN_AREA_N,   <span class="sc">~</span>committed_line,</span>
+<span id="cb250-14"><a href="#cb250-14" aria-hidden="true" tabindex="-1"></a>  <span class="st">"CLEMENTI"</span>,    <span class="st">"CRL Phase 2 (2032)"</span>,</span>
+<span id="cb250-15"><a href="#cb250-15" aria-hidden="true" tabindex="-1"></a>  <span class="st">"BUKIT TIMAH"</span>, <span class="st">"CRL Phase 2 (2032)"</span>,</span>
+<span id="cb250-16"><a href="#cb250-16" aria-hidden="true" tabindex="-1"></a>  <span class="st">"PASIR RIS"</span>,   <span class="st">"CRL Punggol Extension (2032)"</span>,</span>
+<span id="cb250-17"><a href="#cb250-17" aria-hidden="true" tabindex="-1"></a>  <span class="st">"PUNGGOL"</span>,     <span class="st">"CRL Punggol Extension (2032)"</span>)</span>
+<span id="cb250-18"><a href="#cb250-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb250-19"><a href="#cb250-19" aria-hidden="true" tabindex="-1"></a>gap_tab <span class="ot">&lt;-</span> gap_pa <span class="sc">%&gt;%</span></span>
+<span id="cb250-20"><a href="#cb250-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(committed, <span class="at">by =</span> <span class="st">"PLN_AREA_N"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb250-21"><a href="#cb250-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">committed_line =</span> <span class="fu">replace_na</span>(committed_line, <span class="st">"None under construction"</span>),</span>
+<span id="cb250-22"><a href="#cb250-22" aria-hidden="true" tabindex="-1"></a>         <span class="at">gap_type =</span> <span class="fu">if_else</span>(hdb_share <span class="sc">&gt;=</span> <span class="dv">50</span>, <span class="st">"Mainly HDB"</span>, <span class="st">"Mainly private housing"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb250-23"><a href="#cb250-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(beyond))</span>
+<span id="cb250-24"><a href="#cb250-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb250-25"><a href="#cb250-25" aria-hidden="true" tabindex="-1"></a>gap_tab <span class="sc">%&gt;%</span></span>
+<span id="cb250-26"><a href="#cb250-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">12</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb250-27"><a href="#cb250-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">PLN_AREA_N =</span> <span class="fu">str_to_title</span>(PLN_AREA_N),</span>
+<span id="cb250-28"><a href="#cb250-28" aria-hidden="true" tabindex="-1"></a>         <span class="fu">across</span>(<span class="fu">c</span>(residents, beyond), \(x) scales<span class="sc">::</span><span class="fu">comma</span>(<span class="fu">round</span>(x))),</span>
+<span id="cb250-29"><a href="#cb250-29" aria-hidden="true" tabindex="-1"></a>         <span class="fu">across</span>(<span class="fu">c</span>(share, hdb_share), \(x) <span class="fu">round</span>(x))) <span class="sc">%&gt;%</span></span>
+<span id="cb250-30"><a href="#cb250-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(PLN_AREA_N, residents, beyond, share, gap_type, hdb_share, committed_line) <span class="sc">%&gt;%</span></span>
+<span id="cb250-31"><a href="#cb250-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Planning area"</span>, <span class="st">"Residents aged 15-64"</span>, <span class="st">"Beyond 800 m after JRL and CRL"</span>,</span>
+<span id="cb250-32"><a href="#cb250-32" aria-hidden="true" tabindex="-1"></a>                      <span class="st">"Share beyond (%)"</span>, <span class="st">"Housing type of gap"</span>, <span class="st">"HDB share of gap (%)"</span>,</span>
+<span id="cb250-33"><a href="#cb250-33" aria-hidden="true" tabindex="-1"></a>                      <span class="st">"Rail line under construction"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 13%">
+<col style="width: 19%">
+<col style="width: 10%">
+<col style="width: 14%">
+<col style="width: 13%">
+<col style="width: 18%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Planning area</th>
+<th style="text-align: left;">Residents aged 15-64</th>
+<th style="text-align: left;">Beyond 800 m after JRL and CRL</th>
+<th style="text-align: right;">Share beyond (%)</th>
+<th style="text-align: left;">Housing type of gap</th>
+<th style="text-align: right;">HDB share of gap (%)</th>
+<th style="text-align: left;">Rail line under construction</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Yishun</td>
+<td style="text-align: left;">151,088</td>
+<td style="text-align: left;">93,330</td>
+<td style="text-align: right;">62</td>
+<td style="text-align: left;">Mainly HDB</td>
+<td style="text-align: right;">87</td>
+<td style="text-align: left;">None under construction</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Hougang</td>
+<td style="text-align: left;">152,209</td>
+<td style="text-align: left;">58,208</td>
+<td style="text-align: right;">38</td>
+<td style="text-align: left;">Mainly HDB</td>
+<td style="text-align: right;">77</td>
+<td style="text-align: left;">None under construction</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Clementi</td>
+<td style="text-align: left;">65,876</td>
+<td style="text-align: left;">35,850</td>
+<td style="text-align: right;">54</td>
+<td style="text-align: left;">Mainly private housing</td>
+<td style="text-align: right;">47</td>
+<td style="text-align: left;">CRL Phase 2 (2032)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Woodlands</td>
+<td style="text-align: left;">181,317</td>
+<td style="text-align: left;">35,586</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: left;">Mainly HDB</td>
+<td style="text-align: right;">92</td>
+<td style="text-align: left;">None under construction</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Pasir Ris</td>
+<td style="text-align: left;">96,245</td>
+<td style="text-align: left;">35,423</td>
+<td style="text-align: right;">37</td>
+<td style="text-align: left;">Mainly private housing</td>
+<td style="text-align: right;">44</td>
+<td style="text-align: left;">CRL Punggol Extension (2032)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Tampines</td>
+<td style="text-align: left;">201,064</td>
+<td style="text-align: left;">34,372</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: left;">Mainly HDB</td>
+<td style="text-align: right;">74</td>
+<td style="text-align: left;">None under construction</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Bedok</td>
+<td style="text-align: left;">173,902</td>
+<td style="text-align: left;">32,821</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: left;">Mainly HDB</td>
+<td style="text-align: right;">58</td>
+<td style="text-align: left;">None under construction</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Jurong West</td>
+<td style="text-align: left;">168,334</td>
+<td style="text-align: left;">31,308</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: left;">Mainly HDB</td>
+<td style="text-align: right;">92</td>
+<td style="text-align: left;">None under construction</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Bukit Batok</td>
+<td style="text-align: left;">110,713</td>
+<td style="text-align: left;">26,356</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: left;">Mainly HDB</td>
+<td style="text-align: right;">70</td>
+<td style="text-align: left;">None under construction</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Bukit Timah</td>
+<td style="text-align: left;">55,617</td>
+<td style="text-align: left;">22,567</td>
+<td style="text-align: right;">41</td>
+<td style="text-align: left;">Mainly private housing</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">CRL Phase 2 (2032)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Toa Payoh</td>
+<td style="text-align: left;">93,951</td>
+<td style="text-align: left;">19,859</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: left;">Mainly HDB</td>
+<td style="text-align: right;">91</td>
+<td style="text-align: left;">None under construction</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Novena</td>
+<td style="text-align: left;">35,748</td>
+<td style="text-align: left;">19,325</td>
+<td style="text-align: right;">54</td>
+<td style="text-align: left;">Mainly HDB</td>
+<td style="text-align: right;">55</td>
+<td style="text-align: left;">None under construction</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb251"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb251-1"><a href="#cb251-1" aria-hidden="true" tabindex="-1"></a>gap_hex <span class="ot">&lt;-</span> hex_land <span class="sc">%&gt;%</span></span>
+<span id="cb251-2"><a href="#cb251-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(hex_id) <span class="sc">%&gt;%</span></span>
+<span id="cb251-3"><a href="#cb251-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(access <span class="sc">%&gt;%</span> <span class="fu">filter</span>(after <span class="sc">==</span> <span class="dv">0</span>), <span class="at">by =</span> <span class="st">"hex_id"</span>)</span>
+<span id="cb251-4"><a href="#cb251-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb251-5"><a href="#cb251-5" aria-hidden="true" tabindex="-1"></a>m_gaps <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(hex_land) <span class="sc">+</span></span>
+<span id="cb251-6"><a href="#cb251-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">fill =</span> <span class="st">"grey95"</span>, <span class="at">col =</span> <span class="st">"grey85"</span>, <span class="at">lwd =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb251-7"><a href="#cb251-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(gap_hex) <span class="sc">+</span></span>
+<span id="cb251-8"><a href="#cb251-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(<span class="at">fill =</span> <span class="st">"pop"</span>,</span>
+<span id="cb251-9"><a href="#cb251-9" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill.scale =</span> <span class="fu">tm_scale_intervals</span>(</span>
+<span id="cb251-10"><a href="#cb251-10" aria-hidden="true" tabindex="-1"></a>                <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">500</span>, <span class="dv">1000</span>, <span class="dv">2000</span>, <span class="dv">4000</span>, <span class="cn">Inf</span>),</span>
+<span id="cb251-11"><a href="#cb251-11" aria-hidden="true" tabindex="-1"></a>                <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Under 500"</span>, <span class="st">"500 to 999"</span>, <span class="st">"1,000 to 1,999"</span>,</span>
+<span id="cb251-12"><a href="#cb251-12" aria-hidden="true" tabindex="-1"></a>                           <span class="st">"2,000 to 3,999"</span>, <span class="st">"4,000 or more"</span>),</span>
+<span id="cb251-13"><a href="#cb251-13" aria-hidden="true" tabindex="-1"></a>                <span class="at">values =</span> <span class="st">"brewer.reds"</span>),</span>
+<span id="cb251-14"><a href="#cb251-14" aria-hidden="true" tabindex="-1"></a>              <span class="at">fill.legend =</span> <span class="fu">tm_legend</span>(<span class="at">title =</span> <span class="st">"Residents aged 15-64</span><span class="sc">\n</span><span class="st">with no station within 800 m"</span>),</span>
+<span id="cb251-15"><a href="#cb251-15" aria-hidden="true" tabindex="-1"></a>              <span class="at">col =</span> <span class="st">"white"</span>, <span class="at">lwd =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb251-16"><a href="#cb251-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(dest_future) <span class="sc">+</span></span>
+<span id="cb251-17"><a href="#cb251-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_dots</span>(<span class="at">fill =</span> <span class="st">"grey20"</span>, <span class="at">size =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
+<span id="cb251-18"><a href="#cb251-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_title</span>(<span class="st">"Residents still beyond 800 m of a station after the JRL and CRL open"</span>) <span class="sc">+</span></span>
+<span id="cb251-19"><a href="#cb251-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_compass</span>(<span class="at">type =</span> <span class="st">"8star"</span>, <span class="at">size =</span> <span class="dv">2</span>, <span class="at">position =</span> <span class="fu">c</span>(<span class="st">"right"</span>, <span class="st">"top"</span>)) <span class="sc">+</span></span>
+<span id="cb251-20"><a href="#cb251-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_scalebar</span>(<span class="at">position =</span> <span class="fu">c</span>(<span class="st">"left"</span>, <span class="st">"bottom"</span>)) <span class="sc">+</span></span>
+<span id="cb251-21"><a href="#cb251-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">frame =</span> <span class="cn">TRUE</span>, <span class="at">legend.position =</span> <span class="fu">c</span>(<span class="st">"right"</span>, <span class="st">"bottom"</span>))</span>
+<span id="cb251-22"><a href="#cb251-22" aria-hidden="true" tabindex="-1"></a>m_gaps</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-Home_Ex03_files/figure-html/unnamed-chunk-88-1.png" class="img-fluid figure-img" width="1056"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb252"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb252-1"><a href="#cb252-1" aria-hidden="true" tabindex="-1"></a>hdb_no_line <span class="ot">&lt;-</span> gap_tab <span class="sc">%&gt;%</span></span>
+<span id="cb252-2"><a href="#cb252-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(gap_type <span class="sc">==</span> <span class="st">"Mainly HDB"</span>, committed_line <span class="sc">==</span> <span class="st">"None under construction"</span>)</span>
+<span id="cb252-3"><a href="#cb252-3" aria-hidden="true" tabindex="-1"></a>private_gaps <span class="ot">&lt;-</span> gap_tab <span class="sc">%&gt;%</span></span>
+<span id="cb252-4"><a href="#cb252-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(gap_type <span class="sc">==</span> <span class="st">"Mainly private housing"</span>, committed_line <span class="sc">==</span> <span class="st">"None under construction"</span>)</span>
+<span id="cb252-5"><a href="#cb252-5" aria-hidden="true" tabindex="-1"></a>committed_gaps <span class="ot">&lt;-</span> gap_tab <span class="sc">%&gt;%</span></span>
+<span id="cb252-6"><a href="#cb252-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(committed_line <span class="sc">!=</span> <span class="st">"None under construction"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The remaining gaps fall into three groups, each calling for a different response:</p>
+<ul>
+<li><strong>Dense HDB towns with no new line under construction.</strong> The largest are Yishun, Hougang, Woodlands and Tampines. Together, the HDB-dominated planning areas with no new line under construction account for 423,800 residents beyond 800 m, 74% of all residents still beyond 800 m. The map shows these gaps as solid blocks of densely populated hexagons on the edges of towns, between existing stations.</li>
+<li><strong>Areas that lines under construction will reach.</strong> Clementi, Pasir Ris, Bukit Timah and Punggol will gain stations on CRL Phase 2 or the CRL Punggol Extension by 2032. These 94,141 residents need interim measures, not new lines.</li>
+<li><strong>Low-density private estates.</strong> In Serangoon, Ang Mo Kio and Queenstown, the gap consists mainly of private housing. These areas have few residents per hexagon. Their access to rail is limited as much by density as by distance, and in some cases also by nature reserves, the airport or industrial land nearby.</li>
+</ul>
+</section>
+<section id="matching-station-openings-to-development" class="level3">
+<h3 class="anchored" data-anchor-id="matching-station-openings-to-development">7.8 Matching Station Openings to Development</h3>
+<p>The JRL opens in three stages, in 2028 and 2029, and CRL Phase 1 in 2030 (Land Transport Authority, n.d.). Grouping the predictions from Section 6.1 by opening stage shows whether each stage opens into an existing population or ahead of it.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>AI Use Disclosure
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>AI tools were used to draft the R code that groups the predicted ridership of the new stations by opening stage and identifies new stations with no residents within 800 m. The output was reviewed and run by the author to verify correctness against the study data.</p>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb253"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb253-1"><a href="#cb253-1" aria-hidden="true" tabindex="-1"></a>opening <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb253-2"><a href="#cb253-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>stage,        <span class="sc">~</span>opens, <span class="sc">~</span>station,</span>
+<span id="cb253-3"><a href="#cb253-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"JRL Stage 1"</span>, <span class="st">"2028"</span>, <span class="fu">c</span>(<span class="st">"Choa Chu Kang West"</span>, <span class="st">"Tengah"</span>, <span class="st">"Hong Kah"</span>, <span class="st">"Corporation"</span>,</span>
+<span id="cb253-4"><a href="#cb253-4" aria-hidden="true" tabindex="-1"></a>                           <span class="st">"Jurong West"</span>, <span class="st">"Bahar Junction"</span>, <span class="st">"Gek Poh"</span>, <span class="st">"Tawas"</span>),</span>
+<span id="cb253-5"><a href="#cb253-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"JRL Stage 2"</span>, <span class="st">"2028"</span>, <span class="fu">c</span>(<span class="st">"Tengah Plantation"</span>, <span class="st">"Tengah Park"</span>, <span class="st">"Bukit Batok West"</span>,</span>
+<span id="cb253-6"><a href="#cb253-6" aria-hidden="true" tabindex="-1"></a>                           <span class="st">"Toh Guan"</span>, <span class="st">"Jurong Town Hall"</span>, <span class="st">"Pandan Reservoir"</span>),</span>
+<span id="cb253-7"><a href="#cb253-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"JRL Stage 3"</span>, <span class="st">"2029"</span>, <span class="fu">c</span>(<span class="st">"Enterprise"</span>, <span class="st">"Tukang"</span>, <span class="st">"Jurong Hill"</span>, <span class="st">"Jurong Pier"</span>,</span>
+<span id="cb253-8"><a href="#cb253-8" aria-hidden="true" tabindex="-1"></a>                           <span class="st">"Nanyang Gateway"</span>, <span class="st">"Nanyang Crescent"</span>, <span class="st">"Peng Kang Hill"</span>),</span>
+<span id="cb253-9"><a href="#cb253-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"CRL Phase 1"</span>, <span class="st">"2030"</span>, <span class="fu">c</span>(<span class="st">"Aviation Park"</span>, <span class="st">"Loyang"</span>, <span class="st">"Pasir Ris East"</span>, <span class="st">"Tampines North"</span>,</span>
+<span id="cb253-10"><a href="#cb253-10" aria-hidden="true" tabindex="-1"></a>                           <span class="st">"Defu"</span>, <span class="st">"Serangoon North"</span>, <span class="st">"Tavistock"</span>, <span class="st">"Teck Ghee"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb253-11"><a href="#cb253-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(station)</span>
+<span id="cb253-12"><a href="#cb253-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb253-13"><a href="#cb253-13" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">setequal</span>(opening<span class="sc">$</span>station, new_pred<span class="sc">$</span>station))   <span class="co"># every new station has a stage</span></span>
+<span id="cb253-14"><a href="#cb253-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb253-15"><a href="#cb253-15" aria-hidden="true" tabindex="-1"></a>stage_tab <span class="ot">&lt;-</span> new_pred <span class="sc">%&gt;%</span></span>
+<span id="cb253-16"><a href="#cb253-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(opening, <span class="at">by =</span> <span class="st">"station"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb253-17"><a href="#cb253-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(stage, opens) <span class="sc">%&gt;%</span></span>
+<span id="cb253-18"><a href="#cb253-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">stations    =</span> <span class="fu">n</span>(),</span>
+<span id="cb253-19"><a href="#cb253-19" aria-hidden="true" tabindex="-1"></a>            <span class="at">below       =</span> <span class="fu">sum</span>(at_risk),</span>
+<span id="cb253-20"><a href="#cb253-20" aria-hidden="true" tabindex="-1"></a>            <span class="at">median_pred =</span> <span class="fu">median</span>(central),</span>
+<span id="cb253-21"><a href="#cb253-21" aria-hidden="true" tabindex="-1"></a>            <span class="at">low         =</span> <span class="fu">paste</span>(station[at_risk], <span class="at">collapse =</span> <span class="st">", "</span>),</span>
+<span id="cb253-22"><a href="#cb253-22" aria-hidden="true" tabindex="-1"></a>            <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb253-23"><a href="#cb253-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(opens, stage)</span>
+<span id="cb253-24"><a href="#cb253-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb253-25"><a href="#cb253-25" aria-hidden="true" tabindex="-1"></a>stage_tab <span class="sc">%&gt;%</span></span>
+<span id="cb253-26"><a href="#cb253-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">median_pred =</span> scales<span class="sc">::</span><span class="fu">comma</span>(<span class="fu">round</span>(median_pred))) <span class="sc">%&gt;%</span></span>
+<span id="cb253-27"><a href="#cb253-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Stage"</span>, <span class="st">"Opens"</span>, <span class="st">"New stations"</span>, <span class="st">"Below benchmark"</span>,</span>
+<span id="cb253-28"><a href="#cb253-28" aria-hidden="true" tabindex="-1"></a>                      <span class="st">"Median predicted tap-ins"</span>, <span class="st">"Stations below benchmark"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 7%">
+<col style="width: 3%">
+<col style="width: 8%">
+<col style="width: 10%">
+<col style="width: 16%">
+<col style="width: 53%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Stage</th>
+<th style="text-align: left;">Opens</th>
+<th style="text-align: right;">New stations</th>
+<th style="text-align: right;">Below benchmark</th>
+<th style="text-align: left;">Median predicted tap-ins</th>
+<th style="text-align: left;">Stations below benchmark</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">JRL Stage 1</td>
+<td style="text-align: left;">2028</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">2,714</td>
+<td style="text-align: left;">Tawas, Tengah</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">JRL Stage 2</td>
+<td style="text-align: left;">2028</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">2,799</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">JRL Stage 3</td>
+<td style="text-align: left;">2029</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: left;">327</td>
+<td style="text-align: left;">Jurong Pier, Peng Kang Hill, Jurong Hill, Nanyang Gateway, Nanyang Crescent, Tukang</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CRL Phase 1</td>
+<td style="text-align: left;">2030</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">3,111</td>
+<td style="text-align: left;">Aviation Park</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>JRL Stage 3 stands apart: 6 of its 7 stations are predicted below the benchmark, and its median prediction is 327 tap-ins, against 2,714 or more for every other stage. Its stations serve Nanyang Technological University and the industrial estates of Jurong, so their demand depends on students and workers rather than residents nearby.</p>
+<p>Two other stations open ahead of the development that will drive their demand. Tengah station opens in 2028 while Tengah’s new town is still being built and occupied, so its low prediction partly reflects the June 2026 population. Aviation Park opens with CRL Phase 1 in 2030 to serve the Changi Airfreight Centre and Changi East Industrial Zone, next to Changi Airport Terminal 5, which is due in the mid-2030s (Yeow, 2025).</p>
+<p>The observed data show what happens when stations open ahead of demand. Keppel, which opened in July 2026 to serve a port area, recorded 41 morning tap-ins per weekday in September, the second-lowest of any MRT station. Hume, whose structure was built a decade before it opened, records 843.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb254"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb254-1"><a href="#cb254-1" aria-hidden="true" tabindex="-1"></a>no_residents_800 <span class="ot">&lt;-</span> dest_future_df<span class="sc">$</span>station[new_idx][<span class="fu">colSums</span>(D_future[, new_idx] <span class="sc">&lt;=</span> cutoff) <span class="sc">==</span> <span class="dv">0</span>]</span>
+<span id="cb254-2"><a href="#cb254-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_to_title</span>(no_residents_800)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Aviation Park"    "Jurong Hill"      "Jurong Pier"      "Nanyang Crescent"
+[5] "Nanyang Gateway"  "Tukang"          </code></pre>
+</div>
+</div>
+<p>The same stations stand out from the residents’ side. Of the 29 new stations, 6 have no populated hexagon within 800 m: Aviation Park, Jurong Hill, Jurong Pier, Nanyang Crescent, Nanyang Gateway and Tukang. 5 of them open in JRL Stage 3. Their predicted ridership depends almost entirely on workers and students travelling to them, not on residents nearby.</p>
+</section>
 </section>
 <section id="limitations" class="level2">
 <h2 class="anchored" data-anchor-id="limitations">8. Limitations</h2>
@@ -5018,6 +5311,7 @@ A_i = \sum_{j:\, d_{ij} \le d_0} P^*_{ij}\, R_j
 <li><strong>Areal units.</strong> Results may change with the size of the hexagons (the modifiable areal unit problem). The 500 m cell size is finer than station spacing, but was not varied.</li>
 <li><strong>Points of interest.</strong> OpenStreetMap coverage varies between areas, which affects the attractiveness variables.</li>
 <li><strong>Accessibility measure.</strong> The 2SFCA analysis uses the number of lines as supply, so an LRT line counts the same as an MRT line, and service frequency is not represented (Section 7.1).</li>
+<li><strong>Gap classification.</strong> Lines under construction are matched by planning area, so not every resident in Clementi, Pasir Ris, Bukit Timah or Punggol will be within 800 m of the new stations. Housing type is classified at a 50% threshold.</li>
 </ul>
 </section>
 </section>
@@ -5026,18 +5320,20 @@ A_i = \sum_{j:\, d_{ij} \le d_0} P^*_{ij}\, R_j
 <section id="conclusion" class="level3">
 <h3 class="anchored" data-anchor-id="conclusion">9.1 Conclusion</h3>
 <p>This exercise calibrated a probabilistic spatial interaction model of station choice for Singapore’s MRT and LRT network and used it to assess the Jurong Region Line and Cross Island Line Phase 1.</p>
-<p><strong>RQ1: How well does the model explain ridership, and what matters beyond distance?</strong> The MCI model explains most of the variation in weekday morning-peak tap-ins at the 184 existing stations (pseudo-R² of 0.83, against 0.53 for distance alone). Residents strongly prefer nearby stations (<span class="math inline">\(\lambda\)</span> = -2.52, steeper than the conventional -2). Beyond distance, the number of lines, MRT rather than LRT service and feeder bus access make a station more attractive. The model’s largest errors point to riders it does not represent: non-resident workers and passengers arriving at destinations.</p>
+<p><strong>RQ1: How well does the model explain ridership, and what matters beyond distance?</strong> The MCI model explains most of the variation in weekday morning-peak tap-ins at the 184 existing stations (pseudo-R² of 0.83, against 0.53 for distance alone). Residents strongly prefer nearby stations (<span class="math inline">\(\lambda\)</span> = -2.52, steeper than the conventional −2). Beyond distance, the number of lines, MRT rather than LRT service, feeder bus access and, to a lesser extent, shopping around the station make a station more attractive. The model’s largest errors point to riders it does not represent, i.e., non-resident workers and passengers arriving at destinations.</p>
 <p><strong>RQ2: What ridership can the new stations expect?</strong> The 29 new stations are predicted to carry 12.1% of morning-peak tap-ins once travel habits have adjusted. Stations in established housing areas, such as Serangoon North, Pasir Ris East and Choa Chu Kang West, are predicted to be the busiest. 9 stations are predicted below the lower quartile of existing MRT stations. Most of them serve industrial estates, the university campus or the airport area, where demand from workers and students is not captured by a residential model.</p>
 <p><strong>RQ3: How will the new lines affect existing stations and market areas?</strong> The impact is local. The largest losses are at East-West Line stations between Jurong East and Joo Koon and around Bukit Batok, and the effect fades within about 3 km of the new lines. The CRL interchanges at Bright Hill, Hougang and Ang Mo Kio gain riders, while the JRL interchanges lose tap-ins but will carry transfer traffic. 147 hexagons change their most likely station.</p>
-<p><strong>Access to rail.</strong> The share of residents aged 15–64 within 800 m of a station rises from 71.6% to 79.7%, with the largest gains in Tengah, Jurong East, Jurong West and Pasir Ris, areas that are currently among the least served.</p>
+<p><strong>RQ4: Who gains access to rail, and who is still left out?</strong> The share of residents aged 15–64 within 800 m of a station rises from 71.6% to 79.7%, with the largest gains in Tengah, Jurong East, Jurong West and Pasir Ris, areas that are currently among the least served. About 20% of residents remain beyond 800 m of a station, mainly in dense HDB towns that no new line will serve, such as Yishun, Hougang and Woodlands, and in low-density private estates (Section 7.7). JRL Stage 3 opens ahead of its demand: 6 of its 7 stations are predicted below the ridership benchmark (Section 7.8).</p>
 </section>
-<section id="recommendations" class="level3">
-<h3 class="anchored" data-anchor-id="recommendations">9.2 Recommendations</h3>
+<section id="implications-and-recommendations" class="level3">
+<h3 class="anchored" data-anchor-id="implications-and-recommendations">9.2 Implications and Recommendations</h3>
+<p>The recommendations are ordered by the government’s target of 8 in 10 households within a 10-minute walk of a train station by the 2030s. First where access can be improved, then how the new stations should be opened.</p>
 <ol type="1">
-<li><strong>Treat low predictions as a prompt for further data, not as a verdict.</strong> Before decisions on the timing of opening or service levels at the 9 low-ridership stations, their demand should be estimated with employment, student and dormitory populations, which this model does not include.</li>
-<li><strong>Plan for a ramp-up period.</strong> Based on the holdout test, ridership in the first months after opening may be well below the predictions. Service levels can be phased in and adjusted as observed ridership builds up.</li>
-<li><strong>Review feeder bus services around the stations that lose riders.</strong> East-West Line stations between Jurong East and Joo Koon are predicted to lose a large share of their morning tap-ins to the JRL. Feeder services into these stations can be reviewed as residents switch to stations nearer home.</li>
-<li><strong>Prepare the interchanges for transfer traffic.</strong> Bright Hill and Hougang are predicted to gain substantially in tap-ins, while Boon Lay, Jurong East and Choa Chu Kang will carry transfers between the JRL and the existing lines. Platform and concourse capacity at these stations should account for both.</li>
+<li><p><strong>Prioritise the dense HDB towns that no new line will reach.</strong> Yishun, Hougang, Woodlands and Tampines hold the largest numbers of residents still beyond 800 m of a station after the JRL and CRL open, and no line under construction serves them (Section 7.7). Because predicted ridership rises with the number of residents nearby (Section 5), these are the places where added rail access would serve the most people. In the near term, covered linkways, which LTA now extends to 800 m at selected locations (Ministry of Transport, 2026), and direct feeder buses can shorten residents’ trips to the nearest station. In the longer term, these towns are candidates for infill stations or future line alignments.</p></li>
+<li><p><strong>Bridge the gaps that committed lines will close.</strong> Clementi, Pasir Ris, Bukit Timah and Punggol will gain stations on CRL Phase 2 or the CRL Punggol Extension by 2032. Until then, feeder bus services to the nearest station can serve these residents, without the need for further rail planning.</p></li>
+<li><p><strong>Serve low-density estates by bus and active mobility rather than rail.</strong> In Serangoon, Ang Mo Kio and Queenstown, the residents beyond 800 m live mainly in private, often landed, housing, and in some places next to nature reserves or industrial land. A station there would serve few residents and, like the industrial JRL stations, would fall below the ridership benchmark. Bus services, cycling paths and sheltered walkways are more realistic ways to close these gaps.</p></li>
+<li><p><strong>Match service levels to development, especially on JRL Stage 3.</strong> 6 of the 7 Stage 3 stations, due in 2029, are predicted below the benchmark, and Tengah (2028) and Aviation Park (2030) open ahead of the developments they serve (Section 7.8). The stations are already under construction, so the choice is how to operate them. Their demand should first be estimated with student, worker and dormitory populations, which this model omits. Service frequencies can then start lower and rise with occupancy, as Keppel and Hume show how slowly ridership builds where development lags. Infill stations not yet built, such as further stations in Tengah, can be timed to housing completions.</p></li>
+<li><p><strong>Prepare the interchanges for transfer traffic.</strong> Bright Hill and Hougang are predicted to gain substantially in tap-ins, while Boon Lay, Jurong East and Choa Chu Kang will carry transfers between the JRL and the existing lines (Section 6.2.2). Platform and concourse capacity should account for both.</p></li>
 </ol>
 </section>
 <section id="future-work" class="level3">
@@ -5059,7 +5355,7 @@ A_i = \sum_{j:\, d_{ij} \le d_0} P^*_{ij}\, R_j
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>AI tools were used to provide language assistance during the preparation of this report. AI support was limited to improving the clarity, structure and fluency of written content, including refinement of sentence construction, grammar and academic writing style. All analysis, interpretations, conclusions, insights, hypotheses, business recommendations and managerial implications presented in this report were independently developed by the author based on the dataset, statistical outputs and domain knowledge. AI did not generate the underlying analytical findings or determine the conclusions reached in this study.</p>
+<p>AI tools were used to provide language assistance during the preparation of this report. AI support was used to improve the clarity, structure and fluency of written content, including refinement of sentence construction, grammar and academic writing style, as well as suggest relevant literature for analytical approaches. All analysis, interpretations, conclusions, insights, hypotheses and recommendations presented in this report were independently developed by the author based on the dataset, statistical outputs and domain knowledge. AI did not generate the underlying analytical findings or determine the conclusions reached in this study.</p>
 </div>
 </div>
 </section>
@@ -5073,19 +5369,24 @@ A_i = \sum_{j:\, d_{ij} \le d_0} P^*_{ij}\, R_j
 <p>Hume MRT station. (n.d.). In Wikipedia. Retrieved November 10, 2026, from https://en.wikipedia.org/wiki/Hume_MRT_station</p>
 <p>Kam, T. S. (2026). <em>R for geospatial data science and analytics</em>. https://r4gdsa.netlify.app/</p>
 <p>Land Transport Authority. (n.d.). Rail network. Retrieved November 10, 2026, from https://lta.gov.sg/content/ltaweb/en/public-transport/mrt-and-lrt-trains/train-system-map.html</p>
+<p>Land Transport Authority. (n.d.). Jurong Region Line. Retrieved November 14, 2026, from https://www.lta.gov.sg/content/ltagov/en/upcoming_projects/rail_expansion/jurong_region_line.html</p>
+<p>Land Transport Authority. (n.d.). Cross Island Line. Retrieved November 14, 2026, from https://www.lta.gov.sg/content/ltagov/en/upcoming_projects/rail_expansion/cross_island_line.html</p>
 <p>Land Transport Authority. (2025, January 24). Hume station to open on 28 February 2025 [Press release]. https://www.lta.gov.sg/content/ltagov/en/newsroom/2025/1/news-releases/hume_station_to_open.html</p>
 <p>Luo, J. (2014). Integrating the Huff model and floating catchment area methods to analyze spatial access to healthcare services. Transactions in GIS, 18(3), 436-448. https://doi.org/10.1111/tgis.12096</p>
 <p>Luo, W., &amp; Wang, F. (2003). Measures of spatial accessibility to health care in a GIS environment: Synthesis and a case study in the Chicago region. Environment and Planning B: Planning and Design, 30(6), 865-884. https://doi.org/10.1068/b29120</p>
 <p>Lwin, K. K., &amp; Murayama, Y. (2009). A GIS approach to estimation of building population for micro-spatial analysis. Transactions in GIS, 13(4), 401-414. https://doi.org/10.1111/j.1467-9671.2009.01171.x</p>
 <p>Mennis, J. (2003). Generating surface models of population using dasymetric mapping. The Professional Geographer, 55(1), 31-42. https://doi.org/10.1111/0033-0124.10042</p>
 <p>Ministry of Transport. (2024, October 15). Response by Senior Minister of State for Transport Dr Amy Khor to adjournment motion on realising the vision of a 45-minute city under the Land Transport Master Plan 2040 in the West of Singapore [Speech]. https://www.mot.gov.sg/news/details/response-by-senior-minister-of-state-for-transport–dr-amy-khor-to-adjournment-motion-on–realising-the-vision-of-a-45-minute-city-under-the-land-transport-master-plan-2040-in-the-west-of-singapore</p>
+<p>Ministry of Transport. (2026, March 4). Speech by Minister of State for Transport Mr Baey Yam Keng at Ministry of Transport’s Committee of Supply Debate 2026 [Speech]. https://www.mot.gov.sg/news-resources/newsroom/speech-by-minister-of-state-for-transport-mr-baey-yam-keng-at-ministry-of-transport-s-committee-of-supply-debate-2026/</p>
 <p>Nakanishi, M., &amp; Cooper, L. G. (1974). Parameter estimation for a multiplicative competitive interaction model: Least squares approach. <em>Journal of Marketing Research, 11</em>(3), 303-311. https://doi.org/10.2307/3151146</p>
 <p>Olszewski, P., &amp; Wibowo, S. S. (2005). Using equivalent walking distance to assess pedestrian accessibility to transit stations in Singapore. Transportation Research Record, 1927(1), 38-45. https://doi.org/10.1177/0361198105192700105</p>
 <p>Orpana, T., &amp; Lampinen, J. (2003). Building spatial choice models from aggregate data. <em>Journal of Regional Science, 43</em>(2), 319-348. https://doi.org/10.1111/1467-9787.00301</p>
 <p>Singapore’s MRT, LRT ridership surpasses pre-Covid-19 levels for first time in 2024. (2025, February 1). The Star (from The Straits Times). https://www.thestar.com.my/aseanplus/aseanplus-news/2025/02/01/singapore039s-mrt-lrt-ridership-surpasses-pre-covid-19-levels-for-first-time-in-2024</p>
+<p>Urban Redevelopment Authority. (n.d.). Convenient &amp; people-centric journeys [Master Plan 2025]. Retrieved November 14, 2026, from https://www.ura.gov.sg/land-planning/master-plan/master-plan-2025/themes/shaping-a-happy-healthy-city/convenient-and-people-centric-journeys/</p>
 <p>Wieland, T. (2017). Market area analysis for retail and service locations with MCI. <em>The R Journal, 9</em>(1), 298-323. https://doi.org/10.32614/RJ-2017-020</p>
 <p>Wieland, T. (2026). <em>huff: A Python package for market area analysis</em> (arXiv:2602.17640). arXiv. https://doi.org/10.48550/arXiv.2602.17640</p>
 <p>Woodleigh MRT station. (n.d.). In Wikipedia. Retrieved November 10, 2026, from https://en.wikipedia.org/wiki/Woodleigh_MRT_station</p>
+<p>Yeow, J. (2025, May 15). Singapore Changi Airport’s new Terminal 5 is slated to open in the mid-2030s, works have already begun. Time Out Singapore. https://www.timeout.com/singapore/news/singapore-changi-airports-new-terminal-5-is-slated-to-open-in-the-mid-2030s-works-have-already-begun-051525</p>
 <p>Zhu, Z., He, Y., Guo, X., Zhang, Y., &amp; Chen, J. (2021). Improved Huff model for estimating urban rail transit station catchment areas considering station choices. <em>Journal of Advanced Transportation, 2021</em>, Article 6374724. https://doi.org/10.1155/2021/6374724</p>
 
 
